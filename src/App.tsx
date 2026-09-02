@@ -6,6 +6,10 @@ type Progress = { userId: string; courseSlug: string; completedLessons: number; 
 type QuizResult = { courseSlug: string; lessonIndex: number; quizScore: number; quizTotal: number; quizPassed: number; attempts: number; updatedAt: number };
 type User = { id: string; name: string; email: string; avatarUrl?: string };
 
+interface CustomCSSProperties extends CSSProperties {
+  "--progress"?: string;
+}
+
 const courses: Course[] = [
   { slug: "renewable-energy", title: "الطاقة المتجددة", level: "مبتدئ", color: "cyan", description: "أساسيات الطاقة الشمسية وطاقة الرياح وتصميم الحلول المستدامة.", lessons: [
     { title: "مقدمة إلى الطاقة النظيفة", duration: "6 دقائق", summary: "لماذا أصبحت الطاقة المتجددة جزءًا أساسيًا من مستقبل الهندسة؟", body: ["تجمع الطاقة المتجددة بين مصادر طبيعية تتجدد باستمرار، مثل الشمس والرياح والمياه، وبين أنظمة هندسية تحولها إلى طاقة قابلة للاستخدام.", "يبدأ تصميم أي حل مستدام بفهم الطلب على الطاقة، ثم اختيار المصدر المناسب، وأخيرًا قياس الكفاءة والتكلفة والأثر البيئي."], quiz: [{ question: "ما السمة الأساسية لمصدر الطاقة المتجدد؟", options: ["ينفد بسرعة", "يتجدد طبيعيًا", "لا يحتاج إلى تصميم", "يعمل دون صيانة"], answer: 1, explanation: "المصدر المتجدد يتجدد طبيعيًا خلال دورة زمنية قصيرة نسبيًا." }, { question: "ما أول خطوة في تصميم حل مستدام؟", options: ["شراء المعدات", "تحديد الطلب على الطاقة", "اختيار لون اللوحة", "إلغاء القياس"], answer: 1, explanation: "فهم الطلب يساعد المهندس على اختيار التقنية والحجم المناسبين." }] },
@@ -29,7 +33,7 @@ const courses: Course[] = [
   ] },
 ];
 
-const api = async <T,>(path: string, init?: RequestInit): Promise<T> => {
+const api = async <T = unknown,>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(path, { credentials: "include", ...init, headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) } });
   if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "تعذر تنفيذ الطلب");
   return response.json();
@@ -109,7 +113,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
       <section className="dashboard-grid" id="learning">
         <aside className="side-panel progress-panel">
           <div className="panel-label">تقدمك اليوم <span>↗</span></div>
-          <div className="progress-ring" style={{ "--progress": `${calcProgress}%` } as CSSProperties}>
+          <div className="progress-ring" style={{ "--progress": `${calcProgress}%` } as CustomCSSProperties}>
             <strong>{calcProgress}%</strong>
             <span>مكتمل</span>
           </div>
@@ -208,7 +212,7 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
         <div><span>متوسط النتائج</span><strong>{average}%</strong></div>
         <div><span>دروس مكتملة</span><strong>{done}</strong></div>
         <div><span>اختبارات منجزة</span><strong>{results.filter((item) => item.quizPassed).length}</strong></div>
-        <div><span>مسارات متقدمة</span><strong>{progress.filter((item) => item.progress >= 100).length}</b></div>
+        <div><span>مسارات متقدمة</span><strong>{progress.filter((item) => item.progress >= 100).length}</strong></div>
       </section>
       <section className="profile-content">
         <div className="profile-panel">
@@ -427,7 +431,11 @@ export default function App() {
   void routeTick;
 
   const logout = async () => {
-    await api("/api/auth/logout", { method: "POST" }).catch(() => undefined);
+    try {
+      await api("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Ignore logout errors
+    }
     setUser(null);
     setProgress([]);
     setResults([]);
