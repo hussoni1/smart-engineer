@@ -33,7 +33,7 @@ const courses: Course[] = [
   ] },
 ];
 
-const api = async <T = unknown,>(path: string, init?: RequestInit): Promise<T> => {
+const api = async <T = unknown>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(path, { credentials: "include", ...init, headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) } });
   if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "تعذر تنفيذ الطلب");
   return response.json();
@@ -394,7 +394,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const [routeTick, setRouteTick] = useState(0);
+  const [, setRouteTick] = useState(0);
 
   useEffect(() => {
     const handler = () => setRouteTick((tick) => tick + 1);
@@ -427,8 +427,6 @@ export default function App() {
   useEffect(() => {
     void refresh();
   }, []);
-
-  void routeTick;
 
   const logout = async () => {
     try {
