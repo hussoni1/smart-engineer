@@ -147,7 +147,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
             <span>{user.name.slice(0, 1)}</span>{user.name}
           </button>
         ) : (
-          <button className="login-button" onClick={() => { window.location.assign("/api/auth/google"); }}>
+          <button className="login-button" onClick={() => onNavigate("/login")}>
             تسجيل الدخول
           </button>
         )}
@@ -389,7 +389,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
 
   const submitQuiz = async () => {
     if (!user) {
-      window.location.assign("/api/auth/google");
+      window.location.assign("/login");
       return;
     }
     setSubmitted(true);
