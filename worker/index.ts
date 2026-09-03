@@ -22,8 +22,7 @@ export function getNextProgress(completedLessons: number, lessonIndex: number, p
 function json(data: unknown, status = 200, extraHeaders: Record<string, string> = {}) { return Response.json(data, { status, headers: { "Cache-Control": "no-store", ...extraHeaders } }); }
 function makeCookie(name: string, value: string, maxAge: number) { return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=None`; }
 function readCookie(request: Request, name: string) { return (request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))?.slice(name.length + 1) ? decodeURIComponent((request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))!.slice(name.length + 1)) : null; }
-function redirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ Location: location, "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); return new Response(null, { status: 302, headers }); }
-function htmlRedirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); const safeLocation = JSON.stringify(location); return new Response(`<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${location}"><script>window.location.replace(${safeLocation})</script><p>جارٍ فتح ملفك الشخصي...</p>`, { status: 200, headers }); }
+function htmlRedirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); const safeLocation = JSON.stringify(location); return new Response(`<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${location}"><script>window.location.replace(${safeLocation})</script><p>جارٍ فتح Google...</p>`, { status: 200, headers }); }
 function authError(message: string, stage: string, status = 502) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" }); headers.append("Set-Cookie", makeCookie(OAUTH_COOKIE, "", 0)); return new Response(`<!doctype html><meta charset="utf-8"><title>تعذر تسجيل الدخول</title><main dir="rtl" style="font-family:system-ui;max-width:680px;margin:80px auto;padding:24px"><h1>تعذر إكمال تسجيل الدخول</h1><p>${message}</p><small>مرحلة الخطأ: ${stage}</small><p><a href="/login">العودة إلى تسجيل الدخول</a></p></main>`, { status, headers }); }
 function randomId() { return crypto.randomUUID(); }
 
@@ -61,7 +60,7 @@ async function startGoogleLegacy(request: Request, env: AppEnv) {
   target.searchParams.set("scope", "openid email profile");
   target.searchParams.set("state", state);
   target.searchParams.set("prompt", "select_account");
-  return redirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
+  return htmlRedirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
 }
 async function finishGoogle(request: Request, env: AppEnv) {
   const url = new URL(request.url);
