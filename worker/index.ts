@@ -101,7 +101,7 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
   if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogleLegacy(request, env);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
-  if (url.pathname === "/api/auth/google/callback" && request.method === "GET") return finishGoogle(request, env);
+  if (url.pathname.startsWith("/api/auth/google/callback") && request.method === "GET") return finishGoogle(request, env);
   if (url.pathname === "/api/auth/me" && request.method === "GET") return json({ user: await getCurrentUser(request, env) });
   if (url.pathname === "/api/auth/logout" && request.method === "POST") {
     const sessionId = readCookie(request, SESSION_COOKIE);
