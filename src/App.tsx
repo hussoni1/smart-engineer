@@ -198,6 +198,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
         <button className={active === "python" ? "active" : ""} onClick={() => onNavigate("/python")}>لغة بايثون</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => onNavigate("/courses/cpp/lessons/1")}>لغة C++</button>
+        <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer">إنستغرام المالك @h_sson6</a>
         {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => onNavigate("/admin")}>لوحة التحكم</button>}
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>المجتمع</button>
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>

@@ -215,3 +215,5 @@ body { background: radial-gradient(circle at 8% 4%, rgba(0,213,255,.18), transpa
 .featured-projects { border-color: rgba(103,232,255,.35); background: linear-gradient(105deg, rgba(26,76,104,.5), rgba(55,34,113,.5)); box-shadow: 0 12px 35px rgba(10,27,70,.35); }.featured-projects h2 { color: #f4f8ff; }.featured-projects p { color: #c1d0e5; }
 .lesson-heading { border-bottom-color: rgba(103,232,255,.2); }.lesson-heading p, .lesson-body p { color: #c7d3e8; }.quiz-card { background: linear-gradient(145deg, rgba(28,42,83,.94), rgba(14,22,50,.96)); border-color: rgba(103,232,255,.24); }.lesson-example, .lesson-practice { background: rgba(103,232,255,.08); border-color: rgba(103,232,255,.3); }.video-lesson { background: rgba(129,79,255,.1); border-color: rgba(169,133,255,.35); }
 @media (max-width: 700px) { .topbar nav { gap: 10px; overflow-x: auto; max-width: 52vw; }.hero { min-height: 400px; }.hero-figure { opacity: .5; } }
+
+.instagram-link { align-self: center; color: #ff9bcf; font-size: 11px; text-decoration: none; white-space: nowrap; transition: color .2s, transform .2s; }.instagram-link:hover { color: #fff; transform: translateY(-1px); }
