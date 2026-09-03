@@ -428,7 +428,7 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
 function LessonPage({ course, index, user, progress, results, onNavigate, onProgressRefresh }: { course: Course; index: number; user: User | null; progress: Progress[]; results: QuizResult[]; onNavigate: (path: string) => void; onProgressRefresh: () => Promise<void> }) {
   const lesson = course.lessons[index - 1] ?? course.lessons[0];
   const courseProgress = progress.find((item) => item.courseSlug === course.slug);
-  const allowed = (courseProgress?.completedLessons ?? 0) + 1 >= index;
+  const allowed = course.slug === "engineering-projects" || (courseProgress?.completedLessons ?? 0) + 1 >= index;
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
