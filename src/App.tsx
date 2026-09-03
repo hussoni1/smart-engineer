@@ -572,7 +572,7 @@ export default function App() {
   if (path === "/profile") return user ? <Profile user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (lessonMatch) {
     const course = courses.find((item) => item.slug === lessonMatch[1]);
-    if (course) return <LessonPage course={course} index={Number(lessonMatch[2])} user={user} progress={progress} results={results} onNavigate={navigate} onProgressRefresh={refresh} />;
+    if (course) return user ? <LessonPage course={course} index={Number(lessonMatch[2])} user={user} progress={progress} results={results} onNavigate={navigate} onProgressRefresh={refresh} /> : <Login onBack={() => navigate("/")} />;
   }
 
   return <Home user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
