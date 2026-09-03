@@ -141,7 +141,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
     <header className="topbar">
       <button className="brand" onClick={() => onNavigate("/")}>
         <span className="brand-mark">M</span>
-        <strong>بوابة المهندس الذكي</strong>
+        <strong>EngiMind — إنجي مايند</strong>
       </button>
       <nav>
         <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
@@ -244,7 +244,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
         </aside>
       </section>
       <footer>
-        <span>© 2026 بوابة المهندس الذكي</span>
+        <span>© 2026 EngiMind — إنجي مايند</span>
         <span>صُمّم للمهندسين الذين يبنون المستقبل</span>
       </footer>
     </main>
@@ -271,12 +271,12 @@ function Login({ onBack }: { onBack: () => void }) {
     <main className="auth-shell">
       <button className="brand auth-brand" onClick={onBack}>
         <span className="brand-mark">M</span>
-        <strong>بوابة المهندس الذكي</strong>
+        <strong>EngiMind — إنجي مايند</strong>
       </button>
       <section className="auth-card">
         <span className="hero-kicker">✦ ابدأ رحلتك الهندسية</span>
         <h1>{register ? "أنشئ حسابك" : "مرحبًا بك من جديد"}</h1>
-        <p>{register ? "أدخل معلوماتك للانضمام إلى بوابة المهندس الذكي." : "سجّل دخولك لمتابعة تقدمك ومساراتك التعليمية."}</p>
+        <p>{register ? "أدخل معلوماتك للانضمام إلى EngiMind — منصة الذكاء والهندسة." : "سجّل دخولك لمتابعة تقدمك ومساراتك التعليمية."}</p>
         <form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}>
           {register && <input value={name} onChange={(event) => setName(event.target.value)} placeholder="الاسم الكامل" required minLength={2} />}
           <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required />
