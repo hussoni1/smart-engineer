@@ -132,3 +132,11 @@ button:active { transform: scale(.97); }
   .course-card-copy .progress-track { margin-top: auto; }
   .hero-copy { padding-inline: 12px; }
 }
+
+/* Python page card separation */
+.python-page .course-grid { gap: 24px; }
+.python-page .course-card-art { min-height: 170px; }
+.python-page .course-card-copy { padding: 22px 20px 20px; min-height: 175px; gap: 8px; }
+.python-page .course-card-copy h3 { margin-top: 2px; padding-top: 4px; }
+.python-page .course-card-copy p { line-height: 2; }
+@media (max-width: 680px) { .python-page .course-grid { gap: 12px; }.python-page .course-card-art { min-height: 110px; }.python-page .course-card-copy { padding: 14px 11px; min-height: 150px; } }
