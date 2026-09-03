@@ -8,7 +8,10 @@ type QuizResult = { courseSlug: string; lessonIndex: number; quizScore: number; 
 type User = { id: string; name: string; email: string; avatarUrl?: string };
 
 async function startGoogleLogin() {
-  window.location.assign("/api/auth/google");
+  const response = await fetch("/api/auth/google/url?oauth_attempt=" + Date.now(), { credentials: "include", cache: "no-store" });
+  const data = await response.json() as { url?: string; error?: string };
+  if (!response.ok || !data.url) throw new Error(data.error || "تعذر بدء تسجيل الدخول باستخدام Google");
+  window.location.assign(data.url);
 }
 
 interface CustomCSSProperties extends CSSProperties {
