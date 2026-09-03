@@ -23,7 +23,6 @@ function json(data: unknown, status = 200, extraHeaders: Record<string, string> 
 function makeCookie(name: string, value: string, maxAge: number) { return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=None`; }
 function readCookie(request: Request, name: string) { return (request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))?.slice(name.length + 1) ? decodeURIComponent((request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))!.slice(name.length + 1)) : null; }
 function redirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ Location: location, "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); return new Response(null, { status: 302, headers }); }
-function htmlRedirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); const safeLocation = JSON.stringify(location); return new Response(`<!doctype html><meta http-equiv="refresh" content="0;url=${location}"><script>location.replace(${safeLocation})</script><p>جارٍ تحويلك إلى Google...</p>`, { status: 200, headers }); }
 function authError(message: string, stage: string, status = 502) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" }); headers.append("Set-Cookie", makeCookie(OAUTH_COOKIE, "", 0)); return new Response(`<!doctype html><meta charset="utf-8"><title>تعذر تسجيل الدخول</title><main dir="rtl" style="font-family:system-ui;max-width:680px;margin:80px auto;padding:24px"><h1>تعذر إكمال تسجيل الدخول</h1><p>${message}</p><small>مرحلة الخطأ: ${stage}</small><p><a href="/login">العودة إلى تسجيل الدخول</a></p></main>`, { status, headers }); }
 function randomId() { return crypto.randomUUID(); }
 
@@ -35,19 +34,6 @@ async function getCurrentUser(request: Request, env: AppEnv): Promise<User | nul
 }
 async function requireUser(request: Request, env: AppEnv) { const user = await getCurrentUser(request, env); if (!user) throw new Response(JSON.stringify({ error: "Login required" }), { status: 401, headers: { "Content-Type": "application/json" } }); return user; }
 
-async function startGoogle(request: Request, env: AppEnv) {
-  if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
-  const url = new URL(request.url);
-  const state = randomId();
-  const callback = `${url.origin}/api/auth/google/callback`;
-  const target = new URL("https://accounts.google.com/o/oauth2/v2/auth");
-  target.searchParams.set("client_id", env.GOOGLE_CLIENT_ID);
-  target.searchParams.set("redirect_uri", callback);
-  target.searchParams.set("response_type", "code");
-  target.searchParams.set("scope", "openid email profile");
-  target.searchParams.set("state", state);
-  return htmlRedirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
-}
 async function startGoogleUrl(request: Request, env: AppEnv) {
   if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
   const url = new URL(request.url);
@@ -100,7 +86,7 @@ type ResultRow = { courseSlug: string; lessonIndex: number; quizScore: number; q
 
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
-  if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogle(request, env);
+  if (url.pathname === "/api/auth/google" && request.method === "GET") return redirectWithCookies(`${url.origin}/login`, []);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname === "/api/auth/google/callback" && request.method === "GET") return finishGoogle(request, env);
   if (url.pathname === "/api/auth/me" && request.method === "GET") return json({ user: await getCurrentUser(request, env) });
