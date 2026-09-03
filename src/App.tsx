@@ -470,6 +470,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
           <div className="lesson-body">
             <span className="eyebrow">شرح المادة</span>
             {lesson.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            {course.slug === "python" && <div className="video-lesson"><div className="video-lesson-heading"><span className="eyebrow">شرح بالفيديو</span><strong>Mastering Python مع Elzero Web School</strong></div><div className="video-frame"><iframe src="https://www.youtube.com/embed/videoseries?list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs" title="Mastering Python - Elzero Web School" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><small>المصدر: <a href="https://www.youtube.com/playlist?list=PLDoPjvoNmBAyE_gei5d18qkfIe-Z8mocs" target="_blank" rel="noreferrer">Elzero Web School على YouTube</a> — شاهد الفيديو المرتبط بالموضوع ثم طبّق المثال بنفسك.</small></div>}
             <div className="lesson-example"><strong>مثال عملي</strong><pre><code>{lessonExample}</code></pre><small>جرّب تغيير القيم في المثال، ثم اكتب النتيجة التي تتوقع ظهورها قبل تشغيل الكود.</small></div>
             <div className="lesson-practice"><strong>تمرين قبل الاختبار</strong><p>اكتب تطبيقًا صغيرًا يستخدم الفكرة التي تعلمتها في هذا الدرس، ثم راجع خطواتك وتأكد من أن النتيجة منطقية.</p></div>
           </div>
