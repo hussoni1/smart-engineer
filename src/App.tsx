@@ -15,7 +15,7 @@ const cppQuiz = (topic: string, correct: string, explanation: string) => [
   { question: `ما الخطأ الشائع في ${topic}؟`, options: ["إهمال الأنواع والحدود وإدارة الموارد", "كتابة أسماء واضحة", "تقسيم المشكلة", "توثيق الافتراضات"], answer: 0, explanation: "إهمال الأنواع والحدود والموارد من أكثر أسباب أخطاء C++." }
 ];
 const cppVideos = [["DzwcA_sRIss", "قبل أن تبدأ كورس C++"], ["P97SYFJfbCc", "المتغيرات"], ["hCQogJSWXbY", "إدخال المستخدم والأنواع"], ["xr4NQADNbQc", "حلقات For"], ["a7_k9cBfz8I", "التعدادات والهياكل"], ["5inYS8cuLwU", "إكمال المستوى الأول"], ["eP5F7dzZ2lg", "لماذا نبدأ بـ C++؟"], ["90Mlgpr4L4c", "أحجام وأنواع البيانات"]];
-const projectVideos = [["PLibZWmM31JFLPcBkU0PCyBDMx3ySA_Z43", "نظام ري ذكي بالأردوينو"], ["PLZ6NgTaf40asjule58d4hWaqDr1HFWBkE", "متعقب شمسي"], ["PLg2p2Gc13nYqVXXdUAI8vjt-56foesi07", "محطة طقس"], ["PLN9tittQZUlRQs_XkxIUqE0oH9jrSZ_D1", "ذراع روبوتية"], ["", "روبوت تفادي العوائق"], ["", "منزل ذكي"]];
+const projectVideos = [["PLibZWmM31JFLPcBkU0PCyBDMx3ySA_Z43", "نظام ري ذكي بالأردوينو"], ["PLZ6NgTaf40asjule58d4hWaqDr1HFWBkE", "متعقب شمسي"], ["PLg2p2Gc13nYqVXXdUAI8vjt-56foesi07", "محطة طقس"], ["PLN9tittQZUlRQs_XkxIUqE0oH9jrSZ_D1", "ذراع روبوتية"], ["PLbBT0U3oxf5z7X7ujju2QhGUIJ9PoD6if", "روبوت تفادي العوائق"], ["PLsFyHm8kJsx0wNcgdb9mSZHqwQoC9HBlc", "منزل ذكي وأتمتة Arduino"]];
 
 interface CustomCSSProperties extends CSSProperties {
   "--progress"?: string;
