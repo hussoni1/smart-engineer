@@ -140,7 +140,9 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
     return json({ passed, score, total, ...getNextProgress(currentCompleted, lessonIndex, passed) });
   }
   if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/login" || url.pathname.endsWith(".html"))) {
-    const response = await env.ASSETS.fetch(request);
+    const freshUrl = new URL(request.url);
+    freshUrl.searchParams.set("_v", "20260903");
+    const response = await env.ASSETS.fetch(new Request(freshUrl, request));
     const headers = new Headers(response.headers);
     headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
     return new Response(response.body, { status: response.status, headers });
