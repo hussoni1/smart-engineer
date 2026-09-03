@@ -180,6 +180,8 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
 }
 
 function Login({ onBack }: { onBack: () => void }) {
+  const authError = new URLSearchParams(window.location.search).get("auth_error");
+  const authStage = new URLSearchParams(window.location.search).get("stage");
   return (
     <main className="auth-shell">
       <button className="brand auth-brand" onClick={onBack}>
@@ -190,6 +192,7 @@ function Login({ onBack }: { onBack: () => void }) {
         <span className="hero-kicker">✦ ابدأ رحلتك الهندسية</span>
         <h1>مرحبًا بك من جديد</h1>
         <p>سجّل دخولك لحفظ تقدمك، نتائج اختباراتك، ومساراتك التعليمية.</p>
+        {authError && <p role="alert" className="auth-error">{authError} ({authStage})</p>}
         <button className="google-button" onClick={() => void startGoogleLogin()}>
           <span>G</span> المتابعة باستخدام Google
         </button>
