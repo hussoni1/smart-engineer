@@ -114,7 +114,7 @@ async function finishGoogle(request: Request, env: AppEnv) {
 type ProgressRow = { userId: string; courseSlug: string; completedLessons: number; progress: number; lastActivity: number };
 type ResultRow = { courseSlug: string; lessonIndex: number; quizScore: number; quizTotal: number; quizPassed: number; attempts: number; updatedAt: number };
 
-async function emailAuth(request: Request, env: AppEnv, register: boolean) {
+async function emailAuthUnsafe(request: Request, env: AppEnv, register: boolean) {
   const body = await request.json() as { name?: string; email?: string; password?: string };
   const name = body.name?.trim() ?? "";
   const email = body.email?.trim().toLowerCase() ?? "";
@@ -136,6 +136,10 @@ async function emailAuth(request: Request, env: AppEnv, register: boolean) {
     return new Response(JSON.stringify({ user: { id: user.id, name: register ? name : existing?.name, email } }), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "Set-Cookie": makeCookie(SESSION_COOKIE, sessionId, 30 * 24 * 60 * 60) } });
   }
   return json({ error: register ? "أدخل الاسم والبريد وكلمة مرور من 8 أحرف على الأقل" : "أدخل بريدًا صحيحًا وكلمة المرور" }, 400);
+}
+async function emailAuth(request: Request, env: AppEnv, register: boolean) {
+  try { return await emailAuthUnsafe(request, env, register); }
+  catch (error) { console.error("email auth failed", error); return json({ error: "تعذر إنشاء الحساب من الخادم", stage: register ? "register" : "login" }, 500); }
 }
 
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
