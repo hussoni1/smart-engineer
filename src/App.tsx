@@ -286,6 +286,11 @@ function Login({ onBack }: { onBack: () => void }) {
 function Profile({ user, progress, results, onNavigate, onLogout }: { user: User; progress: Progress[]; results: QuizResult[]; onNavigate: (path: string) => void; onLogout: () => void }) {
   const average = results.length ? Math.round(results.reduce((sum, result) => sum + Math.round((result.quizScore / result.quizTotal) * 100), 0) / results.length) : 0;
   const done = progress.reduce((sum, item) => sum + item.completedLessons, 0);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [passwordBusy, setPasswordBusy] = useState(false);
+  const updatePassword = async (event: FormEvent) => { event.preventDefault(); setPasswordBusy(true); setPasswordMessage(""); try { await api("/api/auth/change-password", { method: "POST", body: JSON.stringify({ currentPassword, newPassword }) }); setPasswordMessage("تم تغيير كلمة المرور بنجاح"); setCurrentPassword(""); setNewPassword(""); } catch (error) { setPasswordMessage(error instanceof Error ? error.message : "تعذر تغيير كلمة المرور"); } finally { setPasswordBusy(false); } };
 
   return (
     <main className="profile-shell">
@@ -354,6 +359,10 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
             <div className="empty-state">أكمل اختبارًا ليظهر سجل نتائجك هنا.</div>
           )}
         </div>
+      </section>
+      <section className="profile-panel password-panel">
+        <div className="section-heading"><div><span className="eyebrow">أمان الحساب</span><h2>تغيير كلمة المرور</h2></div></div>
+        <form onSubmit={updatePassword} className="password-form"><input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} placeholder="كلمة المرور الحالية" required /><input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} placeholder="كلمة المرور الجديدة (8 أحرف على الأقل)" minLength={8} required /><button className="primary-button" type="submit" disabled={passwordBusy}>{passwordBusy ? "جارٍ الحفظ..." : "حفظ كلمة المرور الجديدة"}</button>{passwordMessage && <small className="password-message">{passwordMessage}</small>}</form>
       </section>
     </main>
   );

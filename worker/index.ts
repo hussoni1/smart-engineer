@@ -141,11 +141,21 @@ async function emailAuth(request: Request, env: AppEnv, register: boolean) {
   try { return await emailAuthUnsafe(request, env, register); }
   catch (error) { console.error("email auth failed", error); return json({ error: "تعذر إنشاء الحساب من الخادم", stage: register ? "register" : "login" }, 500); }
 }
+async function changePassword(request: Request, env: AppEnv) {
+  const user = await requireUser(request, env);
+  const body = await request.json() as { currentPassword?: string; newPassword?: string };
+  const row = await env.DB.prepare("SELECT password_hash AS passwordHash FROM users WHERE id = ?").bind(user.id).first<{ passwordHash?: string | null }>();
+  if (!row?.passwordHash || !(await passwordMatches(body.currentPassword ?? "", row.passwordHash))) return json({ error: "كلمة المرور الحالية غير صحيحة" }, 401);
+  if (!body.newPassword || body.newPassword.length < 8) return json({ error: "كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل" }, 400);
+  await env.DB.prepare("UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?").bind(await passwordHash(body.newPassword), Date.now(), user.id).run();
+  return json({ ok: true });
+}
 
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
   if (url.pathname === "/api/auth/register" && request.method === "POST") return emailAuth(request, env, true);
   if (url.pathname === "/api/auth/login" && request.method === "POST") return emailAuth(request, env, false);
+  if (url.pathname === "/api/auth/change-password" && request.method === "POST") return changePassword(request, env);
   if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogleLegacy(request, env);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname.startsWith("/api/auth/google/callback") && request.method === "GET") return finishGoogle(request, env);
