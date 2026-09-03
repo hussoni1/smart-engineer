@@ -179,6 +179,16 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
     await env.DB.prepare("DELETE FROM users WHERE id = ?").bind(userId).run();
     return json({ ok: true });
   }
+  if (url.pathname.startsWith("/api/admin/users/") && url.pathname.endsWith("/reset-password") && request.method === "POST") {
+    await requireAdmin(request, env);
+    const userId = url.pathname.split("/")[4];
+    const body = await request.json() as { newPassword?: string };
+    if (!userId || !body.newPassword || body.newPassword.length < 8) return json({ error: "كلمة المرور يجب أن تكون 8 أحرف على الأقل" }, 400);
+    const result = await env.DB.prepare("UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?").bind(await passwordHash(body.newPassword), Date.now(), userId).run();
+    if (!result.meta.changes) return json({ error: "العضو غير موجود" }, 404);
+    await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(userId).run();
+    return json({ ok: true });
+  }
   if (url.pathname === "/api/progress" && request.method === "GET") {
     const user = await requireUser(request, env);
     const rows = await env.DB.prepare("SELECT user_id AS userId, course_slug AS courseSlug, completed_lessons AS completedLessons, progress, last_activity AS lastActivity FROM course_progress WHERE user_id = ? ORDER BY last_activity DESC").bind(user.id).all<ProgressRow>();

@@ -159,3 +159,7 @@ button:active { transform: scale(.97); }
 .admin-row { display: grid; grid-template-columns: minmax(220px, 1.5fr) 130px 130px 140px 70px; gap: 16px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.025); }
 .admin-row strong, .admin-row small { display: block; }.admin-row strong { font-size: 13px; }.admin-row small { color: var(--muted); font-size: 10px; margin-top: 3px; }.admin-row > span { color: var(--muted); font-size: 11px; }.danger-button { border: 1px solid rgba(255,120,140,.35); color: #ff9aaa; background: rgba(255,80,110,.08); border-radius: 7px; padding: 7px 9px; font: inherit; font-size: 10px; cursor: pointer; }
 @media (max-width: 680px) { .admin-page { width: calc(100% - 28px); padding: 18px; margin-top: 28px; }.admin-row { grid-template-columns: 1fr 1fr; gap: 10px; }.admin-row > span { font-size: 10px; }.danger-button { justify-self: start; } }
+
+.reset-button { border: 1px solid rgba(109,231,255,.35); color: var(--cyan); background: rgba(109,231,255,.08); border-radius: 7px; padding: 7px 9px; font: inherit; font-size: 10px; cursor: pointer; }
+.admin-row { grid-template-columns: minmax(220px, 1.5fr) 120px 120px 120px 95px 70px; }
+@media (max-width: 680px) { .admin-row { grid-template-columns: 1fr 1fr; } }
