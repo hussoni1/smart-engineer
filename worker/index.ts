@@ -23,6 +23,7 @@ function json(data: unknown, status = 200, extraHeaders: Record<string, string> 
 function makeCookie(name: string, value: string, maxAge: number) { return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`; }
 function readCookie(request: Request, name: string) { return (request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))?.slice(name.length + 1) ? decodeURIComponent((request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))!.slice(name.length + 1)) : null; }
 function redirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ Location: location, "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); return new Response(null, { status: 302, headers }); }
+function htmlRedirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); const safeLocation = JSON.stringify(location); return new Response(`<!doctype html><meta http-equiv="refresh" content="0;url=${location}"><script>location.replace(${safeLocation})</script><p>جارٍ تحويلك إلى Google...</p>`, { status: 200, headers }); }
 function randomId() { return crypto.randomUUID(); }
 
 async function getCurrentUser(request: Request, env: AppEnv): Promise<User | null> {
@@ -44,7 +45,7 @@ async function startGoogle(request: Request, env: AppEnv) {
   target.searchParams.set("response_type", "code");
   target.searchParams.set("scope", "openid email profile");
   target.searchParams.set("state", state);
-  return redirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
+  return htmlRedirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
 }
 async function startGoogleUrl(request: Request, env: AppEnv) {
   if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
