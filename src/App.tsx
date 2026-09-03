@@ -77,9 +77,9 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
             <span>{user.name.slice(0, 1)}</span>{user.name}
           </button>
         ) : (
-          <a className="login-button" href="/api/auth/google">
+          <button className="login-button" onClick={() => { window.location.assign("/api/auth/google"); }}>
             تسجيل الدخول
-          </a>
+          </button>
         )}
         <button className="quiet-button" aria-label="البحث">⌕</button>
         <button className="quiet-button" aria-label="الإشعارات">◌</button>
@@ -186,9 +186,9 @@ function Login({ onBack }: { onBack: () => void }) {
         <h1>مرحبًا بك من جديد</h1>
         <p>سجّل دخولك لحفظ تقدمك، نتائج اختباراتك، ومساراتك التعليمية.</p>
         {authError && <p role="alert" className="auth-error">{authError} ({authStage})</p>}
-        <a className="google-button" href="/api/auth/google">
+        <button className="google-button" onClick={() => { window.location.assign("/api/auth/google"); }}>
           <span>G</span> المتابعة باستخدام Google
-        </a>
+        </button>
         <div className="auth-divider"><span>دخول آمن ومشفر</span></div>
         <button className="text-button" onClick={onBack}>العودة إلى الصفحة الرئيسية ←</button>
       </section>
