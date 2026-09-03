@@ -25,6 +25,21 @@ function readCookie(request: Request, name: string) { return (request.headers.ge
 function htmlRedirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); const safeLocation = JSON.stringify(location); return new Response(`<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${location}"><script>window.location.replace(${safeLocation})</script><p>جارٍ فتح Google...</p>`, { status: 200, headers }); }
 function authError(message: string, stage: string, status = 502) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" }); headers.append("Set-Cookie", makeCookie(OAUTH_COOKIE, "", 0)); return new Response(`<!doctype html><meta charset="utf-8"><title>تعذر تسجيل الدخول</title><main dir="rtl" style="font-family:system-ui;max-width:680px;margin:80px auto;padding:24px"><h1>تعذر إكمال تسجيل الدخول</h1><p>${message}</p><small>مرحلة الخطأ: ${stage}</small><p><a href="/login">العودة إلى تسجيل الدخول</a></p></main>`, { status, headers }); }
 function randomId() { return crypto.randomUUID(); }
+const encoder = new TextEncoder();
+function toBase64(bytes: ArrayBuffer) { return btoa(String.fromCharCode(...new Uint8Array(bytes))); }
+function fromBase64(value: string) { return Uint8Array.from(atob(value), (char) => char.charCodeAt(0)); }
+async function passwordHash(password: string, salt = crypto.getRandomValues(new Uint8Array(16))) {
+  const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 120000, hash: "SHA-256" }, key, 256);
+  return `120000:${toBase64(salt.buffer)}:${toBase64(bits)}`;
+}
+async function passwordMatches(password: string, stored: string) {
+  const [iterations, saltValue, expected] = stored.split(":");
+  if (!iterations || !saltValue || !expected) return false;
+  const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: fromBase64(saltValue), iterations: Number(iterations), hash: "SHA-256" }, key, 256);
+  return toBase64(bits) === expected;
+}
 
 async function getCurrentUser(request: Request, env: AppEnv): Promise<User | null> {
   const sessionId = readCookie(request, SESSION_COOKIE);
@@ -99,8 +114,34 @@ async function finishGoogle(request: Request, env: AppEnv) {
 type ProgressRow = { userId: string; courseSlug: string; completedLessons: number; progress: number; lastActivity: number };
 type ResultRow = { courseSlug: string; lessonIndex: number; quizScore: number; quizTotal: number; quizPassed: number; attempts: number; updatedAt: number };
 
+async function emailAuth(request: Request, env: AppEnv, register: boolean) {
+  const body = await request.json() as { name?: string; email?: string; password?: string };
+  const name = body.name?.trim() ?? "";
+  const email = body.email?.trim().toLowerCase() ?? "";
+  const password = body.password ?? "";
+  if ((!register || name.length >= 2) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && password.length >= 8) {
+    const existing = await env.DB.prepare("SELECT id, name, email, avatar_url AS avatarUrl, password_hash AS passwordHash FROM users WHERE email = ?").bind(email).first<User & { passwordHash?: string | null }>();
+    if (register) {
+      if (existing) return json({ error: "هذا البريد مستخدم مسبقًا" }, 409);
+      const now = Date.now();
+      const userId = randomId();
+      await env.DB.prepare("INSERT INTO users (id, google_id, name, email, avatar_url, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(userId, `email:${email}`, name, email, null, await passwordHash(password), now, now).run();
+    } else {
+      if (!existing?.passwordHash || !(await passwordMatches(password, existing.passwordHash))) return json({ error: "البريد أو كلمة المرور غير صحيحة" }, 401);
+    }
+    const user = await env.DB.prepare("SELECT id FROM users WHERE email = ?").bind(email).first<{ id: string }>();
+    if (!user) return json({ error: "تعذر إنشاء الحساب" }, 500);
+    const sessionId = randomId();
+    await env.DB.prepare("INSERT INTO sessions (id, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)").bind(sessionId, user.id, Date.now() + 30 * 24 * 60 * 60 * 1000, Date.now()).run();
+    return new Response(JSON.stringify({ user: { id: user.id, name: register ? name : existing?.name, email } }), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "Set-Cookie": makeCookie(SESSION_COOKIE, sessionId, 30 * 24 * 60 * 60) } });
+  }
+  return json({ error: register ? "أدخل الاسم والبريد وكلمة مرور من 8 أحرف على الأقل" : "أدخل بريدًا صحيحًا وكلمة المرور" }, 400);
+}
+
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
+  if (url.pathname === "/api/auth/register" && request.method === "POST") return emailAuth(request, env, true);
+  if (url.pathname === "/api/auth/login" && request.method === "POST") return emailAuth(request, env, false);
   if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogleLegacy(request, env);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname.startsWith("/api/auth/google/callback") && request.method === "GET") return finishGoogle(request, env);

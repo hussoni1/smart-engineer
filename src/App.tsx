@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, FormEvent } from "react";
 
 type Course = { slug: string; title: string; level: string; color: string; description: string; lessons: Lesson[] };
 type Lesson = { title: string; duration: string; summary: string; body: string[]; quiz: { question: string; options: string[]; answer: number; explanation: string }[] };
@@ -173,8 +173,21 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
 }
 
 function Login({ onBack }: { onBack: () => void }) {
-  const authError = new URLSearchParams(window.location.search).get("auth_error");
-  const authStage = new URLSearchParams(window.location.search).get("stage");
+  const [register, setRegister] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async (event: FormEvent) => {
+    event.preventDefault(); setBusy(true); setError("");
+    try {
+      const response = await fetch(register ? "/api/auth/register" : "/api/auth/login", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, password }) });
+      const data = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(data.error || "تعذر تسجيل الدخول");
+      window.location.assign("/profile");
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "تعذر تنفيذ الطلب"); } finally { setBusy(false); }
+  };
   return (
     <main className="auth-shell">
       <button className="brand auth-brand" onClick={onBack}>
@@ -183,12 +196,16 @@ function Login({ onBack }: { onBack: () => void }) {
       </button>
       <section className="auth-card">
         <span className="hero-kicker">✦ ابدأ رحلتك الهندسية</span>
-        <h1>مرحبًا بك من جديد</h1>
-        <p>سجّل دخولك لحفظ تقدمك، نتائج اختباراتك، ومساراتك التعليمية.</p>
-        {authError && <p role="alert" className="auth-error">{authError} ({authStage})</p>}
-        <button className="google-button" onClick={() => { window.location.assign("/api/auth/google"); }}>
-          <span>G</span> المتابعة باستخدام Google
-        </button>
+        <h1>{register ? "أنشئ حسابك" : "مرحبًا بك من جديد"}</h1>
+        <p>{register ? "أدخل معلوماتك للانضمام إلى بوابة المهندس الذكي." : "سجّل دخولك لمتابعة تقدمك ومساراتك التعليمية."}</p>
+        <form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}>
+          {register && <input value={name} onChange={(event) => setName(event.target.value)} placeholder="الاسم الكامل" required minLength={2} />}
+          <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required />
+          <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="كلمة المرور (8 أحرف على الأقل)" required minLength={8} />
+          {error && <p role="alert" style={{ color: "#ff9a9a" }}>{error}</p>}
+          <button className="primary-button" type="submit" disabled={busy}>{busy ? "جارٍ التنفيذ..." : register ? "إنشاء الحساب" : "تسجيل الدخول"}</button>
+        </form>
+        <button className="text-button" onClick={() => { setRegister(!register); setError(""); }}>{register ? "لديك حساب؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد"}</button>
         <div className="auth-divider"><span>دخول آمن ومشفر</span></div>
         <button className="text-button" onClick={onBack}>العودة إلى الصفحة الرئيسية ←</button>
       </section>
