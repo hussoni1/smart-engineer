@@ -137,6 +137,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       </button>
       <nav>
         <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
+        <button className={active === "python" ? "active" : ""} onClick={() => onNavigate("/python")}>لغة بايثون</button>
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>المجتمع</button>
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>
       </nav>
@@ -214,11 +215,6 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
             <path d="M4 65 C32 72, 46 40, 72 53 S112 66, 134 36 S167 52, 198 43 S227 47, 260 28 S278 25, 296 8 L296 90 L4 90Z" fill="rgba(182,240,0,.1)" />
           </svg>
         </aside>
-      </section>
-      <section className="learning-panel" style={{ maxWidth: 1224, margin: "18px auto", direction: "rtl" }}>
-        <span className="eyebrow">مسار خاص</span><h2>لغة بايثون من الصفر</h2>
-        <p>صفحة مستقلة تشرح بايثون خطوة بخطوة مع دروس واختبارات عملية.</p>
-        <button className="primary-button" onClick={() => onNavigate("/python")}>افتح صفحة لغة بايثون ←</button>
       </section>
       <section className="community-grid" id="community">
         <div className="community-panel">
