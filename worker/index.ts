@@ -46,6 +46,7 @@ async function startGoogleUrl(request: Request, env: AppEnv) {
   target.searchParams.set("response_type", "code");
   target.searchParams.set("scope", "openid email profile");
   target.searchParams.set("state", state);
+  target.searchParams.set("prompt", "select_account");
   return json({ url: target.toString() }, 200, { "Set-Cookie": makeCookie(OAUTH_COOKIE, state, 600) });
 }
 async function startGoogleLegacy(request: Request, env: AppEnv) {
@@ -59,6 +60,7 @@ async function startGoogleLegacy(request: Request, env: AppEnv) {
   target.searchParams.set("response_type", "code");
   target.searchParams.set("scope", "openid email profile");
   target.searchParams.set("state", state);
+  target.searchParams.set("prompt", "select_account");
   return redirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
 }
 async function finishGoogle(request: Request, env: AppEnv) {
