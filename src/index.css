@@ -105,3 +105,15 @@ button:active { transform: scale(.97); }
 .quiz-options label:hover { border-color: rgba(200,255,36,.45); background: rgba(200,255,36,.05); }
 @media (max-width: 680px) { .topbar, .dashboard-grid, .community-grid, .profile-header, .profile-metrics, .profile-content, .lesson-layout { width: calc(100% - 28px); }.topbar { height: 72px; }.hero { margin-top: 16px; border-radius: 18px; }.learning-panel { padding: 20px 15px; }.course-grid { gap: 10px; }.course-card-copy h3 { font-size: 12px; }.profile-header { padding: 20px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+
+/* Mobile navigation: keep all primary destinations reachable */
+@media (max-width: 680px) {
+  .topbar { width: calc(100% - 20px); gap: 6px; }
+  .brand strong { display: none; }
+  .topbar nav { display: flex; flex: 1; min-width: 0; max-width: none; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; direction: rtl; }
+  .topbar nav::-webkit-scrollbar { display: none; }
+  .topbar nav button { flex: 0 0 auto; white-space: nowrap; padding: 8px 9px; font-size: 9px; }
+  .topbar-actions { flex: 0 0 auto; }
+  .topbar-actions .quiet-button { display: none; }
+  .login-button { padding: 7px 9px; font-size: 9px; white-space: nowrap; }
+}
