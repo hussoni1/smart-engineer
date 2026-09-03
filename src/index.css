@@ -117,3 +117,18 @@ button:active { transform: scale(.97); }
   .topbar-actions .quiet-button { display: none; }
   .login-button { padding: 7px 9px; font-size: 9px; white-space: nowrap; }
 }
+
+/* Desktop spacing and card legibility */
+@media (min-width: 981px) {
+  .topbar nav { gap: 10px; padding: 6px 8px; }
+  .topbar nav button { padding-inline: 17px; }
+  .dashboard-grid { gap: 24px; }
+  .learning-panel { padding: 30px 26px; }
+  .course-grid { gap: 18px; grid-template-columns: repeat(4, minmax(170px, 1fr)); }
+  .course-card-art { min-height: 145px; }
+  .course-card-copy { min-height: 142px; display: flex; flex-direction: column; }
+  .course-card-copy h3 { min-height: 42px; white-space: normal; line-height: 1.65; margin-bottom: 7px; }
+  .course-card-copy p { height: auto; min-height: 48px; line-height: 1.8; margin-bottom: 10px; }
+  .course-card-copy .progress-track { margin-top: auto; }
+  .hero-copy { padding-inline: 12px; }
+}
