@@ -440,6 +440,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
   };
 
   const next = index < course.lessons.length ? `/courses/${course.slug}/lessons/${index + 1}` : "/profile";
+  const lessonExample = index === 1 ? 'name = "EngiMind"\nprint(f"مرحبًا بك في {name}")' : index === 2 ? 'scores = [80, 92, 75]\naverage = sum(scores) / len(scores)\nprint(average)' : index === 3 ? 'def greet(name):\n    return f"أهلًا {name}"\n\nprint(greet("علي"))' : 'class Project:\n    def __init__(self, title):\n        self.title = title\n\nproject = Project("مساعد ذكي")';
 
   return (
     <main className="lesson-shell">
@@ -467,7 +468,10 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
             <p>{lesson.summary}</p>
           </div>
           <div className="lesson-body">
+            <span className="eyebrow">شرح المادة</span>
             {lesson.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            <div className="lesson-example"><strong>مثال عملي</strong><pre><code>{lessonExample}</code></pre><small>جرّب تغيير القيم في المثال، ثم اكتب النتيجة التي تتوقع ظهورها قبل تشغيل الكود.</small></div>
+            <div className="lesson-practice"><strong>تمرين قبل الاختبار</strong><p>اكتب تطبيقًا صغيرًا يستخدم الفكرة التي تعلمتها في هذا الدرس، ثم راجع خطواتك وتأكد من أن النتيجة منطقية.</p></div>
           </div>
           <section className="quiz-card">
             <div className="quiz-heading">
