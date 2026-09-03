@@ -185,9 +185,9 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
           </button>
         </div>
         <div className="hero-figure">
-          <div className="figure-grid" />
-          <div className="figure-head">◉</div>
-          <div className="figure-body">M</div>
+          <div className="robot-orbit orbit-one" /><div className="robot-orbit orbit-two" />
+          <div className="ai-robot"><div className="robot-antenna" /><div className="robot-head"><i /><i /><span>AI</span></div><div className="robot-neck" /><div className="robot-body"><b /><b /><em>◈</em></div><div className="robot-arm arm-left" /><div className="robot-arm arm-right" /></div>
+          <div className="robot-label label-top">AI CORE <span>● متصل</span></div><div className="robot-label label-bottom">تعلم · حلّل · ابتكر</div>
         </div>
       </section>
       <section className="dashboard-grid" id="learning">
