@@ -19,7 +19,7 @@ export function getNextProgress(completedLessons: number, lessonIndex: number, p
   return { completedLessons: completed, progress: Math.round((completed / totalLessons) * 100) };
 }
 
-function json(data: unknown, status = 200) { return Response.json(data, { status, headers: { "Cache-Control": "no-store" } }); }
+function json(data: unknown, status = 200, extraHeaders: Record<string, string> = {}) { return Response.json(data, { status, headers: { "Cache-Control": "no-store", ...extraHeaders } }); }
 function makeCookie(name: string, value: string, maxAge: number) { return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Lax`; }
 function readCookie(request: Request, name: string) { return (request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))?.slice(name.length + 1) ? decodeURIComponent((request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))!.slice(name.length + 1)) : null; }
 function redirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ Location: location }); cookies.forEach((value) => headers.append("Set-Cookie", value)); return new Response(null, { status: 302, headers }); }
@@ -45,6 +45,19 @@ async function startGoogle(request: Request, env: AppEnv) {
   target.searchParams.set("scope", "openid email profile");
   target.searchParams.set("state", state);
   return redirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
+}
+async function startGoogleUrl(request: Request, env: AppEnv) {
+  if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
+  const url = new URL(request.url);
+  const state = randomId();
+  const callback = `${url.origin}/api/auth/google/callback`;
+  const target = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+  target.searchParams.set("client_id", env.GOOGLE_CLIENT_ID);
+  target.searchParams.set("redirect_uri", callback);
+  target.searchParams.set("response_type", "code");
+  target.searchParams.set("scope", "openid email profile");
+  target.searchParams.set("state", state);
+  return json({ url: target.toString() }, 200, { "Set-Cookie": makeCookie(OAUTH_COOKIE, state, 600) });
 }
 async function finishGoogle(request: Request, env: AppEnv) {
   const url = new URL(request.url);
@@ -76,6 +89,7 @@ type ResultRow = { courseSlug: string; lessonIndex: number; quizScore: number; q
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
   if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogle(request, env);
+  if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname === "/api/auth/google/callback" && request.method === "GET") return finishGoogle(request, env);
   if (url.pathname === "/api/auth/me" && request.method === "GET") return json({ user: await getCurrentUser(request, env) });
   if (url.pathname === "/api/auth/logout" && request.method === "POST") {
