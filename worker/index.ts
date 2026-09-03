@@ -24,7 +24,7 @@ function makeCookie(name: string, value: string, maxAge: number) { return `${nam
 function readCookie(request: Request, name: string) { return (request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))?.slice(name.length + 1) ? decodeURIComponent((request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))!.slice(name.length + 1)) : null; }
 function redirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ Location: location, "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); return new Response(null, { status: 302, headers }); }
 function htmlRedirectWithCookies(location: string, cookies: string[]) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, must-revalidate", Vary: "Cookie" }); cookies.forEach((value) => headers.append("Set-Cookie", value)); const safeLocation = JSON.stringify(location); return new Response(`<!doctype html><meta http-equiv="refresh" content="0;url=${location}"><script>location.replace(${safeLocation})</script><p>جارٍ تحويلك إلى Google...</p>`, { status: 200, headers }); }
-function authError(message: string, stage: string) { const target = new URL("/login", "https://h1111.co"); target.searchParams.set("auth_error", message); target.searchParams.set("stage", stage); return redirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, "", 0)]); }
+function authError(message: string, stage: string, status = 502) { const headers = new Headers({ "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" }); headers.append("Set-Cookie", makeCookie(OAUTH_COOKIE, "", 0)); return new Response(`<!doctype html><meta charset="utf-8"><title>تعذر تسجيل الدخول</title><main dir="rtl" style="font-family:system-ui;max-width:680px;margin:80px auto;padding:24px"><h1>تعذر إكمال تسجيل الدخول</h1><p>${message}</p><small>مرحلة الخطأ: ${stage}</small><p><a href="/login">العودة إلى تسجيل الدخول</a></p></main>`, { status, headers }); }
 function randomId() { return crypto.randomUUID(); }
 
 async function getCurrentUser(request: Request, env: AppEnv): Promise<User | null> {
@@ -68,7 +68,7 @@ async function finishGoogle(request: Request, env: AppEnv) {
   if (!code || !state || state !== readCookie(request, OAUTH_COOKIE)) return authError("تعذر التحقق من جلسة Google. امسح Cookies ثم حاول مرة أخرى.", "state");
   const callback = `${url.origin}/api/auth/google/callback`;
   const tokenResponse = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ code, client_id: env.GOOGLE_CLIENT_ID, client_secret: env.GOOGLE_CLIENT_SECRET, redirect_uri: callback, grant_type: "authorization_code" }) });
-  if (!tokenResponse.ok) return authError("رفض Google إكمال تسجيل الدخول. تحقق من إعدادات OAuth.", "token_exchange");
+  if (!tokenResponse.ok) return authError("رفض Google إكمال تسجيل الدخول. تحقق من GOOGLE_CLIENT_SECRET ورابط callback.", "token_exchange");
   const token = await tokenResponse.json() as { access_token?: string };
   if (!token.access_token) return json({ error: "Google token missing" }, 502);
   const profileResponse = await fetch("https://openidconnect.googleapis.com/v1/userinfo", { headers: { Authorization: `Bearer ${token.access_token}` } });
