@@ -198,7 +198,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
         <button className={active === "python" ? "active" : ""} onClick={() => onNavigate("/python")}>لغة بايثون</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => onNavigate("/courses/cpp/lessons/1")}>لغة C++</button>
-        <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer">إنستغرام المالك @h_sson6</a>
+        <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
         {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => onNavigate("/admin")}>لوحة التحكم</button>}
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>المجتمع</button>
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>

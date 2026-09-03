@@ -217,3 +217,5 @@ body { background: radial-gradient(circle at 8% 4%, rgba(0,213,255,.18), transpa
 @media (max-width: 700px) { .topbar nav { gap: 10px; overflow-x: auto; max-width: 52vw; }.hero { min-height: 400px; }.hero-figure { opacity: .5; } }
 
 .instagram-link { align-self: center; color: #ff9bcf; font-size: 11px; text-decoration: none; white-space: nowrap; transition: color .2s, transform .2s; }.instagram-link:hover { color: #fff; transform: translateY(-1px); }
+
+.instagram-link { display: grid; place-items: center; width: 30px; height: 30px; color: #ff9bcf; border: 1px solid rgba(255,155,207,.35); border-radius: 9px; background: rgba(255,155,207,.08); }.instagram-link svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }.instagram-link .instagram-dot { fill: currentColor; stroke: none; }.instagram-link:hover { color: #fff; border-color: #ff9bcf; background: rgba(255,155,207,.18); }
