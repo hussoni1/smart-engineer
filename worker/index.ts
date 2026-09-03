@@ -47,6 +47,19 @@ async function startGoogleUrl(request: Request, env: AppEnv) {
   target.searchParams.set("state", state);
   return json({ url: target.toString() }, 200, { "Set-Cookie": makeCookie(OAUTH_COOKIE, state, 600) });
 }
+async function startGoogleLegacy(request: Request, env: AppEnv) {
+  if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
+  const url = new URL(request.url);
+  const state = randomId();
+  const callback = `${url.origin}/api/auth/google/callback`;
+  const target = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+  target.searchParams.set("client_id", env.GOOGLE_CLIENT_ID);
+  target.searchParams.set("redirect_uri", callback);
+  target.searchParams.set("response_type", "code");
+  target.searchParams.set("scope", "openid email profile");
+  target.searchParams.set("state", state);
+  return redirectWithCookies(target.toString(), [makeCookie(OAUTH_COOKIE, state, 600)]);
+}
 async function finishGoogle(request: Request, env: AppEnv) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
@@ -86,7 +99,7 @@ type ResultRow = { courseSlug: string; lessonIndex: number; quizScore: number; q
 
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
-  if (url.pathname === "/api/auth/google" && request.method === "GET") return redirectWithCookies(`${url.origin}/login`, []);
+  if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogleLegacy(request, env);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname === "/api/auth/google/callback" && request.method === "GET") return finishGoogle(request, env);
   if (url.pathname === "/api/auth/me" && request.method === "GET") return json({ user: await getCurrentUser(request, env) });
@@ -124,6 +137,12 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
       await env.DB.prepare("INSERT INTO course_progress (user_id, course_slug, completed_lessons, progress, last_activity) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id, course_slug) DO UPDATE SET completed_lessons = MAX(course_progress.completed_lessons, excluded.completed_lessons), progress = MAX(course_progress.progress, excluded.progress), last_activity = excluded.last_activity").bind(user.id, courseSlug, completed, Math.round((completed / LESSONS_PER_COURSE) * 100), now).run();
     }
     return json({ passed, score, total, ...getNextProgress(currentCompleted, lessonIndex, passed) });
+  }
+  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/login" || url.pathname.endsWith(".html"))) {
+    const response = await env.ASSETS.fetch(request);
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    return new Response(response.body, { status: response.status, headers });
   }
   return null;
 }
