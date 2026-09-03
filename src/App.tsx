@@ -123,7 +123,11 @@ function CourseCard({ course, progress, onOpen }: { course: Course; progress?: P
     </button>
   );
 }
-
+function PythonPage({ user, progress, onNavigate, onLogout }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const course = courses.find((item) => item.slug === "python-from-zero")!;
+  const saved = progress.find((item) => item.courseSlug === course.slug);
+  return <main className="portal-shell"><Topbar user={user} active="learning" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مسار مستقل للمبتدئين</span><h1>لغة بايثون من الصفر</h1><p>صفحة تعليمية تبدأ بك من أول سطر برمجي وتوصلك إلى بناء برنامج صغير. ادرس الدروس بالترتيب وأجب عن خمسة أسئلة في نهاية كل درس.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">Py</span><span className="course-level">الدرس {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>{lesson.quiz.length} أسئلة · {lesson.duration}</span></div></button>)}</div><p className="panel-note">{saved ? `تقدمك الحالي في بايثون: ${saved.progress}%` : "سجّل الدخول لحفظ تقدمك في بايثون"}</p></section></main>;
+}
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
   return (
     <header className="topbar">
@@ -210,6 +214,11 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
             <path d="M4 65 C32 72, 46 40, 72 53 S112 66, 134 36 S167 52, 198 43 S227 47, 260 28 S278 25, 296 8 L296 90 L4 90Z" fill="rgba(182,240,0,.1)" />
           </svg>
         </aside>
+      </section>
+      <section className="learning-panel" style={{ maxWidth: 1224, margin: "18px auto", direction: "rtl" }}>
+        <span className="eyebrow">مسار خاص</span><h2>لغة بايثون من الصفر</h2>
+        <p>صفحة مستقلة تشرح بايثون خطوة بخطوة مع دروس واختبارات عملية.</p>
+        <button className="primary-button" onClick={() => onNavigate("/python")}>افتح صفحة لغة بايثون ←</button>
       </section>
       <section className="community-grid" id="community">
         <div className="community-panel">
@@ -530,6 +539,7 @@ export default function App() {
 
   if (loading) return <div className="loading-screen"><span className="brand-mark">M</span><p>جارٍ تجهيز بوابتك...</p></div>;
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
+  if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
   if (path === "/profile") return user ? <Profile user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (lessonMatch) {
     const course = courses.find((item) => item.slug === lessonMatch[1]);
