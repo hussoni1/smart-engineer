@@ -169,6 +169,10 @@ function PythonPage({ user, progress, onNavigate, onLogout }: { user: User | nul
   const saved = progress.find((item) => item.courseSlug === course.slug);
   return <main className="portal-shell python-page"><Topbar user={user} active="python" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مسار مستقل للمبتدئين</span><h1>لغة بايثون من الصفر</h1><p>صفحة تعليمية تبدأ بك من أول سطر برمجي وتوصلك إلى بناء برنامج صغير. ادرس الدروس بالترتيب وأجب عن خمسة أسئلة في نهاية كل درس.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">Py</span><span className="course-level">الدرس {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>{lesson.quiz.length} أسئلة · {lesson.duration}</span></div></button>)}</div><p className="panel-note">{saved ? `تقدمك الحالي في بايثون: ${saved.progress}%` : "سجّل الدخول لحفظ تقدمك في بايثون"}</p></section></main>;
 }
+function ProjectsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const course = courses.find((item) => item.slug === "engineering-projects")!;
+  return <main className="portal-shell"><Topbar user={user} active="projects" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel projects-page" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مختبر التنفيذ الهندسي</span><h1>أعلى مشاريع هندسية تطبيقية</h1><p>اختر مشروعًا، تعرّف على فكرته والأجهزة والمواد المطلوبة، شاهد طريقة التنفيذ، ثم اختبر فهمك.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">⚙</span><span className="course-level">مشروع {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>أجهزة ومواد · فيديو · {lesson.quiz.length} أسئلة</span></div></button>)}</div><p className="panel-note">{user ? "تقدمك محفوظ في حسابك" : "سجّل الدخول لفتح المشاريع وحفظ تقدمك"}</p></section></main>;
+}
 function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [members, setMembers] = useState<Array<{ id: string; name: string; email: string; createdAt: number; progress: number; quizCount: number }>>([]);
   const [error, setError] = useState("");
@@ -232,6 +236,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
           <div className="robot-label label-top">AI CORE <span>● متصل</span></div><div className="robot-label label-bottom">تعلم · حلّل · ابتكر</div>
         </div>
       </section>
+      <section className="featured-projects" aria-label="المشاريع الهندسية"><div><span className="eyebrow">مختبر عملي جديد</span><h2>أعلى مشاريع هندسية تطبيقية</h2><p>أجهزة ومواد، خطوات تنفيذ، وفيديو لكل مشروع.</p></div><button className="primary-button" onClick={() => onNavigate("/projects")}>استكشف المشاريع ←</button></section>
       <section className="dashboard-grid" id="learning">
         <aside className="side-panel progress-panel">
           <div className="panel-label">تقدمك اليوم <span>↗</span></div>
@@ -252,7 +257,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
             <button className="text-button">عرض الكل ←</button>
           </div>
           <div className="course-grid">
-            {courses.map((course) => (
+            {courses.filter((course) => course.slug !== "engineering-projects").map((course) => (
               <CourseCard key={course.slug} course={course} progress={saved.get(course.slug)} onOpen={() => onNavigate(`/courses/${course.slug}/lessons/1`)} />
             ))}
           </div>
@@ -604,6 +609,7 @@ export default function App() {
   if (loading) return <div className="loading-screen"><span className="brand-mark">M</span><p>جارٍ تجهيز بوابتك...</p></div>;
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
   if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/projects") return <ProjectsPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/admin") return user ? <AdminPage user={user} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (path === "/profile") return user ? <Profile user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (lessonMatch) {

@@ -197,3 +197,6 @@ button:active { transform: scale(.97); }
 .video-lesson small { display: block; margin-top: 11px; color: var(--muted); line-height: 1.8; }
 .video-lesson a { color: #ff9a9a; }
 @media (max-width: 600px) { .video-lesson-heading { display: block; }.video-lesson-heading strong { display: block; margin-top: 8px; } }
+.featured-projects { max-width: 1224px; margin: 26px auto 8px; padding: 22px 26px; display: flex; align-items: center; justify-content: space-between; gap: 20px; direction: rtl; border: 1px solid rgba(182,240,0,.26); border-radius: 16px; background: linear-gradient(105deg, rgba(182,240,0,.12), rgba(109,231,255,.06)); }
+.featured-projects h2 { margin: 6px 0; font-size: clamp(20px, 3vw, 30px); }.featured-projects p { margin: 0; color: var(--muted); font-size: 12px; }
+@media (max-width: 600px) { .featured-projects { display: block; margin: 18px 14px 8px; padding: 20px; }.featured-projects .primary-button { margin-top: 16px; width: 100%; } }
