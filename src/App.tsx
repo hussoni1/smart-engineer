@@ -145,7 +145,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <nav>
         <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
         <button className={active === "python" ? "active" : ""} onClick={() => onNavigate("/python")}>لغة بايثون</button>
-        {user?.email.toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => onNavigate("/admin")}>لوحة التحكم</button>}
+        {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => onNavigate("/admin")}>لوحة التحكم</button>}
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>المجتمع</button>
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>
       </nav>
@@ -310,6 +310,7 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
           <h1>{user.name}</h1>
           <p>{user.email}</p>
         </div>
+        {user.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className="secondary-button" onClick={() => onNavigate("/admin")}>إدارة الأعضاء</button>}
         <button className="secondary-button" onClick={onLogout}>تسجيل الخروج ↪</button>
       </section>
       <section className="profile-metrics">

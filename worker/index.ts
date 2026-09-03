@@ -49,7 +49,7 @@ async function getCurrentUser(request: Request, env: AppEnv): Promise<User | nul
   return row ?? null;
 }
 async function requireUser(request: Request, env: AppEnv) { const user = await getCurrentUser(request, env); if (!user) throw new Response(JSON.stringify({ error: "Login required" }), { status: 401, headers: { "Content-Type": "application/json" } }); return user; }
-async function requireAdmin(request: Request, env: AppEnv) { const user = await requireUser(request, env); if (user.email.toLowerCase() !== ADMIN_EMAIL) throw new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { "Content-Type": "application/json" } }); return user; }
+async function requireAdmin(request: Request, env: AppEnv) { const user = await requireUser(request, env); if (user.email.trim().toLowerCase() !== ADMIN_EMAIL) throw new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { "Content-Type": "application/json" } }); return user; }
 
 async function startGoogleUrl(request: Request, env: AppEnv) {
   if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
