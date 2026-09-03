@@ -7,13 +7,6 @@ type Progress = { userId: string; courseSlug: string; completedLessons: number; 
 type QuizResult = { courseSlug: string; lessonIndex: number; quizScore: number; quizTotal: number; quizPassed: number; attempts: number; updatedAt: number };
 type User = { id: string; name: string; email: string; avatarUrl?: string };
 
-async function startGoogleLogin() {
-  const response = await fetch("/api/auth/google/url?oauth_attempt=" + Date.now(), { credentials: "include", cache: "no-store" });
-  const data = await response.json() as { url?: string; error?: string };
-  if (!response.ok || !data.url) throw new Error(data.error || "تعذر بدء تسجيل الدخول باستخدام Google");
-  window.location.assign(data.url);
-}
-
 interface CustomCSSProperties extends CSSProperties {
   "--progress"?: string;
 }
@@ -84,9 +77,9 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
             <span>{user.name.slice(0, 1)}</span>{user.name}
           </button>
         ) : (
-          <button className="login-button" onClick={() => void startGoogleLogin()}>
+          <a className="login-button" href="/api/auth/google">
             تسجيل الدخول
-          </button>
+          </a>
         )}
         <button className="quiet-button" aria-label="البحث">⌕</button>
         <button className="quiet-button" aria-label="الإشعارات">◌</button>
@@ -193,9 +186,9 @@ function Login({ onBack }: { onBack: () => void }) {
         <h1>مرحبًا بك من جديد</h1>
         <p>سجّل دخولك لحفظ تقدمك، نتائج اختباراتك، ومساراتك التعليمية.</p>
         {authError && <p role="alert" className="auth-error">{authError} ({authStage})</p>}
-        <button className="google-button" onClick={() => void startGoogleLogin()}>
+        <a className="google-button" href="/api/auth/google">
           <span>G</span> المتابعة باستخدام Google
-        </button>
+        </a>
         <div className="auth-divider"><span>دخول آمن ومشفر</span></div>
         <button className="text-button" onClick={onBack}>العودة إلى الصفحة الرئيسية ←</button>
       </section>
@@ -309,7 +302,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
 
   const submitQuiz = async () => {
     if (!user) {
-      void startGoogleLogin();
+      window.location.assign("/api/auth/google");
       return;
     }
     setSubmitted(true);
