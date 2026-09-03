@@ -219,3 +219,9 @@ body { background: radial-gradient(circle at 8% 4%, rgba(0,213,255,.18), transpa
 .instagram-link { align-self: center; color: #ff9bcf; font-size: 11px; text-decoration: none; white-space: nowrap; transition: color .2s, transform .2s; }.instagram-link:hover { color: #fff; transform: translateY(-1px); }
 
 .instagram-link { display: grid; place-items: center; width: 30px; height: 30px; color: #ff9bcf; border: 1px solid rgba(255,155,207,.35); border-radius: 9px; background: rgba(255,155,207,.08); }.instagram-link svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }.instagram-link .instagram-dot { fill: currentColor; stroke: none; }.instagram-link:hover { color: #fff; border-color: #ff9bcf; background: rgba(255,155,207,.18); }
+
+/* iPhone Safari compatibility */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: none; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+@supports (-webkit-touch-callout: none) { .portal-shell, .profile-shell, .lesson-shell { min-height: -webkit-fill-available; } .topbar { padding-top: env(safe-area-inset-top); } .hero, .learning-panel, .side-panel, .community-panel { -webkit-backdrop-filter: none; } }

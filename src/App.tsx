@@ -570,7 +570,7 @@ export default function App() {
 
   const navigate = (next: string) => {
     window.history.pushState({}, "", next);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.dispatchEvent(new Event("popstate"));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
