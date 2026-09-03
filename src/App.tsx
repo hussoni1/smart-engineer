@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
+import irrigationImage from "./assets/projects/irrigation.jpg";
+import solarImage from "./assets/projects/solar.jpg";
+import weatherImage from "./assets/projects/weather.jpg";
+import robotImage from "./assets/projects/robot.jpg";
+import homeImage from "./assets/projects/home.jpg";
 
 type Course = { slug: string; title: string; level: string; color: string; description: string; lessons: Lesson[] };
 type Lesson = { title: string; duration: string; summary: string; body: string[]; quiz: { question: string; options: string[]; answer: number; explanation: string }[] };
@@ -16,6 +21,7 @@ const cppQuiz = (topic: string, correct: string, explanation: string) => [
 ];
 const cppVideos = [["DzwcA_sRIss", "قبل أن تبدأ كورس C++"], ["P97SYFJfbCc", "المتغيرات"], ["hCQogJSWXbY", "إدخال المستخدم والأنواع"], ["xr4NQADNbQc", "حلقات For"], ["a7_k9cBfz8I", "التعدادات والهياكل"], ["5inYS8cuLwU", "إكمال المستوى الأول"], ["eP5F7dzZ2lg", "لماذا نبدأ بـ C++؟"], ["90Mlgpr4L4c", "أحجام وأنواع البيانات"]];
 const projectVideos = [["PLibZWmM31JFLPcBkU0PCyBDMx3ySA_Z43", "نظام ري ذكي بالأردوينو"], ["PLZ6NgTaf40asjule58d4hWaqDr1HFWBkE", "متعقب شمسي"], ["PLg2p2Gc13nYqVXXdUAI8vjt-56foesi07", "محطة طقس"], ["PLN9tittQZUlRQs_XkxIUqE0oH9jrSZ_D1", "ذراع روبوتية"], ["PLbBT0U3oxf5z7X7ujju2QhGUIJ9PoD6if", "روبوت تفادي العوائق"], ["PLsFyHm8kJsx0wNcgdb9mSZHqwQoC9HBlc", "منزل ذكي وأتمتة Arduino"]];
+const projectImages = [irrigationImage, solarImage, weatherImage, robotImage, robotImage, homeImage];
 
 interface CustomCSSProperties extends CSSProperties {
   "--progress"?: string;
@@ -171,7 +177,7 @@ function PythonPage({ user, progress, onNavigate, onLogout }: { user: User | nul
 }
 function ProjectsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const course = courses.find((item) => item.slug === "engineering-projects")!;
-  return <main className="portal-shell"><Topbar user={user} active="projects" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel projects-page" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مختبر التنفيذ الهندسي</span><h1>أعلى مشاريع هندسية تطبيقية</h1><p>اختر مشروعًا، تعرّف على فكرته والأجهزة والمواد المطلوبة، شاهد طريقة التنفيذ، ثم اختبر فهمك.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">⚙</span><span className="course-level">مشروع {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>أجهزة ومواد · فيديو · {lesson.quiz.length} أسئلة</span></div></button>)}</div><p className="panel-note">{user ? "تقدمك محفوظ في حسابك" : "سجّل الدخول لفتح المشاريع وحفظ تقدمك"}</p></section></main>;
+  return <main className="portal-shell"><Topbar user={user} active="projects" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel projects-page" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مختبر التنفيذ الهندسي</span><h1>أعلى مشاريع هندسية تطبيقية</h1><p>اختر مشروعًا، تعرّف على فكرته والأجهزة والمواد المطلوبة، شاهد طريقة التنفيذ، ثم اختبر فهمك.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card project-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><img src={projectImages[index]} alt={lesson.title} /><span className="course-level">مشروع {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>أجهزة ومواد · فيديو · {lesson.quiz.length} أسئلة</span></div></button>)}</div><p className="panel-note">{user ? "تقدمك محفوظ في حسابك" : "سجّل الدخول لفتح المشاريع وحفظ تقدمك"}</p></section></main>;
 }
 function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [members, setMembers] = useState<Array<{ id: string; name: string; email: string; createdAt: number; progress: number; quizCount: number }>>([]);
