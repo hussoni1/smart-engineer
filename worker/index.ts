@@ -7,7 +7,8 @@ type AppEnv = Env & {
 type User = { id: string; name: string; email: string; avatarUrl?: string | null };
 const SESSION_COOKIE = "smart_session";
 const OAUTH_COOKIE = "smart_oauth_state";
-const COURSE_SLUGS = new Set(["renewable-energy", "python-engineering", "bim", "mechatronics"]);
+const ADMIN_EMAIL = "altiahussoni@gmail.com";
+const COURSE_SLUGS = new Set(["renewable-energy", "python-engineering", "bim", "mechatronics", "ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero"]);
 const LESSONS_PER_COURSE = 3;
 
 export function isValidQuizInput(courseSlug: string, lessonIndex: number, score: number, total: number) {
@@ -48,6 +49,7 @@ async function getCurrentUser(request: Request, env: AppEnv): Promise<User | nul
   return row ?? null;
 }
 async function requireUser(request: Request, env: AppEnv) { const user = await getCurrentUser(request, env); if (!user) throw new Response(JSON.stringify({ error: "Login required" }), { status: 401, headers: { "Content-Type": "application/json" } }); return user; }
+async function requireAdmin(request: Request, env: AppEnv) { const user = await requireUser(request, env); if (user.email.toLowerCase() !== ADMIN_EMAIL) throw new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { "Content-Type": "application/json" } }); return user; }
 
 async function startGoogleUrl(request: Request, env: AppEnv) {
   if (!env.GOOGLE_CLIENT_ID) return json({ error: "Google OAuth is not configured" }, 503);
@@ -164,6 +166,18 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
     const sessionId = readCookie(request, SESSION_COOKIE);
     if (sessionId) await env.DB.prepare("DELETE FROM sessions WHERE id = ?").bind(sessionId).run();
     return new Response(JSON.stringify({ success: true }), { headers: { "Content-Type": "application/json", "Set-Cookie": makeCookie(SESSION_COOKIE, "", 0) } });
+  }
+  if (url.pathname === "/api/admin/users" && request.method === "GET") {
+    await requireAdmin(request, env);
+    const rows = await env.DB.prepare("SELECT u.id, u.name, u.email, u.created_at AS createdAt, COALESCE((SELECT SUM(p.progress) FROM course_progress p WHERE p.user_id = u.id), 0) AS progress, (SELECT COUNT(*) FROM quiz_results q WHERE q.user_id = u.id) AS quizCount FROM users u ORDER BY u.created_at DESC").all<{ id: string; name: string; email: string; createdAt: number; progress: number; quizCount: number }>();
+    return json(rows.results);
+  }
+  if (url.pathname.startsWith("/api/admin/users/") && url.pathname.endsWith("/delete") && request.method === "POST") {
+    await requireAdmin(request, env);
+    const userId = url.pathname.split("/")[4];
+    if (!userId) return json({ error: "Invalid user" }, 400);
+    await env.DB.prepare("DELETE FROM users WHERE id = ?").bind(userId).run();
+    return json({ ok: true });
   }
   if (url.pathname === "/api/progress" && request.method === "GET") {
     const user = await requireUser(request, env);

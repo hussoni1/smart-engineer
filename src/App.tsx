@@ -128,6 +128,13 @@ function PythonPage({ user, progress, onNavigate, onLogout }: { user: User | nul
   const saved = progress.find((item) => item.courseSlug === course.slug);
   return <main className="portal-shell python-page"><Topbar user={user} active="python" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مسار مستقل للمبتدئين</span><h1>لغة بايثون من الصفر</h1><p>صفحة تعليمية تبدأ بك من أول سطر برمجي وتوصلك إلى بناء برنامج صغير. ادرس الدروس بالترتيب وأجب عن خمسة أسئلة في نهاية كل درس.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">Py</span><span className="course-level">الدرس {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>{lesson.quiz.length} أسئلة · {lesson.duration}</span></div></button>)}</div><p className="panel-note">{saved ? `تقدمك الحالي في بايثون: ${saved.progress}%` : "سجّل الدخول لحفظ تقدمك في بايثون"}</p></section></main>;
 }
+function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const [members, setMembers] = useState<Array<{ id: string; name: string; email: string; createdAt: number; progress: number; quizCount: number }>>([]);
+  const [error, setError] = useState("");
+  useEffect(() => { api<typeof members>("/api/admin/users").then(setMembers).catch((caught) => setError(caught instanceof Error ? caught.message : "تعذر تحميل الأعضاء")); }, []);
+  const remove = async (id: string) => { if (!window.confirm("هل تريد حذف هذا العضو؟")) return; await api(`/api/admin/users/${id}/delete`, { method: "POST" }); setMembers((current) => current.filter((member) => member.id !== id)); };
+  return <main className="portal-shell"><Topbar user={user} active="admin" onNavigate={onNavigate} onLogout={onLogout} /><section className="admin-page"><div className="section-heading"><div><span className="eyebrow">إدارة المنصة</span><h1>الأعضاء</h1></div><span className="result-count">{members.length} أعضاء</span></div>{error ? <div className="empty-state">{error}</div> : <div className="admin-table">{members.map((member) => <article key={member.id} className="admin-row"><div><strong>{member.name}</strong><small>{member.email}</small></div><span>{Math.round(member.progress)}% تقدم</span><span>{member.quizCount} اختبارات</span><span>{new Date(member.createdAt).toLocaleDateString("ar-IQ")}</span><button className="danger-button" onClick={() => void remove(member.id)}>حذف</button></article>)}</div>}</section></main>;
+}
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
   return (
     <header className="topbar">
@@ -138,6 +145,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <nav>
         <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
         <button className={active === "python" ? "active" : ""} onClick={() => onNavigate("/python")}>لغة بايثون</button>
+        {user?.email.toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => onNavigate("/admin")}>لوحة التحكم</button>}
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>المجتمع</button>
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>
       </nav>
@@ -545,6 +553,7 @@ export default function App() {
   if (loading) return <div className="loading-screen"><span className="brand-mark">M</span><p>جارٍ تجهيز بوابتك...</p></div>;
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
   if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/admin") return user ? <AdminPage user={user} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (path === "/profile") return user ? <Profile user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (lessonMatch) {
     const course = courses.find((item) => item.slug === lessonMatch[1]);
