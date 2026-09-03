@@ -30,8 +30,8 @@ function toBase64(bytes: ArrayBuffer) { return btoa(String.fromCharCode(...new U
 function fromBase64(value: string) { return Uint8Array.from(atob(value), (char) => char.charCodeAt(0)); }
 async function passwordHash(password: string, salt = crypto.getRandomValues(new Uint8Array(16))) {
   const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 120000, hash: "SHA-256" }, key, 256);
-  return `120000:${toBase64(salt.buffer)}:${toBase64(bits)}`;
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, key, 256);
+  return `100000:${toBase64(salt.buffer)}:${toBase64(bits)}`;
 }
 async function passwordMatches(password: string, stored: string) {
   const [iterations, saltValue, expected] = stored.split(":");
