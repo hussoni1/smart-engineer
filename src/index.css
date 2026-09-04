@@ -78,6 +78,7 @@ button:active { transform: scale(.97); }
 .dashboard-grid { margin-top: 22px; gap: 20px; }
 .side-panel, .learning-panel, .community-panel, .profile-panel { border: 1px solid var(--line); box-shadow: 0 16px 45px rgba(0,0,0,.15); background: linear-gradient(145deg, rgba(26,25,51,.9), rgba(11,12,26,.92)); }
 .learning-panel, .side-panel, .community-panel { border-radius: 18px; }
+.learning-panel { min-width: 0; overflow: hidden; }
 .learning-panel { padding: 26px 22px; }
 .section-heading h2 { font-size: 27px; }
 .course-grid { gap: 14px; }
@@ -124,7 +125,7 @@ button:active { transform: scale(.97); }
   .topbar nav button { padding-inline: 17px; }
   .dashboard-grid { gap: 24px; }
   .learning-panel { padding: 30px 26px; }
-  .course-grid { gap: 18px; grid-template-columns: repeat(4, minmax(170px, 1fr)); }
+  .course-grid { gap: 18px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .course-card-art { min-height: 145px; }
   .course-card-copy { min-height: 142px; display: flex; flex-direction: column; }
   .course-card-copy h3 { min-height: 42px; white-space: normal; line-height: 1.65; margin-bottom: 7px; }
