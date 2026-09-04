@@ -226,3 +226,66 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: none; }
 button, a, input { -webkit-tap-highlight-color: transparent; }
 @supports (-webkit-touch-callout: none) { .portal-shell, .profile-shell, .lesson-shell { min-height: -webkit-fill-available; } .topbar { padding-top: env(safe-area-inset-top); } .hero, .learning-panel, .side-panel, .community-panel { -webkit-backdrop-filter: none; } }
+
+
+/* Desktop refinement pass: clearer hierarchy, calmer neon accents, and stronger interaction states. */
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+.portal-shell, .profile-shell, .lesson-shell { padding-inline: clamp(18px, 3vw, 42px); }
+.topbar { max-width: 1280px; height: 84px; gap: clamp(14px, 2.5vw, 34px); }
+.topbar nav { gap: clamp(15px, 2.2vw, 30px); flex: 1; justify-content: center; }
+.topbar nav button, .instagram-link { font-size: 12px; }
+.topbar-actions { flex-shrink: 0; }
+.quiet-button { transition: color .18s, background .18s, transform .18s; border-radius: 8px; }
+.quiet-button:hover { color: #b6f000; background: rgba(182,240,0,.08); transform: translateY(-1px); }
+.brand { transition: opacity .18s, transform .18s; }
+.brand:hover { opacity: .9; transform: translateY(-1px); }
+.hero { max-width: 1280px; min-height: 468px; padding-inline: clamp(7%, 10vw, 13%); box-shadow: 0 24px 70px rgba(4,2,18,.28); }
+.hero-copy { max-width: 530px; }
+.hero p { color: #c0bacb; }
+.primary-button { min-height: 44px; padding-inline: 22px; }
+.primary-button:active, .secondary-button:active, .login-button:active { transform: scale(.97); }
+.featured-projects { max-width: 1280px; margin: 18px auto; padding: 22px 28px; border: 1px solid rgba(152,111,255,.2); border-radius: 14px; background: linear-gradient(100deg, rgba(20,42,72,.85), rgba(29,13,65,.72)); display: flex; align-items: center; justify-content: space-between; gap: 22px; direction: rtl; }
+.featured-projects h2 { margin: 4px 0 2px; font-size: clamp(20px, 2.2vw, 28px); letter-spacing: -.04em; }
+.featured-projects p { margin: 0; color: #aaa4b7; font-size: 11px; }
+.dashboard-grid, .community-grid { max-width: 1280px; }
+.side-panel, .learning-panel, .community-panel { box-shadow: 0 12px 30px rgba(3,2,15,.18); }
+.learning-panel { padding: 26px 22px; }
+.section-heading { margin-bottom: 20px; }
+.course-grid { gap: 12px; }
+.course-card { box-shadow: 0 8px 18px rgba(4,2,18,.18); }
+.course-card:hover { box-shadow: 0 12px 26px rgba(4,2,18,.34); }
+.course-card-copy p { color: #aaa4b7; }
+.course-card-copy > span { color: #a8a1b6; }
+.project-grid article { transition: transform .2s, border-color .2s, background .2s; }
+.project-grid article:hover { transform: translateY(-3px); border-color: rgba(182,240,0,.45); background: linear-gradient(140deg, rgba(75,42,128,.5), rgba(12,12,30,.9)); }
+footer { max-width: 1280px; }
+@media (max-width: 980px) {
+  .topbar { height: auto; min-height: 78px; flex-wrap: wrap; padding-block: 14px; }
+  .topbar nav { order: 3; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; padding-bottom: 3px; }
+  .hero { min-height: 430px; padding-inline: 7%; }
+  .hero-figure { left: 2%; transform: scale(.86); transform-origin: left bottom; }
+  .dashboard-grid { grid-template-columns: 210px minmax(0, 1fr); }
+  .streak-panel { display: none; }
+  .course-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .portal-shell, .profile-shell, .lesson-shell { padding-inline: 14px; }
+  .topbar { gap: 12px; }
+  .brand strong { font-size: 12px; }
+  .topbar-actions { gap: 4px; }
+  .hero { min-height: 540px; padding: 40px 24px 250px; align-items: flex-start; }
+  .hero-copy { max-width: none; }
+  .hero h1 { font-size: 46px; }
+  .hero-figure { left: 50%; bottom: -70px; transform: translateX(-50%) scale(.65); transform-origin: center bottom; }
+  .featured-projects { align-items: flex-start; flex-direction: column; padding: 20px; }
+  .dashboard-grid, .community-grid { grid-template-columns: 1fr; }
+  .streak-panel { display: block; }
+  .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  footer { flex-direction: column; gap: 8px; }
+}
+@media (max-width: 440px) {
+  .course-grid { grid-template-columns: 1fr; }
+  .topbar nav { gap: 18px; }
+  .topbar nav button, .instagram-link { font-size: 11px; }
+}

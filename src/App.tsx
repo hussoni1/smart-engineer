@@ -232,7 +232,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
         <div className="hero-copy">
           <span className="hero-kicker">✦ مختبر المستقبل الهندسي</span>
           <h1>طوّر مهاراتك<br /><em>الهندسية</em></h1>
-          <p>تعلّم، طبّق، وشارك أفكارك مع مجتمع يصنع حلول الغد.</p>
+          <p>تعلّم بوضوح، طبّق عمليًا، وشارك أفكارك مع مجتمع يصنع حلول الغد.</p>
           <button className="primary-button" onClick={() => document.getElementById("learning")?.scrollIntoView({ behavior: "smooth" })}>
             ابدأ رحلتك <span>←</span>
           </button>
@@ -261,7 +261,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
         <div className="learning-panel">
           <div className="section-heading">
             <div><span className="eyebrow">اختر مهارتك التالية</span><h2>مسارات التعلم</h2></div>
-            <button className="text-button">عرض الكل ←</button>
+            <button className="text-button" onClick={() => document.getElementById("learning")?.scrollIntoView({ behavior: "smooth" })}>استعرض الكل ←</button>
           </div>
           <div className="course-grid">
             {courses.filter((course) => course.slug !== "engineering-projects").map((course) => (
