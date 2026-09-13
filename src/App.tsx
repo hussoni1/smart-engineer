@@ -202,6 +202,9 @@ const courseEnglish: Record<string, { title: string; description: string }> = {
 };
 
 const aiLearningSlugs = new Set(["ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai"]);
+const courseStudyOrder = ["python-from-zero", "ai-foundations", "ai-engineering", "ai-technology-engineering", "machine-learning", "deep-learning", "computer-vision", "nlp-generative-ai", "mlops-ai-security", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai", "engineering-projects"];
+const advancedTrackOrder = ["ai-math", "algorithms-data-structures", "data-engineering", "end-to-end-projects", "computer-vision-pro", "nlp-generative-pro", "mlops-deployment", "responsible-ai-security", "ai-research-methods"];
+const byStudyOrder = <T extends { slug: string }>(items: T[], order: string[]) => [...items].sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug));
 const learningRoadmap = [
   { order: "01", title: "Python والبرمجة", en: "Python & Programming", prereq: "لا توجد متطلبات · No prerequisites", outcome: "اكتب برامج وأدوات تحليل بسيطة." },
   { order: "02", title: "الرياضيات والاحتمالات", en: "Math & Probability", prereq: "Python أساسيات · Python basics", outcome: "افهم المتجهات والاحتمال ودوال الخسارة." },
@@ -380,7 +383,7 @@ type StudentProject = { id: string; title: string; description: string; tools: s
 
 function AdvancedTracksPage({ user, onNavigate, onLogout, slug }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void; slug?: string }) {
   const selected = slug ? advancedTracks.find((track) => track.slug === slug) : undefined;
-  return <main className="portal-shell"><Topbar user={user} active="learning" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Advanced curriculum · المنهج المتقدم</span><h1>{selected ? selected.title : "تخصصات هندسة الذكاء الاصطناعي"}</h1><p>{selected ? selected.description : "مسارات إضافية من الأساس الأكاديمي إلى المشاريع والبحث والنشر."}</p></div><button className="secondary-button" onClick={() => onNavigate("/")}>← صفحة التعلم</button></div>{selected ? <section className="workspace-card track-detail"><span className="course-chip cyan">Prerequisite · المتطلب: {selected.prerequisites}</span><h2>{selected.en}</h2><div className="track-lessons">{selected.lessons.map((lesson, index) => <article key={lesson}><b>{String(index + 1).padStart(2, "0")}</b><span>{lesson}</span></article>)}</div><div className="track-project"><b>Capstone project · مشروع تطبيقي</b><p>{selected.project}</p></div></section> : <div className="advanced-track-grid">{advancedTracks.map((track) => <button className="workspace-card advanced-track-card" key={track.slug} onClick={() => onNavigate(`/tracks/${track.slug}`)}><span className="course-chip cyan">{track.prerequisites}</span><h2>{track.title}</h2><small>{track.en}</small><p>{track.description}</p><strong>3 lessons · 3 دروس</strong></button>)}</div>}</section></main>;
+  return <main className="portal-shell"><Topbar user={user} active="learning" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Advanced curriculum · المنهج المتقدم</span><h1>{selected ? selected.title : "تخصصات هندسة الذكاء الاصطناعي"}</h1><p>{selected ? selected.description : "مسارات إضافية مرتبة من الأساس الأكاديمي إلى المشاريع والبحث والنشر."}</p></div><button className="secondary-button" onClick={() => onNavigate("/")}>← صفحة التعلم</button></div>{selected ? <section className="workspace-card track-detail"><span className="course-chip cyan">Prerequisite · المتطلب: {selected.prerequisites}</span><h2>{selected.en}</h2><div className="track-lessons">{selected.lessons.map((lesson, index) => <article key={lesson}><b>{String(index + 1).padStart(2, "0")}</b><span>{lesson}</span></article>)}</div><div className="track-project"><b>Capstone project · مشروع تطبيقي</b><p>{selected.project}</p></div></section> : <div className="advanced-track-grid">{byStudyOrder(advancedTracks, advancedTrackOrder).map((track) => <button className="workspace-card advanced-track-card" key={track.slug} onClick={() => onNavigate(`/tracks/${track.slug}`)}><span className="course-chip cyan">{track.prerequisites}</span><h2>{track.title}</h2><small>{track.en}</small><p>{track.description}</p><strong>3 lessons · 3 دروس</strong></button>)}</div>}</section></main>;
 }
 
 function GlossaryPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
@@ -491,9 +494,9 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
 function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void; selectedGoal?: string }) {
   const saved = new Map(progress.map((item) => [item.courseSlug, item]));
   const calcProgress = user ? Math.round(progress.reduce((sum, item) => sum + item.progress, 0) / Math.max(progress.length, 1)) : 0;
-  const aiCourses = courses.filter((course) => aiLearningSlugs.has(course.slug));
+  const aiCourses = byStudyOrder(courses.filter((course) => aiLearningSlugs.has(course.slug)), courseStudyOrder);
   const visibleCourses = selectedGoal && goalCourseSlugs[selectedGoal] ? aiCourses.filter((course) => goalCourseSlugs[selectedGoal].includes(course.slug)) : aiCourses;
-  const visibleAdvancedTracks = selectedGoal ? advancedTracks.filter((track) => track.targets.includes(selectedGoal)) : advancedTracks;
+  const visibleAdvancedTracks = byStudyOrder(selectedGoal ? advancedTracks.filter((track) => track.targets.includes(selectedGoal)) : advancedTracks, advancedTrackOrder);
   const selectedGoalName = selectedGoal === "ml" ? "مهندس تعلم آلي · Machine Learning Engineer" : selectedGoal === "vision" ? "مهندس رؤية حاسوبية · Computer Vision Engineer" : selectedGoal === "nlp" ? "مهندس NLP وذكاء توليدي · NLP Engineer" : selectedGoal === "robotics" ? "مهندس روبوتات AI · Robotics AI Engineer" : selectedGoal === "research" ? "باحث ذكاء اصطناعي · AI Researcher" : "كل مسارات AI";
 
   return (
@@ -656,7 +659,7 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
           <div className="section-heading">
             <div><span className="eyebrow">تقدمك المحفوظ</span><h2>مساراتي التعليمية</h2></div>
           </div>
-          {courses.filter((course) => aiLearningSlugs.has(course.slug)).map((course) => {
+          {byStudyOrder(courses.filter((course) => aiLearningSlugs.has(course.slug)), courseStudyOrder).map((course) => {
             const item = progress.find((entry) => entry.courseSlug === course.slug);
             const value = item?.progress ?? 0;
             return (
