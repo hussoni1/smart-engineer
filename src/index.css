@@ -459,3 +459,24 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 .quiz-card legend > span { flex: 1; min-width: 220px; }
 .quiz-card legend .quiz-en-label { flex-basis: 100%; }
 @media (max-width: 680px) { .translate-button { margin-inline-start: 0; } }
+
+
+/* Python interactive code lab */
+.python-lab-shell { width: calc(100% - 20px); max-width: none; margin: 34px auto; direction: rtl; }
+.python-lab-heading, .python-lab-hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 30px 36px; border: 1px solid var(--edge); border-radius: 22px; background: linear-gradient(120deg, rgba(22,33,68,.9), rgba(17,21,46,.88)); }
+.python-lab-heading h1, .python-lab-hero h1 { margin: 8px 0 4px; font-size: clamp(30px, 4vw, 52px); }
+.python-lab-heading p, .python-lab-hero p { margin: 8px 0 0; color: var(--muted-copy); line-height: 1.8; }
+.python-lab-grid { display: grid; grid-template-columns: 285px minmax(0, 1fr); gap: 22px; margin-top: 22px; direction: ltr; }
+.python-exercise-list, .python-editor-panel { direction: rtl; border: 1px solid var(--edge); border-radius: 20px; background: linear-gradient(145deg, var(--panel), rgba(9,14,30,.94)); }
+.python-exercise-list { padding: 22px 16px; height: fit-content; }
+.python-exercise-list > button { width: 100%; display: flex; flex-direction: column; gap: 5px; margin-top: 10px; padding: 14px; border: 1px solid transparent; border-radius: 12px; text-align: right; color: var(--copy); background: rgba(255,255,255,.035); }
+.python-exercise-list > button:hover, .python-exercise-list > button.active { border-color: var(--edge-bright); background: rgba(121,232,255,.1); }
+.python-exercise-list > button strong { font-size: 12px; }.python-exercise-list > button small { color: var(--muted-copy); font-size: 10px; }
+.python-editor-panel { padding: 28px; }
+.exercise-prompt { padding-bottom: 20px; border-bottom: 1px solid var(--edge); }
+.exercise-prompt h2 { margin: 12px 0 6px; font-size: 26px; }.exercise-prompt p { margin: 4px 0; color: #d3daeb; line-height: 1.8; direction: ltr; text-align: left; }.exercise-prompt .prompt-ar { color: var(--muted-copy); direction: rtl; text-align: right; }
+.python-editor { width: 100%; min-height: 350px; margin-top: 20px; padding: 20px; resize: vertical; border: 1px solid rgba(121,232,255,.25); border-radius: 14px; outline: none; color: #d8f3ff; background: #07101d; font: 15px/1.8 "Fira Code", "Cascadia Code", monospace; direction: ltr; text-align: left; tab-size: 4; }
+.python-editor:focus { border-color: var(--electric); box-shadow: 0 0 0 3px rgba(121,232,255,.1); }
+.python-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; direction: ltr; }.python-actions .text-button { margin-left: auto; }
+.python-output { margin-top: 20px; border: 1px solid var(--edge); border-radius: 14px; overflow: hidden; direction: ltr; text-align: left; }.python-output > div { display: flex; justify-content: space-between; padding: 12px 16px; color: var(--electric); background: rgba(121,232,255,.08); font: 700 11px system-ui, sans-serif; }.python-output pre { min-height: 100px; margin: 0; padding: 18px; color: #c8ffd8; background: #050b13; font: 13px/1.7 monospace; white-space: pre-wrap; }.output-success { color: var(--acid); }
+@media (max-width: 760px) { .python-lab-shell { width: 100%; }.python-lab-heading, .python-lab-hero { padding: 22px; flex-direction: column; align-items: stretch; }.python-lab-grid { grid-template-columns: 1fr; }.python-exercise-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }.python-exercise-list .eyebrow { grid-column: 1 / -1; }.python-exercise-list > button { margin-top: 0; }.python-editor-panel { padding: 18px; }.python-editor { min-height: 280px; }.python-actions { flex-direction: column; align-items: stretch; }.python-actions .text-button { margin-left: 0; } }

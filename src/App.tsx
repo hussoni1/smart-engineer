@@ -191,6 +191,14 @@ const courseEnglish: Record<string, { title: string; description: string }> = {
 
 const englishLevel: Record<string, string> = { "مبتدئ": "Beginner", "متوسط": "Intermediate", "متقدم": "Advanced", "مشاريع": "Projects" };
 
+const pythonExercises = [
+  { title: "Hello, Python", titleAr: "أول برنامج", prompt: "Print the exact text: Hello, AI Engineer!", promptAr: "اطبع النص التالي كما هو: Hello, AI Engineer!", starter: "# Write your code below\n", expected: "Hello, AI Engineer!" },
+  { title: "Variables", titleAr: "المتغيرات", prompt: "Create width = 8 and height = 5, then print their area.", promptAr: "أنشئ width = 8 و height = 5 ثم اطبع المساحة.", starter: "width = 8\nheight = 5\n# Print the area\n", expected: "40" },
+  { title: "A simple function", titleAr: "دالة بسيطة", prompt: "Write add(a, b) and print add(7, 5).", promptAr: "اكتب الدالة add(a, b) واطبع نتيجة add(7, 5).", starter: "def add(a, b):\n    # return the sum\n    pass\n\nprint(add(7, 5))\n", expected: "12" },
+  { title: "Lists and loops", titleAr: "القوائم والحلقات", prompt: "Print the sum of [2, 4, 6, 8].", promptAr: "اطبع مجموع القائمة [2, 4, 6, 8].", starter: "numbers = [2, 4, 6, 8]\n# Calculate and print the sum\n", expected: "20" },
+  { title: "AI feature average", titleAr: "متوسط سمات الذكاء الاصطناعي", prompt: "Calculate the average of features = [0.8, 0.6, 1.0] and print it.", promptAr: "احسب متوسط features = [0.8, 0.6, 1.0] واطبعه.", starter: "features = [0.8, 0.6, 1.0]\n# Calculate the average\n", expected: "0.7999999999999999" }
+];
+
 function CourseCard({ course, progress, onOpen }: { course: Course; progress?: Progress; onOpen: () => void }) {
   const value = progress?.progress ?? 0;
   const english = courseEnglish[course.slug];
@@ -213,7 +221,20 @@ function CourseCard({ course, progress, onOpen }: { course: Course; progress?: P
 function PythonPage({ user, progress, onNavigate, onLogout }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void }) {
   const course = courses.find((item) => item.slug === "python-from-zero")!;
   const saved = progress.find((item) => item.courseSlug === course.slug);
-  return <main className="portal-shell python-page"><Topbar user={user} active="python" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مسار مستقل للمبتدئين</span><h1>لغة بايثون من الصفر</h1><p>صفحة تعليمية تبدأ بك من أول سطر برمجي وتوصلك إلى بناء برنامج صغير. ادرس الدروس بالترتيب وأجب عن خمسة أسئلة في نهاية كل درس.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">Py</span><span className="course-level">الدرس {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>{lesson.quiz.length} أسئلة · {lesson.duration}</span></div></button>)}</div><p className="panel-note">{saved ? `تقدمك الحالي في بايثون: ${saved.progress}%` : "سجّل الدخول لحفظ تقدمك في بايثون"}</p></section></main>;
+  return <main className="portal-shell python-page"><Topbar user={user} active="python" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel" style={{ width: "100%", margin: "38px auto", direction: "rtl" }}><div className="python-lab-hero"><div><span className="eyebrow">Python Learning Studio · مختبر بايثون</span><h1>اكتب، شغّل، وتعلّم Python</h1><p>تعلّم البرمجة بالتطبيق. اختر تمرينًا، اكتب الكود، شغّله داخل المتصفح، ثم افحص الحل.</p></div><button className="primary-button" onClick={() => onNavigate("/python-lab")}>افتح محرر الكود · Open Code Lab ↗</button></div><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><span className="course-art-glyph">Py</span><span className="course-level">الدرس {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>{lesson.quiz.length} أسئلة · {lesson.duration}</span></div></button>)}</div><p className="panel-note">{saved ? `تقدمك الحالي في بايثون: ${saved.progress}%` : "سجّل الدخول لحفظ تقدمك في بايثون"}</p></section></main>;
+}
+
+function PythonLabPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [code, setCode] = useState(pythonExercises[0].starter);
+  const [output, setOutput] = useState("");
+  const [status, setStatus] = useState("");
+  const [runtime, setRuntime] = useState<any>(null);
+  const exercise = pythonExercises[exerciseIndex];
+  useEffect(() => { const script = document.createElement("script"); script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"; script.async = true; script.onload = async () => setRuntime(await (window as any).loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/" })); document.head.appendChild(script); return () => { script.remove(); }; }, []);
+  useEffect(() => { setCode(exercise.starter); setOutput(""); setStatus(""); }, [exerciseIndex, exercise.starter]);
+  const runCode = async (check = false) => { if (!runtime) { setStatus("Loading Python runtime... · جارٍ تجهيز بايثون"); return; } setStatus("Running... · جارٍ التشغيل"); let captured = ""; try { runtime.setStdout({ batched: (text: string) => { captured += text; } }); await runtime.runPythonAsync(code); setOutput(captured.trim()); if (check) setStatus(captured.trim() === exercise.expected ? "Correct! · إجابة صحيحة" : "Not quite yet. · حاول مرة أخرى"); else setStatus("Finished · اكتمل التشغيل"); } catch (error) { setOutput(String(error)); setStatus("Python error · خطأ في الكود"); } };
+  return <main className="portal-shell python-lab-page"><Topbar user={user} active="python" onNavigate={onNavigate} onLogout={onLogout} /><section className="python-lab-shell"><div className="python-lab-heading"><div><span className="eyebrow">Interactive Python Code Lab · مختبر كود تفاعلي</span><h1>تعلّم Python بالممارسة</h1><p>Write code in English, run it safely in your browser, and translate the exercise instructions when needed.</p></div><button className="secondary-button" onClick={() => onNavigate("/python")}>← العودة لمسار Python</button></div><div className="python-lab-grid"><aside className="python-exercise-list"><span className="eyebrow">Exercises · التمارين</span>{pythonExercises.map((item, index) => <button className={index === exerciseIndex ? "active" : ""} key={item.title} onClick={() => setExerciseIndex(index)}><strong>{String(index + 1).padStart(2, "0")} · {item.title}</strong><small>{item.titleAr}</small></button>)}</aside><section className="python-editor-panel"><div className="exercise-prompt"><span className="course-chip cyan">Task · تمرين {exerciseIndex + 1}</span><h2>{exercise.title}</h2><p>{exercise.prompt}</p><p className="prompt-ar">{exercise.promptAr}</p></div><textarea className="python-editor" value={code} onChange={(event) => setCode(event.target.value)} spellCheck={false} aria-label="Python code editor" /><div className="python-actions"><button className="primary-button" onClick={() => void runCode()}>▶ Run code · تشغيل الكود</button><button className="secondary-button" onClick={() => void runCode(true)}>✓ Check exercise · فحص التمرين</button><button className="text-button" onClick={() => setCode(exercise.starter)}>Reset · إعادة</button></div><div className="python-output"><div><span>Output · الناتج</span><span className={status.startsWith("Correct") ? "output-success" : ""}>{status}</span></div><pre>{output || "# Your output will appear here\n# سيظهر الناتج هنا"}</pre></div></section></div></section></main>;
 }
 function ProjectsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const course = courses.find((item) => item.slug === "engineering-projects")!;
@@ -240,6 +261,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>مسارات التعلم</button>
         <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}>لغة بايثون</button>
+        <button className={active === "python-lab" ? "active" : ""} onClick={() => go("/python-lab")}>محرر Python</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>لغة C++</button>
         <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
         {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => go("/admin")}>لوحة التحكم</button>}
@@ -673,6 +695,7 @@ export default function App() {
   if (loading) return <div className="loading-screen"><span className="brand-mark">M</span><p>جارٍ تجهيز بوابتك...</p></div>;
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
   if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/python-lab") return <PythonLabPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/projects") return <ProjectsPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/admin") return user ? <AdminPage user={user} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (path === "/profile") return user ? <Profile user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
