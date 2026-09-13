@@ -199,6 +199,39 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
     const rows = await env.DB.prepare("SELECT course_slug AS courseSlug, lesson_index AS lessonIndex, quiz_score AS quizScore, quiz_total AS quizTotal, quiz_passed AS quizPassed, attempts, updated_at AS updatedAt FROM quiz_results WHERE user_id = ? ORDER BY updated_at DESC").bind(user.id).all<ResultRow>();
     return json(rows.results ?? []);
   }
+  if (url.pathname === "/api/projects" && request.method === "GET") {
+    const user = await requireUser(request, env);
+    const rows = await env.DB.prepare("SELECT id, title, description, tools, url, status, updated_at AS updatedAt FROM student_projects WHERE user_id = ? ORDER BY updated_at DESC").bind(user.id).all();
+    return json(rows.results ?? []);
+  }
+  if (url.pathname === "/api/projects" && request.method === "POST") {
+    const user = await requireUser(request, env);
+    const body = await request.json() as { title?: string; description?: string; tools?: string; url?: string };
+    const title = body.title?.trim() ?? "";
+    if (title.length < 2 || title.length > 160) return json({ error: "Project title is required" }, 400);
+    const id = randomId();
+    await env.DB.prepare("INSERT INTO student_projects (id, user_id, title, description, tools, url, status, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, user.id, title, body.description?.trim() ?? "", body.tools?.trim() ?? "", body.url?.trim() ?? "", "In progress", Date.now()).run();
+    return json({ id, title, description: body.description?.trim() ?? "", tools: body.tools?.trim() ?? "", url: body.url?.trim() ?? "", status: "In progress", updatedAt: Date.now() }, 201);
+  }
+  if (url.pathname.startsWith("/api/projects/") && request.method === "DELETE") {
+    const user = await requireUser(request, env);
+    const id = url.pathname.split("/")[3];
+    if (!id) return json({ error: "Invalid project" }, 400);
+    await env.DB.prepare("DELETE FROM student_projects WHERE id = ? AND user_id = ?").bind(id, user.id).run();
+    return json({ ok: true });
+  }
+  if (url.pathname === "/api/preferences" && request.method === "GET") {
+    const user = await requireUser(request, env);
+    const row = await env.DB.prepare("SELECT language, selected_goal AS selectedGoal FROM user_preferences WHERE user_id = ?").bind(user.id).first();
+    return json(row ?? { language: "ar", selectedGoal: null });
+  }
+  if (url.pathname === "/api/preferences" && request.method === "PUT") {
+    const user = await requireUser(request, env);
+    const body = await request.json() as { language?: string; selectedGoal?: string | null };
+    const language = body.language === "en" ? "en" : "ar";
+    await env.DB.prepare("INSERT INTO user_preferences (user_id, language, selected_goal, updated_at) VALUES (?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET language = excluded.language, selected_goal = excluded.selected_goal, updated_at = excluded.updated_at").bind(user.id, language, body.selectedGoal ?? null, Date.now()).run();
+    return json({ language, selectedGoal: body.selectedGoal ?? null });
+  }
   if (url.pathname === "/api/quiz/complete" && request.method === "POST") {
     const user = await requireUser(request, env);
     const body = await request.json() as { courseSlug?: string; lessonIndex?: number; score?: number; total?: number };
