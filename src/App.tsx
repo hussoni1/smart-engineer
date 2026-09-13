@@ -427,7 +427,10 @@ function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNaviga
 }
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [language, setLanguage] = useState<"ar" | "en">(() => (localStorage.getItem("engimind-language") as "ar" | "en") || "ar");
   const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
+  useEffect(() => { const sync = () => { const next = (localStorage.getItem("engimind-language") as "ar" | "en") || "ar"; setLanguage(next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; }; sync(); window.addEventListener("engimind-language-change", sync); return () => window.removeEventListener("engimind-language-change", sync); }, []);
+  const toggleLanguage = () => { const next = language === "ar" ? "en" : "ar"; localStorage.setItem("engimind-language", next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; setLanguage(next); window.dispatchEvent(new Event("engimind-language-change")); };
   return (
     <header className="topbar">
       <button className="brand" onClick={() => go("/")}>
@@ -451,6 +454,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>
       </nav>
       <div className="topbar-actions">
+        <button className="language-toggle" onClick={toggleLanguage} aria-label="تغيير لغة الواجهة">{language === "ar" ? "EN" : "عربي"}</button>
         {user ? (
           <button className="user-pill" onClick={() => onNavigate("/profile")}>
             <span>{user.name.slice(0, 1)}</span>{user.name}
