@@ -146,6 +146,28 @@ pythonCourse.lessons.push(
   { title: "[محترف] مشروع بايثون احترافي", duration: "18 دقيقة", summary: "ابنِ مشروعًا كاملًا من المتطلبات إلى الاختبار والنشر.", body: ["اختر مشكلة واقعية، اكتب المتطلبات، صمّم الوحدات، ثم نفّذ نسخة صغيرة قابلة للاختبار. استخدم Git والتوثيق وتتبع الأخطاء.", "قبل النشر راجع الأمان والأداء، أضف اختبارًا آليًا، واكتب README يشرح التشغيل والحدود والخطوات التالية."], quiz: [{ question: "ما الذي يسبق التنفيذ؟", options: ["تحديد المتطلبات ومعيار النجاح", "اختيار لون الشعار", "النشر المباشر", "حذف الاختبار"], answer: 0, explanation: "المتطلبات ومعيار النجاح يمنعان بناء حل لا يعالج المشكلة." }, { question: "ما الذي يجعل المشروع احترافيًا؟", options: ["اختبارات وتوثيق وأمان", "كثرة الأسطر", "غياب README", "إخفاء القيود"], answer: 0, explanation: "الجودة تشمل قابلية التشغيل والصيانة والأمان، وليس الكود فقط." }] }
 );
 
+const expandedCoreSlugs = new Set(["ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai"]);
+for (const course of courses) {
+  if (!expandedCoreSlugs.has(course.slug)) continue;
+  while (course.lessons.length < 8) {
+    const number = course.lessons.length + 1;
+    const final = number === 8;
+    course.lessons.push({
+      title: final ? "مشروع قصير واختبار نهائي" : `الوحدة ${number}: تطبيقات ${course.title}`,
+      duration: final ? "25 دقيقة" : "15 دقيقة",
+      summary: final ? `نفّذ مشروعًا قصيرًا يجمع مفاهيم مسار ${course.title} ثم اجتز الاختبار النهائي.` : `طبّق مفهومًا أساسيًا من مسار ${course.title} على مثال واقعي قابل للقياس.`,
+      body: [final ? `اختر مشكلة صغيرة في مجال ${course.title}، اكتب المدخلات والمخرجات ومعيار النجاح، ثم نفّذ الحل وسجّل النتائج.` : `ابدأ بتحديد المشكلة والمتطلبات، ثم حوّل المفهوم إلى خطوات صغيرة واختبر كل خطوة قبل الانتقال إلى التالية.`, final ? "قدّم تقريرًا مختصرًا يوضح الحل والنتيجة والحالات الفاشلة والتحسين المقترح." : "قارن النتيجة المتوقعة بالنتيجة الفعلية، وثّق الخطأ إن ظهر، ثم أعد التجربة بقيمة مختلفة."],
+      quiz: [
+        { question: `ما الهدف من الوحدة ${number}؟`, options: ["تحويل المعرفة إلى تطبيق قابل للقياس", "حذف الاختبارات", "تغيير لون الواجهة", "تجاهل البيانات"], answer: 0, explanation: "التطبيق والقياس يثبتان أن الطالب فهم المفهوم." },
+        { question: "ما أول خطوة في التطبيق؟", options: ["تحديد المشكلة والمدخلات والمخرجات", "النشر قبل الاختبار", "حذف المتطلبات", "الاعتماد على التخمين"], answer: 0, explanation: "المتطلبات الواضحة تجعل الحل قابلًا للتنفيذ والتقييم." },
+        { question: "كيف نتحقق من النتيجة؟", options: ["بمقارنتها بمعيار نجاح وحالات اختبار", "بعدد الأسطر", "بلون الشاشة", "دون تشغيل الكود"], answer: 0, explanation: "المعيار والحالات تكشفان جودة الحل وحدوده." },
+        { question: "ما فائدة توثيق الفشل؟", options: ["اقتراح تحسين قابل للاختبار", "إخفاء المشكلة", "حذف البيانات", "إلغاء التعلم"], answer: 0, explanation: "تحليل الفشل يحول الخطأ إلى فرصة تحسين." },
+        { question: final ? "متى تجتاز الاختبار النهائي؟" : "ما السلوك الهندسي الأفضل؟", options: [final ? "بعد حل أسئلة الوحدة بنسبة 70% أو أكثر" : "التجربة والقياس والتوثيق", "نسخ الإجابة فقط", "تجاهل القيود", "النشر دون مراجعة"], answer: 0, explanation: final ? "يشترط النظام 70% لفتح المرحلة التالية أو إكمال المسار." : "التجربة والقياس والتوثيق تبني فهمًا يمكن التحقق منه." }
+      ]
+    });
+  }
+}
+
 // نضيف أسئلة تطبيقية قصيرة لكل درس حتى يصبح التدريب متوازنًا ولا يقتصر على سؤالين.
 for (const course of courses) {
   for (const lesson of course.lessons) {
@@ -764,6 +786,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
   };
 
   const next = index < course.lessons.length ? `/courses/${course.slug}/lessons/${index + 1}` : "/profile";
+  const isFinalAssessment = index === course.lessons.length;
   const lessonExample = index === 1 ? 'name = "EngiMind"\nprint(f"مرحبًا بك في {name}")' : index === 2 ? 'scores = [80, 92, 75]\naverage = sum(scores) / len(scores)\nprint(average)' : index === 3 ? 'def greet(name):\n    return f"أهلًا {name}"\n\nprint(greet("علي"))' : 'class Project:\n    def __init__(self, title):\n        self.title = title\n\nproject = Project("مساعد ذكي")';
 
   return (
@@ -811,9 +834,9 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
           </div>
           <section className="quiz-card">
             <div className="quiz-heading">
-              <span className="eyebrow">اختبر فهمك · Test your understanding</span>
-              <h2>اختبار قصير قبل المتابعة <small>Progress assessment</small></h2>
-              <p>أجب عن الأسئلة واحصل على 70% على الأقل لفتح الدرس التالي. Answer at least 70% correctly to continue.</p>
+              <span className="eyebrow">{isFinalAssessment ? "الاختبار النهائي · Final assessment" : "اختبر فهمك · Test your understanding"}</span>
+              <h2>{isFinalAssessment ? "مشروع قصير واختبار نهائي" : "اختبار قصير قبل المتابعة"} <small>{isFinalAssessment ? "Capstone + final course exam" : "Progress assessment"}</small></h2>
+              <p>{isFinalAssessment ? "نفّذ المشروع القصير ثم أجب عن الأسئلة واحصل على 70% أو أكثر لإكمال المسار." : "أجب عن الأسئلة واحصل على 70% على الأقل لفتح الدرس التالي. Answer at least 70% correctly to continue."}</p>
             </div>
             {lesson.quiz.map((item, quizIndex) => (
               <fieldset key={item.question}>

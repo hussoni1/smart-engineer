@@ -8,11 +8,13 @@ type User = { id: string; name: string; email: string; avatarUrl?: string | null
 const SESSION_COOKIE = "smart_session";
 const OAUTH_COOKIE = "smart_oauth_state";
 const ADMIN_EMAIL = "altiahussoni@gmail.com";
-const COURSE_SLUGS = new Set(["renewable-energy", "python-engineering", "bim", "mechatronics", "ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero"]);
+const COURSE_SLUGS = new Set(["renewable-energy", "python-engineering", "bim", "mechatronics", "ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai"]);
 const LESSONS_PER_COURSE = 3;
+const COURSE_LESSON_COUNTS: Record<string, number> = { "ai-engineering": 8, "ai-technology-engineering": 8, "ai-foundations": 8, "machine-learning": 8, "deep-learning": 8, "nlp-generative-ai": 8, "computer-vision": 8, "mlops-ai-security": 8, "engineering-projects": 8, "mit-machine-learning": 8, "stanford-ai-foundations": 8, "cmu-ai-engineering": 8, "berkeley-ai-ml": 8, "toronto-ai": 8, "python-from-zero": 11 };
+function lessonCount(courseSlug: string) { return COURSE_LESSON_COUNTS[courseSlug] ?? LESSONS_PER_COURSE; }
 
 export function isValidQuizInput(courseSlug: string, lessonIndex: number, score: number, total: number) {
-  return COURSE_SLUGS.has(courseSlug) && Number.isInteger(lessonIndex) && lessonIndex >= 1 && lessonIndex <= LESSONS_PER_COURSE && Number.isInteger(score) && Number.isInteger(total) && total > 0 && score >= 0 && score <= total;
+  return COURSE_SLUGS.has(courseSlug) && Number.isInteger(lessonIndex) && lessonIndex >= 1 && lessonIndex <= lessonCount(courseSlug) && Number.isInteger(score) && Number.isInteger(total) && total > 0 && score >= 0 && score <= total;
 }
 
 export function getNextProgress(completedLessons: number, lessonIndex: number, passed: boolean, totalLessons = LESSONS_PER_COURSE) {
@@ -248,9 +250,9 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
     await env.DB.prepare("INSERT INTO quiz_results (user_id, course_slug, lesson_index, quiz_score, quiz_total, quiz_passed, attempts, updated_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?) ON CONFLICT(user_id, course_slug, lesson_index) DO UPDATE SET quiz_score = excluded.quiz_score, quiz_total = excluded.quiz_total, quiz_passed = excluded.quiz_passed, attempts = quiz_results.attempts + 1, updated_at = excluded.updated_at").bind(user.id, courseSlug, lessonIndex, score, total, passed ? 1 : 0, now).run();
     if (passed) {
       const completed = Math.max(currentCompleted, lessonIndex);
-      await env.DB.prepare("INSERT INTO course_progress (user_id, course_slug, completed_lessons, progress, last_activity) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id, course_slug) DO UPDATE SET completed_lessons = MAX(course_progress.completed_lessons, excluded.completed_lessons), progress = MAX(course_progress.progress, excluded.progress), last_activity = excluded.last_activity").bind(user.id, courseSlug, completed, Math.round((completed / LESSONS_PER_COURSE) * 100), now).run();
+      await env.DB.prepare("INSERT INTO course_progress (user_id, course_slug, completed_lessons, progress, last_activity) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id, course_slug) DO UPDATE SET completed_lessons = MAX(course_progress.completed_lessons, excluded.completed_lessons), progress = MAX(course_progress.progress, excluded.progress), last_activity = excluded.last_activity").bind(user.id, courseSlug, completed, Math.round((completed / lessonCount(courseSlug)) * 100), now).run();
     }
-    return json({ passed, score, total, ...getNextProgress(currentCompleted, lessonIndex, passed) });
+    return json({ passed, score, total, ...getNextProgress(currentCompleted, lessonIndex, passed, lessonCount(courseSlug)) });
   }
   if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/login" || url.pathname.endsWith(".html"))) {
     const freshUrl = new URL(request.url);
