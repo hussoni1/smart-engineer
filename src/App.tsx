@@ -238,6 +238,7 @@ const examQuestions = {
   advanced: [{ q: "What should a responsible AI evaluation include? · ماذا يشمل تقييم AI المسؤول؟", options: ["Accuracy, fairness, privacy, and failure cases · الدقة والعدالة والخصوصية وحالات الفشل", "Accuracy only · الدقة فقط", "UI color · لون الواجهة", "Number of files · عدد الملفات"], answer: 0, why: "Engineering evaluation includes performance, risks, privacy, and limits." }, { q: "What does retrieval-augmented generation help with? · ما فائدة RAG؟", options: ["Grounding answers in retrieved sources · ربط الإجابات بمصادر مسترجعة", "Deleting documents · حذف الوثائق", "Replacing testing · استبدال الاختبار", "Changing hardware · تغيير العتاد"], answer: 0, why: "Retrieval supplies relevant evidence before generation." }]
 };
 const goalPaths = [{ title: "مهندس تعلم آلي", en: "Machine Learning Engineer", path: ["Python", "Math & Probability", "Machine Learning", "MLOps"] }, { title: "مهندس رؤية حاسوبية", en: "Computer Vision Engineer", path: ["Python", "Machine Learning", "Deep Learning", "Computer Vision"] }, { title: "مهندس NLP وذكاء توليدي", en: "NLP & Generative AI Engineer", path: ["Python", "Machine Learning", "Deep Learning", "NLP & Generative AI"] }, { title: "مهندس روبوتات AI", en: "Robotics AI Engineer", path: ["Python", "Math & Probability", "Deep Learning", "Robotics & Control"] }, { title: "باحث ذكاء اصطناعي", en: "AI Researcher", path: ["Math & Probability", "Algorithms", "Deep Learning", "Research Project"] }];
+const goalCourseSlugs: Record<string, string[]> = { ml: ["python-from-zero", "python-engineering", "ai-foundations", "machine-learning", "mit-machine-learning", "mlops-ai-security"], vision: ["python-from-zero", "machine-learning", "deep-learning", "computer-vision", "berkeley-ai-ml"], nlp: ["python-from-zero", "machine-learning", "deep-learning", "nlp-generative-ai", "stanford-ai-foundations", "toronto-ai"], robotics: ["python-from-zero", "ai-foundations", "machine-learning", "deep-learning", "ai-technology-engineering", "engineering-projects"], research: ["ai-foundations", "machine-learning", "deep-learning", "mit-machine-learning", "stanford-ai-foundations", "berkeley-ai-ml", "toronto-ai"] };
 const officialSources: Record<string, { label: string; url: string }> = { "mit-machine-learning": { label: "MIT EECS Course 6-4", url: "https://www.eecs.mit.edu/academics/undergraduate-programs/curriculum/6-4-artificial-intelligence-and-decision-making/" }, "stanford-ai-foundations": { label: "Stanford CS AI specialization", url: "https://www.cs.stanford.edu/masters-specializations" }, "cmu-ai-engineering": { label: "CMU BSAI curriculum", url: "https://www.cs.cmu.edu/bs-in-artificial-intelligence/curriculum" }, "berkeley-ai-ml": { label: "UC Berkeley AI research", url: "https://www2.eecs.berkeley.edu/Research/Areas/AI/" }, "toronto-ai": { label: "U of T MScAC AI", url: "https://mscac.utoronto.ca/concentrations/ai/" } };
 const englishLevel: Record<string, string> = { "مبتدئ": "Beginner", "متوسط": "Intermediate", "متقدم": "Advanced", "مشاريع": "Projects" };
 
@@ -375,7 +376,8 @@ function ExamsPage({ user, onNavigate, onLogout }: { user: User | null; onNaviga
 
 function GoalsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [selected, setSelected] = useState(0); const goal = goalPaths[selected];
-  return <main className="portal-shell"><Topbar user={user} active="goals" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Choose your goal · اختر هدفك</span><h1>أي نوع من مهندسي AI تريد أن تصبح؟</h1><p>اختر هدفك لتشاهد ترتيب المواد المقترح والمهارات التي تحتاجها.</p></div></div><div className="goal-grid">{goalPaths.map((item, index) => <button className={`goal-card ${selected === index ? "selected" : ""}`} onClick={() => setSelected(index)} key={item.en}><b>{item.title}</b><small>{item.en}</small></button>)}</div><section className="workspace-card selected-goal"><span className="eyebrow">Recommended path · المسار المقترح</span><h2>{goal.title}<small>{goal.en}</small></h2><div className="goal-path">{goal.path.map((step, index) => <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><b>{step}</b>{index < goal.path.length - 1 && <i>→</i>}</div>)}</div><button className="primary-button" onClick={() => onNavigate("/#learning")}>ابدأ مسارات التعلم · Start learning</button></section></section></main>;
+  const goalKey = ["ml", "vision", "nlp", "robotics", "research"][selected];
+  return <main className="portal-shell"><Topbar user={user} active="goals" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Choose your goal · اختر هدفك</span><h1>أي نوع من مهندسي AI تريد أن تصبح؟</h1><p>اختر هدفك لتشاهد ترتيب المواد المقترح والمهارات التي تحتاجها.</p></div></div><div className="goal-grid">{goalPaths.map((item, index) => <button className={`goal-card ${selected === index ? "selected" : ""}`} onClick={() => setSelected(index)} key={item.en}><b>{item.title}</b><small>{item.en}</small></button>)}</div><section className="workspace-card selected-goal"><span className="eyebrow">Recommended path · المسار المقترح</span><h2>{goal.title}<small>{goal.en}</small></h2><div className="goal-path">{goal.path.map((step, index) => <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><b>{step}</b>{index < goal.path.length - 1 && <i>→</i>}</div>)}</div><button className="primary-button" onClick={() => onNavigate(`/?goal=${goalKey}#learning`)}>ابدأ مسارات التعلم · Start learning</button></section></section></main>;
 }
 
 function PortfolioPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
@@ -449,10 +451,12 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   );
 }
 
-function Home({ user, progress, onNavigate, onLogout }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void }) {
+function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void; selectedGoal?: string }) {
   const saved = new Map(progress.map((item) => [item.courseSlug, item]));
   const calcProgress = user ? Math.round(progress.reduce((sum, item) => sum + item.progress, 0) / Math.max(progress.length, 1)) : 0;
   const aiCourses = courses.filter((course) => aiLearningSlugs.has(course.slug));
+  const visibleCourses = selectedGoal && goalCourseSlugs[selectedGoal] ? aiCourses.filter((course) => goalCourseSlugs[selectedGoal].includes(course.slug)) : aiCourses;
+  const selectedGoalName = selectedGoal === "ml" ? "مهندس تعلم آلي · Machine Learning Engineer" : selectedGoal === "vision" ? "مهندس رؤية حاسوبية · Computer Vision Engineer" : selectedGoal === "nlp" ? "مهندس NLP وذكاء توليدي · NLP Engineer" : selectedGoal === "robotics" ? "مهندس روبوتات AI · Robotics AI Engineer" : selectedGoal === "research" ? "باحث ذكاء اصطناعي · AI Researcher" : "كل مسارات AI";
 
   return (
     <main className="portal-shell">
@@ -488,17 +492,17 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
           <div className="metric-list">
             <div><span>◫ دورات مكتملة</span><b>{progress.filter((item) => item.progress >= 100).length}</b></div>
             <div><span>◷ دروس منجزة</span><b>{progress.reduce((sum, item) => sum + item.completedLessons, 0)}</b></div>
-            <div><span>✦ مسارات AI متاحة</span><b>{aiCourses.length}</b></div>
+            <div><span>✦ {selectedGoal ? "مسارات هدفك" : "مسارات AI متاحة"}</span><b>{visibleCourses.length}</b></div>
           </div>
           <p className="panel-note">⌁ {user ? "تقدمك محفوظ في حسابك" : "سجّل دخولك لحفظ تقدمك"}</p>
         </aside>
         <div className="learning-panel">
           <div className="section-heading">
-            <div><span className="eyebrow">اختر مهارتك التالية · Choose your next skill</span><h2>مسارات التعلم <small>Learning paths</small></h2></div>
-            <button className="text-button" onClick={() => document.getElementById("learning")?.scrollIntoView({ behavior: "smooth" })}>استعرض الكل ←</button>
+            <div><span className="eyebrow">اختر مهارتك التالية · Choose your next skill</span><h2>{selectedGoalName}<small>Learning paths for your goal</small></h2></div>
+            {selectedGoal ? <button className="text-button" onClick={() => onNavigate("/")}>عرض كل المسارات ←</button> : <button className="text-button" onClick={() => document.getElementById("learning")?.scrollIntoView({ behavior: "smooth" })}>استعرض الكل ←</button>}
           </div>
           <div className="course-grid">
-            {courses.filter((course) => aiLearningSlugs.has(course.slug)).map((course) => (
+            {visibleCourses.map((course) => (
               <CourseCard key={course.slug} course={course} progress={saved.get(course.slug)} onOpen={() => onNavigate(`/courses/${course.slug}/lessons/1`)} />
             ))}
           </div>
@@ -802,6 +806,7 @@ export default function App() {
   const [results, setResults] = useState<QuizResult[]>([]);
   const [loading, setLoading] = useState(true);
   const path = window.location.pathname;
+  const selectedGoal = new URLSearchParams(window.location.search).get("goal") || undefined;
 
   const navigate = (next: string) => {
     window.history.pushState({}, "", next);
@@ -874,5 +879,5 @@ export default function App() {
     if (course) return user ? <LessonPage course={course} index={Number(lessonMatch[2])} user={user} progress={progress} results={results} onNavigate={navigate} onProgressRefresh={refresh} /> : <Login onBack={() => navigate("/")} />;
   }
 
-  return <Home user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
+  return <Home user={user} progress={progress} onNavigate={navigate} onLogout={logout} selectedGoal={selectedGoal} />;
 }
