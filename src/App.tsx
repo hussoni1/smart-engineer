@@ -189,6 +189,7 @@ const courseEnglish: Record<string, { title: string; description: string }> = {
   "cmu-ai-engineering": { title: "CMU AI Engineering", description: "Original assessments combining machine learning, computational modeling, automated reasoning, and ethics." }
 };
 
+const aiLearningSlugs = new Set(["python-engineering", "ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering"]);
 const englishLevel: Record<string, string> = { "مبتدئ": "Beginner", "متوسط": "Intermediate", "متقدم": "Advanced", "مشاريع": "Projects" };
 
 const pythonExercises = [
@@ -359,6 +360,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
 function Home({ user, progress, onNavigate, onLogout }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void }) {
   const saved = new Map(progress.map((item) => [item.courseSlug, item]));
   const calcProgress = user ? Math.round(progress.reduce((sum, item) => sum + item.progress, 0) / Math.max(progress.length, 1)) : 0;
+  const aiCourses = courses.filter((course) => aiLearningSlugs.has(course.slug));
 
   return (
     <main className="portal-shell">
@@ -380,7 +382,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
       </section>
       <section className="featured-projects" aria-label="المشاريع الهندسية"><div><span className="eyebrow">مختبر عملي جديد</span><h2>أعلى مشاريع هندسية تطبيقية</h2><p>أجهزة ومواد، خطوات تنفيذ، وفيديو لكل مشروع.</p></div><button className="primary-button" onClick={() => onNavigate("/projects")}>استكشف المشاريع ←</button></section>
       <section className="learning-showcase" aria-labelledby="learning-paths-title">
-        <div className="learning-showcase-copy"><span className="eyebrow">مساراتك القادمة · Your next learning paths</span><h2 id="learning-paths-title">هندسة تقنيات الذكاء الاصطناعي<br /><em>AI Technology Engineering</em></h2><p>اختر مسارك، تعلّم بالعربي والإنكليزي، ثم اختبر فهمك بأسئلة مع حلول واضحة. Learn in Arabic and English with written assessments and answer explanations.</p><div className="showcase-stats"><div><strong>{courses.length - 1}</strong><span>مسار تعلّم<br />Learning paths</span></div><div><strong>{courses.reduce((sum, course) => sum + course.lessons.length, 0)}</strong><span>درس واختبار<br />Lessons & quizzes</span></div><div><strong>AR / EN</strong><span>ثنائي اللغة<br />Bilingual</span></div></div></div>
+        <div className="learning-showcase-copy"><span className="eyebrow">مساراتك القادمة · Your next learning paths</span><h2 id="learning-paths-title">هندسة تقنيات الذكاء الاصطناعي<br /><em>AI Technology Engineering</em></h2><p>اختر مسارك، تعلّم بالعربي والإنكليزي، ثم اختبر فهمك بأسئلة مع حلول واضحة. Learn in Arabic and English with written assessments and answer explanations.</p><div className="showcase-stats"><div><strong>{aiCourses.length}</strong><span>مسار تعلّم<br />Learning paths</span></div><div><strong>{aiCourses.reduce((sum, course) => sum + course.lessons.length, 0)}</strong><span>درس واختبار<br />Lessons & quizzes</span></div><div><strong>AR / EN</strong><span>ثنائي اللغة<br />Bilingual</span></div></div></div>
         <div className="learning-orbit" aria-hidden="true"><div className="orbit-core">AI</div><span>ML</span><span>NLP</span><span>VISION</span><span>ROBOTS</span></div>
       </section>
       <section className="dashboard-grid" id="learning">
@@ -393,7 +395,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
           <div className="metric-list">
             <div><span>◫ دورات مكتملة</span><b>{progress.filter((item) => item.progress >= 100).length}</b></div>
             <div><span>◷ دروس منجزة</span><b>{progress.reduce((sum, item) => sum + item.completedLessons, 0)}</b></div>
-            <div><span>✦ مسارات متاحة</span><b>{courses.length}</b></div>
+            <div><span>✦ مسارات AI متاحة</span><b>{aiCourses.length}</b></div>
           </div>
           <p className="panel-note">⌁ {user ? "تقدمك محفوظ في حسابك" : "سجّل دخولك لحفظ تقدمك"}</p>
         </aside>
@@ -403,7 +405,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
             <button className="text-button" onClick={() => document.getElementById("learning")?.scrollIntoView({ behavior: "smooth" })}>استعرض الكل ←</button>
           </div>
           <div className="course-grid">
-            {courses.filter((course) => course.slug !== "engineering-projects").map((course) => (
+            {courses.filter((course) => aiLearningSlugs.has(course.slug)).map((course) => (
               <CourseCard key={course.slug} course={course} progress={saved.get(course.slug)} onOpen={() => onNavigate(`/courses/${course.slug}/lessons/1`)} />
             ))}
           </div>
@@ -518,7 +520,7 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
           <div className="section-heading">
             <div><span className="eyebrow">تقدمك المحفوظ</span><h2>مساراتي التعليمية</h2></div>
           </div>
-          {courses.map((course) => {
+          {courses.filter((course) => aiLearningSlugs.has(course.slug)).map((course) => {
             const item = progress.find((entry) => entry.courseSlug === course.slug);
             const value = item?.progress ?? 0;
             return (
