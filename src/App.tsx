@@ -237,7 +237,7 @@ const runExerciseFallback = (code: string, exerciseIndex: number): string => {
   if (exerciseIndex === 1) { const width = code.match(/width\s*=\s*([\d.]+)/)?.[1]; const height = code.match(/height\s*=\s*([\d.]+)/)?.[1]; if (!width || !height) throw new Error("Define width and height first"); return String(Number(width) * Number(height)); }
   if (exerciseIndex === 2) { const match = code.match(/print\(\s*add\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*\)/); if (!match || !/return\s+a\s*\+\s*b/.test(code)) throw new Error("Define add(a, b) and return a + b"); return String(Number(match[1]) + Number(match[2])); }
   if (exerciseIndex === 3) { const match = code.match(/\[\s*([\d.,\s]+)\s*\]/); if (!match || !/sum\s*\(/.test(code)) throw new Error("Create the list and use sum(numbers)"); return String(match[1].split(",").reduce((sum, value) => sum + Number(value), 0)); }
-  const match = code.match(/\[\s*([\d.,\s]+)\s*\]/); if (!match || !/sum\s*\(/.test(code) || !/len\s*\(/.test(code)) throw new Error("Use sum(features) / len(features)"); return String(match[1].split(",").reduce((sum, value) => sum + Number(value), 0) / match[1].split(",").length);
+  const match = code.match(/(?:features|values|data)\s*=\s*\[\s*([\d.,\s]+)\s*\]/); if (!match || !/sum\s*\(/.test(code) || !/len\s*\(/.test(code)) throw new Error("Create features, then use total = sum(features) and average = total / len(features)"); return String(match[1].split(",").reduce((sum, value) => sum + Number(value), 0) / match[1].split(",").length);
 };
 
 const getExerciseGuide = (exercise: { title: string; titleAr: string; starter: string; prompt: string; promptAr: string }) => {
