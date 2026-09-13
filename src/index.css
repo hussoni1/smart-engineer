@@ -368,3 +368,35 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 }
 @keyframes float-figure { 50% { transform: translateY(-8px); } }
 @keyframes pulse-kicker { 50% { text-shadow: 0 0 18px rgba(121,232,255,.55); } }
+
+
+/* Bilingual learning path showcase */
+.learning-showcase { width: min(1280px, calc(100% - 56px)); min-height: 360px; margin: 30px auto 24px; padding: 46px 7%; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 30px; direction: rtl; border: 1px solid rgba(121,232,255,.25); border-radius: 28px; background: linear-gradient(110deg, rgba(19,30,60,.95), rgba(28,24,66,.86) 55%, rgba(9,16,32,.96)); box-shadow: 0 30px 100px rgba(0,0,0,.3); }
+.learning-showcase::before { content: ''; position: absolute; inset: 0; opacity: .45; background-image: linear-gradient(rgba(121,232,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(121,232,255,.08) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, transparent, #000 45%, transparent); }
+.learning-showcase-copy { position: relative; z-index: 1; max-width: 650px; }
+.learning-showcase h2 { margin: 9px 0 14px; font-size: clamp(30px, 4.2vw, 56px); line-height: 1.15; letter-spacing: -.06em; }
+.learning-showcase h2 em { color: var(--electric); font-style: normal; font-size: .68em; letter-spacing: -.02em; }
+.learning-showcase p { max-width: 600px; color: #c2cce2; font-size: 14px; line-height: 2; }
+.showcase-stats { display: flex; gap: 28px; margin-top: 26px; }
+.showcase-stats div { display: flex; align-items: center; gap: 9px; }
+.showcase-stats strong { color: var(--acid); font-size: 22px; }
+.showcase-stats span { color: var(--muted-copy); font-size: 10px; line-height: 1.55; }
+.learning-orbit { width: 260px; height: 260px; flex: 0 0 260px; position: relative; border: 1px solid rgba(121,232,255,.3); border-radius: 50%; box-shadow: 0 0 55px rgba(121,232,255,.14), inset 0 0 55px rgba(168,139,255,.14); transform: rotate(-12deg); }
+.learning-orbit::before, .learning-orbit::after { content: ''; position: absolute; inset: 20px; border: 1px dashed rgba(168,139,255,.38); border-radius: 50%; }
+.learning-orbit::after { inset: 55px; border-style: solid; border-color: rgba(121,232,255,.32); }
+.orbit-core { position: absolute; inset: 84px; display: grid; place-items: center; border-radius: 50%; color: #07111a; background: linear-gradient(135deg, var(--acid), var(--electric)); font-weight: 900; box-shadow: 0 0 35px rgba(121,232,255,.5); z-index: 2; }
+.learning-orbit > span { position: absolute; z-index: 3; padding: 5px 8px; border: 1px solid rgba(121,232,255,.32); border-radius: 999px; color: var(--electric); background: rgba(7,10,22,.8); font: 700 9px/1 system-ui, sans-serif; }
+.learning-orbit > span:nth-of-type(1) { top: 12px; left: 104px; }.learning-orbit > span:nth-of-type(2) { right: -8px; top: 113px; }.learning-orbit > span:nth-of-type(3) { bottom: 9px; left: 87px; }.learning-orbit > span:nth-of-type(4) { left: -18px; top: 114px; }
+.course-title-en, .course-description-en, .section-heading h2 small, .lesson-sidebar h2 small, .quiz-heading h2 small, .quiz-en-label { display: block; color: var(--electric); font: 500 .72em/1.55 system-ui, sans-serif; letter-spacing: 0; }
+.course-title-en { margin-top: 3px; }.course-description-en { margin-top: 3px; color: #8795b5; font-size: .9em; }.course-card-copy h3 { min-height: 48px; }.course-card-copy p { height: 60px; }
+.quiz-en-label { margin-top: 4px; color: #8795b5; font-size: 10px; }
+.answer-hint span { color: #9ca9c5; }
+@media (max-width: 680px) {
+  .learning-showcase { width: calc(100% - 28px); min-height: 510px; padding: 30px 22px; display: block; }
+  .learning-showcase h2 { font-size: 36px; }
+  .showcase-stats { gap: 15px; flex-wrap: wrap; }
+  .learning-orbit { width: 205px; height: 205px; margin: 32px auto -40px; transform: scale(.88) rotate(-12deg); }
+  .orbit-core { inset: 67px; }
+  .learning-orbit > span:nth-of-type(1) { left: 78px; }.learning-orbit > span:nth-of-type(3) { left: 66px; }
+  .course-card-copy p { height: auto; min-height: 72px; }
+}

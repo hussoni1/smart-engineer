@@ -167,18 +167,42 @@ const api = async <T = unknown>(path: string, init?: RequestInit): Promise<T> =>
   return response.json();
 };
 
+const courseEnglish: Record<string, { title: string; description: string }> = {
+  "renewable-energy": { title: "Renewable Energy", description: "Learn solar, wind, and sustainable engineering systems." },
+  "python-engineering": { title: "Python for Engineering", description: "Use Python to analyze data and build engineering tools." },
+  bim: { title: "Building Information Modeling", description: "Coordinate project data in a reliable digital model." },
+  mechatronics: { title: "Mechatronics", description: "Connect sensors, actuators, and control into smart systems." },
+  "ai-engineering": { title: "AI Engineering", description: "Design reliable intelligent solutions from data to deployment." },
+  "ai-technology-engineering": { title: "AI Technology Engineering", description: "Apply vision, language, and intelligent agents to products." },
+  "ai-foundations": { title: "AI Foundations", description: "Understand artificial intelligence, data, and algorithms." },
+  "machine-learning": { title: "Applied Machine Learning", description: "Build and evaluate prediction and classification models." },
+  "deep-learning": { title: "Deep Learning and Neural Networks", description: "Learn neural network training and multimodal applications." },
+  "nlp-generative-ai": { title: "NLP and Generative AI", description: "Build reliable language applications with retrieval and LLMs." },
+  "computer-vision": { title: "Computer Vision", description: "Analyze images and video for detection, inspection, and measurement." },
+  "mlops-ai-security": { title: "MLOps and AI Security", description: "Operate model lifecycles and protect AI data and interfaces." },
+  "python-from-zero": { title: "Python from Zero", description: "Learn Python step by step, from first code to a small program." },
+  cpp: { title: "C++ from Zero to Professional", description: "Learn practical C++ from fundamentals to production projects." },
+  "engineering-projects": { title: "Applied Engineering Projects", description: "Turn knowledge into tested hardware and software prototypes." },
+  "mit-machine-learning": { title: "MIT Machine Learning Lab", description: "Original assessments inspired by MIT topics in modeling, prediction, supervised learning, and reinforcement learning." },
+  "stanford-ai-foundations": { title: "Stanford AI Foundations", description: "Original questions on logic, probability, knowledge representation, robotics, and language." },
+  "cmu-ai-engineering": { title: "CMU AI Engineering", description: "Original assessments combining machine learning, computational modeling, automated reasoning, and ethics." }
+};
+
+const englishLevel: Record<string, string> = { "مبتدئ": "Beginner", "متوسط": "Intermediate", "متقدم": "Advanced", "مشاريع": "Projects" };
+
 function CourseCard({ course, progress, onOpen }: { course: Course; progress?: Progress; onOpen: () => void }) {
   const value = progress?.progress ?? 0;
+  const english = courseEnglish[course.slug];
   return (
     <button className={`course-card course-card--${course.color}`} onClick={onOpen}>
       <div className="course-card-art">
         <span className="course-art-glyph">{course.color === "cyan" ? "↗" : course.color === "violet" ? "⌘" : course.color === "lime" ? "▦" : "◈"}</span>
-        <span className="course-level">{course.level}</span>
+        <span className="course-level">{course.level} · {englishLevel[course.level] ?? course.level}</span>
       </div>
       <div className="course-card-copy">
-        <h3>{course.title}</h3>
-        <p>{course.description}</p>
-        <span>{course.lessons.length} دروس · {course.lessons.reduce((sum, lesson) => sum + Number.parseInt(lesson.duration), 0)} دقيقة</span>
+        <h3>{course.title}<small className="course-title-en">{english?.title ?? course.title}</small></h3>
+        <p>{course.description}<small className="course-description-en">{english?.description ?? course.description}</small></p>
+        <span>{course.lessons.length} دروس · {course.lessons.length} lessons · {course.lessons.reduce((sum, lesson) => sum + Number.parseInt(lesson.duration), 0)} دقيقة / min</span>
         <div className="progress-track"><i style={{ width: `${value}%` }} /></div>
         <div className="progress-caption"><span>التقدم</span><b>{value}%</b></div>
       </div>
@@ -262,6 +286,10 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
         </div>
       </section>
       <section className="featured-projects" aria-label="المشاريع الهندسية"><div><span className="eyebrow">مختبر عملي جديد</span><h2>أعلى مشاريع هندسية تطبيقية</h2><p>أجهزة ومواد، خطوات تنفيذ، وفيديو لكل مشروع.</p></div><button className="primary-button" onClick={() => onNavigate("/projects")}>استكشف المشاريع ←</button></section>
+      <section className="learning-showcase" aria-labelledby="learning-paths-title">
+        <div className="learning-showcase-copy"><span className="eyebrow">مساراتك القادمة · Your next learning paths</span><h2 id="learning-paths-title">هندسة تقنيات الذكاء الاصطناعي<br /><em>AI Technology Engineering</em></h2><p>اختر مسارك، تعلّم بالعربي والإنكليزي، ثم اختبر فهمك بأسئلة مع حلول واضحة. Learn in Arabic and English with written assessments and answer explanations.</p><div className="showcase-stats"><div><strong>{courses.length - 1}</strong><span>مسار تعلّم<br />Learning paths</span></div><div><strong>{courses.reduce((sum, course) => sum + course.lessons.length, 0)}</strong><span>درس واختبار<br />Lessons & quizzes</span></div><div><strong>AR / EN</strong><span>ثنائي اللغة<br />Bilingual</span></div></div></div>
+        <div className="learning-orbit" aria-hidden="true"><div className="orbit-core">AI</div><span>ML</span><span>NLP</span><span>VISION</span><span>ROBOTS</span></div>
+      </section>
       <section className="dashboard-grid" id="learning">
         <aside className="side-panel progress-panel">
           <div className="panel-label">تقدمك اليوم <span>↗</span></div>
@@ -278,7 +306,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
         </aside>
         <div className="learning-panel">
           <div className="section-heading">
-            <div><span className="eyebrow">اختر مهارتك التالية</span><h2>مسارات التعلم</h2></div>
+            <div><span className="eyebrow">اختر مهارتك التالية · Choose your next skill</span><h2>مسارات التعلم <small>Learning paths</small></h2></div>
             <button className="text-button" onClick={() => document.getElementById("learning")?.scrollIntoView({ behavior: "smooth" })}>استعرض الكل ←</button>
           </div>
           <div className="course-grid">
@@ -507,8 +535,8 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
       <div className="lesson-layout">
         <aside className="lesson-sidebar">
           <button className="back-link" onClick={() => onNavigate("/")}>→ العودة للمسارات</button>
-          <span className="eyebrow">{course.title}</span>
-          <h2>خطة المسار</h2>
+          <span className="eyebrow">{course.title} · {courseEnglish[course.slug]?.title ?? course.title}</span>
+          <h2>خطة المسار <small>Learning path</small></h2>
           {course.lessons.map((item, lessonIndex) => {
             const complete = (courseProgress?.completedLessons ?? 0) >= lessonIndex + 1;
             return (
@@ -522,7 +550,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
         <article className="lesson-content">
           <div className="lesson-heading">
             <span className={`course-chip ${course.color}`}>{course.level}</span>
-            <span className="lesson-meta">الدرس {index} من {course.lessons.length} · {lesson.duration}</span>
+            <span className="lesson-meta">الدرس {index} من {course.lessons.length} · Lesson {index} of {course.lessons.length} · {lesson.duration}</span>
             <h1>{lesson.title}</h1>
             <p>{lesson.summary}</p>
           </div>
@@ -546,13 +574,13 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
           </div>
           <section className="quiz-card">
             <div className="quiz-heading">
-              <span className="eyebrow">اختبر فهمك</span>
-              <h2>اختبار قصير قبل المتابعة</h2>
-              <p>أجب عن الأسئلة واحصل على 70% على الأقل لفتح الدرس التالي.</p>
+              <span className="eyebrow">اختبر فهمك · Test your understanding</span>
+              <h2>اختبار قصير قبل المتابعة <small>Progress assessment</small></h2>
+              <p>أجب عن الأسئلة واحصل على 70% على الأقل لفتح الدرس التالي. Answer at least 70% correctly to continue.</p>
             </div>
             {lesson.quiz.map((item, quizIndex) => (
               <fieldset key={item.question}>
-                <legend>{quizIndex + 1}. {item.question}</legend>
+                <legend>{quizIndex + 1}. {item.question}<small className="quiz-en-label">Question · Choose the best answer</small></legend>
                 <div className="quiz-options">
                   {item.options.map((option, optionIndex) => (
                     <label key={option}>
@@ -561,7 +589,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
                     </label>
                   ))}
                 </div>
-                {submitted && <small className={answers[quizIndex] === item.answer ? "answer-hint good" : "answer-hint bad"}>{answers[quizIndex] === item.answer ? "إجابة صحيحة" : `الإجابة الصحيحة: ${item.options[item.answer]}`} — {item.explanation}</small>}
+                {submitted && <small className={answers[quizIndex] === item.answer ? "answer-hint good" : "answer-hint bad"}>{answers[quizIndex] === item.answer ? "إجابة صحيحة · Correct answer" : `الإجابة الصحيحة · Correct answer: ${item.options[item.answer]}`} — {item.explanation}<br /><span>Answer key and explanation are shown in Arabic; review the concept in English: choose the option that best matches the lesson objective.</span></small>}
               </fieldset>
             ))}
             <div className="quiz-footer">
