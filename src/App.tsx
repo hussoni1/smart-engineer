@@ -448,7 +448,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
   useEffect(() => { const sync = () => { const next = (localStorage.getItem("engimind-language") as "ar" | "en") || "ar"; setLanguage(next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; }; sync(); window.addEventListener("engimind-language-change", sync); return () => window.removeEventListener("engimind-language-change", sync); }, []);
   const toggleLanguage = () => { const next = language === "ar" ? "en" : "ar"; localStorage.setItem("engimind-language", next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; setLanguage(next); window.dispatchEvent(new Event("engimind-language-change")); };
-  const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", lab: "محرر Python", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", admin: "لوحة التحكم", community: "المجتمع", challenges: "التحديات" } : { learning: "Learning paths", python: "Python", lab: "Python editor", portfolio: "Portfolio", data: "Data lab", glossary: "AI glossary", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", admin: "Admin", community: "Community", challenges: "Challenges" };
+  const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", community: "المجتمع" } : { learning: "Learning paths", python: "Python", portfolio: "Portfolio", data: "Data lab", glossary: "AI glossary", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", community: "Community" };
   return (
     <header className="topbar">
       <button className="brand" onClick={() => go("/")}>
@@ -459,7 +459,6 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>{nav.learning}</button>
         <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}>{nav.python}</button>
-        <button className={active === "python-lab" ? "active" : ""} onClick={() => go("/python-lab")}>{nav.lab}</button>
         <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}>Portfolio</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}>{nav.data}</button>
         <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}>{nav.glossary}</button>
@@ -468,9 +467,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "review" ? "active" : ""} onClick={() => go("/review")}>{nav.review}</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>{nav.cpp}</button>
         <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
-        {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => go("/admin")}>{nav.admin}</button>}
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>{nav.community}</button>
-        <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>{nav.challenges}</button>
       </nav>
       <div className="topbar-actions">
         <button className="language-toggle" onClick={toggleLanguage} aria-label="تغيير لغة الواجهة">{language === "ar" ? "EN" : "عربي"}</button>
