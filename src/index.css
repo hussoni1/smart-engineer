@@ -483,3 +483,8 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 
 .runtime-status { display: inline-block; margin-inline-start: 12px; color: var(--electric); font: 600 11px/1.4 system-ui, sans-serif; }
 .python-actions button:disabled { filter: grayscale(.7); opacity: .55; }
+
+.python-guide { margin-top: 20px; padding: 18px; border: 1px solid rgba(121,232,255,.2); border-radius: 15px; background: linear-gradient(135deg, rgba(121,232,255,.07), rgba(168,139,255,.08)); direction: rtl; }
+.python-guide-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--copy); }.python-guide-heading strong { font-size: 15px; }.python-guide-heading span { color: var(--electric); font: 10px system-ui, sans-serif; }
+.python-guide-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }.python-guide-grid article { min-height: 105px; padding: 12px; border: 1px solid var(--edge); border-radius: 10px; background: rgba(5,11,19,.52); }.python-guide-grid b { display: block; color: var(--electric); font: 700 10px system-ui, sans-serif; }.python-guide-grid code { display: block; margin: 10px 0 6px; color: var(--acid); font: 12px monospace; direction: ltr; text-align: left; }.python-guide-grid p { margin: 0; color: var(--muted-copy); font-size: 10px; line-height: 1.6; }.python-guide-tips { margin-top: 12px; color: #b7c4df; font-size: 11px; line-height: 1.8; }.python-guide-tips span { margin-left: 6px; color: var(--acid); font-weight: 700; }
+@media (max-width: 760px) { .python-guide-grid { grid-template-columns: repeat(2, 1fr); }.python-guide-heading { align-items: flex-start; flex-direction: column; } }
