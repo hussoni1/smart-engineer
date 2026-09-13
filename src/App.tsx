@@ -202,6 +202,33 @@ const courseEnglish: Record<string, { title: string; description: string }> = {
 };
 
 const aiLearningSlugs = new Set(["python-engineering", "ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai"]);
+const learningRoadmap = [
+  { order: "01", title: "Python والبرمجة", en: "Python & Programming", prereq: "لا توجد متطلبات · No prerequisites", outcome: "اكتب برامج وأدوات تحليل بسيطة." },
+  { order: "02", title: "الرياضيات والاحتمالات", en: "Math & Probability", prereq: "Python أساسيات · Python basics", outcome: "افهم المتجهات والاحتمال ودوال الخسارة." },
+  { order: "03", title: "الخوارزميات والبيانات", en: "Algorithms & Data Structures", prereq: "Python + رياضيات · Python + math", outcome: "صمّم حلولًا فعالة وتعامل مع البيانات." },
+  { order: "04", title: "التعلم الآلي", en: "Machine Learning", prereq: "رياضيات + خوارزميات · Math + algorithms", outcome: "درّب وقيّم نماذج التصنيف والانحدار." },
+  { order: "05", title: "التعلم العميق", en: "Deep Learning", prereq: "Machine Learning", outcome: "ابنِ شبكات عصبية وافهم التعميم." },
+  { order: "06", title: "الرؤية واللغة والروبوتات", en: "Vision, NLP & Robotics", prereq: "Deep Learning", outcome: "اختر تخصصًا تطبيقيًا في AI." },
+  { order: "07", title: "MLOps والذكاء الاصطناعي المسؤول", en: "MLOps & Responsible AI", prereq: "مشروع نموذج · A model project", outcome: "اختبر وانشر وراقب نظامًا ذكيًا." }
+];
+const courseProjects: Record<string, { title: string; en: string; brief: string; tools: string }> = {
+  "python-from-zero": { title: "محلل بيانات الطلاب", en: "Student Data Analyzer", brief: "اقرأ ملف CSV واحسب المتوسطات وحدد الطلاب الذين يحتاجون دعمًا.", tools: "Python · CSV · Functions" },
+  "python-engineering": { title: "لوحة قياسات هندسية", en: "Engineering Metrics Dashboard", brief: "نظّف قياسات حساسات واحسب المدى والمتوسط واكتشف القيم الشاذة.", tools: "Python · Data Cleaning · Charts" },
+  "ai-foundations": { title: "محرك قرار بالقواعد", en: "Rule-Based Decision Engine", brief: "حوّل قواعد واضحة إلى نظام يستنتج قرارًا قابلًا للتفسير.", tools: "Python · Logic · Inference" },
+  "machine-learning": { title: "نموذج توقع وتصنيف", en: "Prediction & Classification Model", brief: "درّب نموذجًا، اقسم البيانات، وقارن الدقة مع خط أساس بسيط.", tools: "Python · scikit-learn · Metrics" },
+  "deep-learning": { title: "مصنف صور صغير", en: "Small Image Classifier", brief: "ابنِ شبكة عصبية وتابع الفرق بين أداء التدريب والتحقق.", tools: "Python · Neural Network · Evaluation" },
+  "computer-vision": { title: "كاشف أجسام", en: "Object Detection Prototype", brief: "صمّم نموذج رؤية يحدد جسمًا في صورة وسجّل الحالات الفاشلة.", tools: "Vision · Images · Precision" },
+  "nlp-generative-ai": { title: "مساعد أسئلة موثق", en: "Grounded Q&A Assistant", brief: "أنشئ مساعدًا يسترجع مصادره قبل توليد الإجابة.", tools: "NLP · Retrieval · Evaluation" },
+  "mlops-ai-security": { title: "نشر نموذج مراقب", en: "Monitored Model API", brief: "غلّف نموذجًا في API وسجّل الجودة والخصوصية والأخطاء.", tools: "API · Monitoring · Security" },
+  "ai-engineering": { title: "خط أنابيب من البيانات إلى القرار", en: "Data-to-Decision Pipeline", brief: "اربط جمع البيانات والتنظيف والتدريب والتقييم بقرار قابل للتفسير.", tools: "Pipeline · ML · Explainability" },
+  "ai-technology-engineering": { title: "نظام AI متعدد الوسائط", en: "Multimodal AI System", brief: "صمّم نموذجًا يجمع نصًا وصورة ويعرض حدود وثقة النتيجة.", tools: "Vision · Language · System Design" },
+  "engineering-projects": { title: "نظام روبوت ذكي", en: "Smart Robotics System", brief: "ابنِ نموذجًا أوليًا يقرأ حساسًا ويختار فعلًا وفق سياسة واضحة.", tools: "Sensors · Robotics · Control" },
+  "mit-machine-learning": { title: "تجربة نمذجة وتنبؤ", en: "Modeling & Prediction Study", brief: "قارن نموذجين وفسّر أثر الميزات والافتراضات على التنبؤ.", tools: "Modeling · Inference · Statistics" },
+  "stanford-ai-foundations": { title: "وكيل بحث وتخطيط", en: "Search & Planning Agent", brief: "نفّذ وكيلًا يبحث عن خطة ويبرر اختياره للحالة التالية.", tools: "Search · Logic · Planning" },
+  "cmu-ai-engineering": { title: "نظام قرار مسؤول", en: "Responsible Decision System", brief: "حوّل البيانات إلى قرار مع اختبار العدالة والقيود والتفسير.", tools: "Data · Decision Making · Ethics" },
+  "berkeley-ai-ml": { title: "مختبر مقارنة نماذج", en: "AI/ML Model Comparison Lab", brief: "قارن التصنيف والتجميع أو التعلم المعزز بمقاييس موثقة.", tools: "ML · Evaluation · Decision Making" },
+  "toronto-ai": { title: "نموذج عميق موثوق", en: "Trustworthy Deep Model", brief: "درّب نموذجًا، اختبر التعميم، ثم وثّق الأمان والخصوصية وحدود الاستخدام.", tools: "Deep Learning · Trust · Testing" }
+};
 const englishLevel: Record<string, string> = { "مبتدئ": "Beginner", "متوسط": "Intermediate", "متقدم": "Advanced", "مشاريع": "Projects" };
 
 const pythonExercises = [
@@ -282,6 +309,7 @@ const getExerciseBenefit = (title: string) => {
 function CourseCard({ course, progress, onOpen }: { course: Course; progress?: Progress; onOpen: () => void }) {
   const value = progress?.progress ?? 0;
   const english = courseEnglish[course.slug];
+  const project = courseProjects[course.slug];
   return (
     <button className={`course-card course-card--${course.color}`} onClick={onOpen}>
       <div className="course-card-art">
@@ -292,6 +320,7 @@ function CourseCard({ course, progress, onOpen }: { course: Course; progress?: P
         <h3>{course.title}<small className="course-title-en">{english?.title ?? course.title}</small></h3>
         <p>{course.description}<small className="course-description-en">{english?.description ?? course.description}</small></p>
         <span>{course.lessons.length} دروس · {course.lessons.length} lessons · {course.lessons.reduce((sum, lesson) => sum + Number.parseInt(lesson.duration), 0)} دقيقة / min</span>
+        {project && <div className="course-project-brief"><b>مشروع تطبيقي · Practical project</b><strong>{project.title}<small>{project.en}</small></strong><p>{project.brief}</p><span>{project.tools}</span></div>}
         <div className="progress-track"><i style={{ width: `${value}%` }} /></div>
         <div className="progress-caption"><span>التقدم</span><b>{value}%</b></div>
       </div>
@@ -397,6 +426,7 @@ function Home({ user, progress, onNavigate, onLogout }: { user: User | null; pro
         <div className="learning-showcase-copy"><span className="eyebrow">مساراتك القادمة · Your next learning paths</span><h2 id="learning-paths-title">هندسة تقنيات الذكاء الاصطناعي<br /><em>AI Technology Engineering</em></h2><p>اختر مسارك، تعلّم بالعربي والإنكليزي، ثم اختبر فهمك بأسئلة مع حلول واضحة. Learn in Arabic and English with written assessments and answer explanations.</p><div className="showcase-stats"><div><strong>{aiCourses.length}</strong><span>مسار تعلّم<br />Learning paths</span></div><div><strong>{aiCourses.reduce((sum, course) => sum + course.lessons.length, 0)}</strong><span>درس واختبار<br />Lessons & quizzes</span></div><div><strong>AR / EN</strong><span>ثنائي اللغة<br />Bilingual</span></div></div></div>
         <div className="learning-orbit" aria-hidden="true"><div className="orbit-core">AI</div><span>ML</span><span>NLP</span><span>VISION</span><span>ROBOTS</span></div>
       </section>
+      <section className="roadmap-section" aria-labelledby="roadmap-title"><div className="section-heading"><div><span className="eyebrow">خريطة الطريق · Learning roadmap</span><h2 id="roadmap-title">من الصفر إلى مهندس AI</h2><p className="roadmap-intro">اتبع المراحل بالترتيب؛ كل مرحلة توضح متطلباتها وما ستتمكن من بنائه بعدها.</p></div></div><div className="roadmap-track">{learningRoadmap.map((step) => <article className="roadmap-step" key={step.order}><span className="roadmap-number">{step.order}</span><h3>{step.title}<small>{step.en}</small></h3><p><b>المتطلب السابق:</b> {step.prereq}</p><p><b>الناتج:</b> {step.outcome}</p></article>)}</div></section>
       <section className="dashboard-grid" id="learning">
         <aside className="side-panel progress-panel">
           <div className="panel-label">تقدمك اليوم <span>↗</span></div>
