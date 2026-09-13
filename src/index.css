@@ -452,3 +452,10 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .section-heading h2 { font-size: 25px; }
   .quiz-card { padding: 18px; }
 }
+
+.translate-button { display: inline-flex; align-items: center; margin-inline-start: 12px; padding: 6px 10px; border: 1px solid rgba(121,232,255,.45); border-radius: 999px; color: var(--electric); background: rgba(121,232,255,.08); font: 700 10px/1 system-ui, sans-serif; vertical-align: middle; }
+.translate-button:hover { background: rgba(121,232,255,.18); box-shadow: 0 0 18px rgba(121,232,255,.15); }
+.quiz-card legend { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.quiz-card legend > span { flex: 1; min-width: 220px; }
+.quiz-card legend .quiz-en-label { flex-basis: 100%; }
+@media (max-width: 680px) { .translate-button { margin-inline-start: 0; } }

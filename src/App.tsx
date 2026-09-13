@@ -5,6 +5,7 @@ import solarImage from "./assets/projects/solar.jpg";
 import weatherImage from "./assets/projects/weather.jpg";
 import robotImage from "./assets/projects/robot.jpg";
 import homeImage from "./assets/projects/home.jpg";
+import { quizTranslations } from "./quizTranslations";
 
 type Course = { slug: string; title: string; level: string; color: string; description: string; lessons: Lesson[] };
 type Lesson = { title: string; duration: string; summary: string; body: string[]; quiz: { question: string; options: string[]; answer: number; explanation: string }[] };
@@ -486,9 +487,10 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ score: number; passed: boolean } | null>(null);
+  const [showArabic, setShowArabic] = useState(false);
   const previousResult = results.find((item) => item.courseSlug === course.slug && item.lessonIndex === index);
 
-  useEffect(() => { setAnswers({}); setSubmitted(false); setFeedback(null); }, [course.slug, index]);
+  useEffect(() => { setAnswers({}); setSubmitted(false); setFeedback(null); setShowArabic(false); }, [course.slug, index]);
 
   if (!allowed) {
     return (
@@ -580,16 +582,16 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
             </div>
             {lesson.quiz.map((item, quizIndex) => (
               <fieldset key={item.question}>
-                <legend>{quizIndex + 1}. {item.question}<small className="quiz-en-label">Question · Choose the best answer</small></legend>
+                <legend><span>{quizIndex + 1}. {showArabic ? item.question : (quizTranslations[item.question] ?? item.question)}</span><button type="button" className="translate-button" onClick={() => setShowArabic((current) => !current)}>{showArabic ? "English · English" : "ترجمة · Arabic"}</button><small className="quiz-en-label">{showArabic ? "السؤال · اختر أفضل إجابة" : "Question · Choose the best answer"}</small></legend>
                 <div className="quiz-options">
                   {item.options.map((option, optionIndex) => (
                     <label key={option}>
                       <input type="radio" name={`question-${quizIndex}`} checked={answers[quizIndex] === optionIndex} onChange={() => setAnswers((current) => ({ ...current, [quizIndex]: optionIndex }))} disabled={saving} />
-                      <span><b>{option}</b><small>Option {String.fromCharCode(65 + optionIndex)} · خيار الإجابة {optionIndex + 1}</small></span>
+                      <span><b>{showArabic ? option : (quizTranslations[option] ?? option)}</b><small>Option {String.fromCharCode(65 + optionIndex)} · {showArabic ? `خيار الإجابة ${optionIndex + 1}` : `Answer option ${optionIndex + 1}`}</small></span>
                     </label>
                   ))}
                 </div>
-                {submitted && <small className={answers[quizIndex] === item.answer ? "answer-hint good" : "answer-hint bad"}>{answers[quizIndex] === item.answer ? "إجابة صحيحة · Correct answer" : `الإجابة الصحيحة · Correct answer: ${item.options[item.answer]}`} — {item.explanation}<br /><span><b>Solution / الحل:</b> The correct choice is Option {String.fromCharCode(65 + item.answer)} because it best matches the lesson objective. · الخيار الصحيح هو {String.fromCharCode(65 + item.answer)} لأنه يطابق هدف الدرس.</span></small>}
+                {submitted && <small className={answers[quizIndex] === item.answer ? "answer-hint good" : "answer-hint bad"}>{answers[quizIndex] === item.answer ? (showArabic ? "إجابة صحيحة" : "Correct answer") : `${showArabic ? "الإجابة الصحيحة" : "Correct answer"}: ${showArabic ? item.options[item.answer] : (quizTranslations[item.options[item.answer]] ?? item.options[item.answer])}`} — {showArabic ? item.explanation : (quizTranslations[item.explanation] ?? item.explanation)}<br /><span><b>{showArabic ? "الحل:" : "Solution:"}</b> {showArabic ? `الخيار الصحيح هو ${String.fromCharCode(65 + item.answer)} لأنه يطابق هدف الدرس.` : `Option ${String.fromCharCode(65 + item.answer)} is correct because it best matches the lesson objective.`}</span></small>}
               </fieldset>
             ))}
             <div className="quiz-footer">
