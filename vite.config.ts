@@ -7,5 +7,6 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), cloudflare()],
+  server: { host: "0.0.0.0", allowedHosts: true },
   build: { target: "safari15", cssTarget: "safari15" },
 });
