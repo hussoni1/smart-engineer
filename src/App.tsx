@@ -197,10 +197,43 @@ const pythonExercises = [
   { title: "A simple function", titleAr: "دالة بسيطة", prompt: "Write add(a, b) and print add(7, 5).", promptAr: "اكتب الدالة add(a, b) واطبع نتيجة add(7, 5).", starter: "def add(a, b):\n    # return the sum\n    pass\n\nprint(add(7, 5))\n", expected: "12" },
   { title: "Lists and loops", titleAr: "القوائم والحلقات", prompt: "Print the sum of [2, 4, 6, 8].", promptAr: "اطبع مجموع القائمة [2, 4, 6, 8].", starter: "numbers = [2, 4, 6, 8]\n# Calculate and print the sum\n", expected: "20" },
   { title: "AI feature average", titleAr: "متوسط سمات الذكاء الاصطناعي", prompt: "Calculate the average of features = [0.8, 0.6, 1.0] and print it.", promptAr: "احسب متوسط features = [0.8, 0.6, 1.0] واطبعه.", starter: "features = [0.8, 0.6, 1.0]\n# Calculate the average\n", expected: "0.7999999999999999" }
+  , ...[
+    ["Strings", "النصوص", "Print the uppercase version of name = 'python'.", "اطبع النص name = 'python' بأحرف كبيرة.", "name = 'python'\nprint(name.upper())", "PYTHON"],
+    ["String length", "طول النص", "Print the length of word = 'Artificial Intelligence'.", "اطبع طول النص word = 'Artificial Intelligence'.", "word = 'Artificial Intelligence'\nprint(len(word))", "23"],
+    ["String slicing", "تقطيع النص", "Print the first 3 characters of language = 'Python'.", "اطبع أول 3 أحرف من language = 'Python'.", "language = 'Python'\nprint(language[:3])", "Pyt"],
+    ["Numbers", "الأرقام", "Print the result of 12 + 8 * 2.", "اطبع نتيجة 12 + 8 * 2.", "print(12 + 8 * 2)", "28"],
+    ["Division", "القسمة", "Print 25 divided by 4.", "اطبع ناتج قسمة 25 على 4.", "print(25 / 4)", "6.25"],
+    ["Remainder", "باقي القسمة", "Print the remainder of 17 divided by 5.", "اطبع باقي قسمة 17 على 5.", "print(17 % 5)", "2"],
+    ["Boolean values", "القيم المنطقية", "Print whether 10 is greater than 3.", "اطبع هل 10 أكبر من 3.", "print(10 > 3)", "True"],
+    ["If statement", "جملة if", "Print 'Pass' when score = 85 is at least 70.", "اطبع Pass عندما تكون score = 85 أكبر أو تساوي 70.", "score = 85\nif score >= 70:\n    print('Pass')", "Pass"],
+    ["If else", "if و else", "Print 'Even' for number = 8, otherwise print 'Odd'.", "اطبع Even للعدد 8 وإلا اطبع Odd.", "number = 8\nif number % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')", "Even"],
+    ["For loop", "حلقة for", "Print numbers from 1 to 3.", "اطبع الأعداد من 1 إلى 3.", "for number in range(1, 4):\n    print(number)", "1\n2\n3"],
+    ["While loop", "حلقة while", "Print 1, 2, and 3 using while.", "اطبع 1 و2 و3 باستخدام while.", "number = 1\nwhile number <= 3:\n    print(number)\n    number += 1", "1\n2\n3"],
+    ["List access", "الوصول للقائمة", "Print the second item in colors.", "اطبع العنصر الثاني من قائمة الألوان.", "colors = ['red', 'blue', 'green']\nprint(colors[1])", "blue"],
+    ["List append", "إضافة للقائمة", "Add 'AI' to topics and print the list.", "أضف AI إلى topics واطبع القائمة.", "topics = ['Python', 'Math']\ntopics.append('AI')\nprint(topics)", "['Python', 'Math', 'AI']"],
+    ["List sum", "جمع عناصر القائمة", "Print the sum of values = [3, 5, 7].", "اطبع مجموع values = [3, 5, 7].", "values = [3, 5, 7]\nprint(sum(values))", "15"],
+    ["List maximum", "أكبر قيمة", "Print the largest value in scores = [72, 91, 84].", "اطبع أكبر قيمة في scores = [72, 91, 84].", "scores = [72, 91, 84]\nprint(max(scores))", "91"],
+    ["Dictionary access", "الوصول للقاموس", "Print the city from student.", "اطبع المدينة من قاموس student.", "student = {'name': 'Ali', 'city': 'Baghdad'}\nprint(student['city'])", "Baghdad"],
+    ["Dictionary update", "تحديث القاموس", "Add level = 'AI Engineer' and print it.", "أضف level = AI Engineer واطبعه.", "profile = {}\nprofile['level'] = 'AI Engineer'\nprint(profile['level'])", "AI Engineer"],
+    ["Tuple", "الـ tuple", "Print the first value in point = (4, 9).", "اطبع القيمة الأولى في point = (4, 9).", "point = (4, 9)\nprint(point[0])", "4"],
+    ["Set", "الـ set", "Print the number of unique values in [1, 1, 2, 3].", "اطبع عدد القيم المختلفة في [1, 1, 2, 3].", "values = {1, 1, 2, 3}\nprint(len(values))", "3"],
+    ["Function return", "إرجاع من الدالة", "Create square(n) and print square(6).", "أنشئ square(n) واطبع square(6).", "def square(n):\n    return n * n\nprint(square(6))", "36"],
+    ["Default parameter", "المعامل الافتراضي", "Create greet(name='Engineer') and print greet().", "أنشئ greet بمعامل افتراضي Engineer واطبعها.", "def greet(name='Engineer'):\n    return 'Hello ' + name\nprint(greet())", "Hello Engineer"],
+    ["List comprehension", "اختصار القوائم", "Print squares for [1, 2, 3].", "اطبع مربعات [1, 2, 3].", "numbers = [1, 2, 3]\nprint([n * n for n in numbers])", "[1, 4, 9]"],
+    ["Try and except", "معالجة الأخطاء", "Catch a division by zero and print 'Error'.", "عالج القسمة على صفر واطبع Error.", "try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print('Error')", "Error"],
+    ["File-safe thinking", "التفكير الآمن", "Print a message that data was validated.", "اطبع رسالة تفيد أن البيانات تم التحقق منها.", "data_valid = True\nif data_valid:\n    print('Validated')", "Validated"],
+    ["Class basics", "أساسيات الأصناف", "Create Robot with name and print its name.", "أنشئ Robot مع name واطبع الاسم.", "class Robot:\n    def __init__(self, name):\n        self.name = name\nrobot = Robot('Ava')\nprint(robot.name)", "Ava"],
+    ["Method", "الدالة داخل الصنف", "Create a Sensor with read() returning 42.", "أنشئ Sensor مع read() ترجع 42.", "class Sensor:\n    def read(self):\n        return 42\nsensor = Sensor()\nprint(sensor.read())", "42"],
+    ["Import math", "استيراد math", "Use math.sqrt to print the square root of 81.", "استخدم math.sqrt لطباعة الجذر التربيعي لـ81.", "import math\nprint(math.sqrt(81))", "9.0"],
+    ["Random choice", "اختيار عشوائي", "Create choices = ['A', 'B'] and print its first item.", "أنشئ choices واطبع العنصر الأول.", "choices = ['A', 'B']\nprint(choices[0])", "A"],
+    ["Data filtering", "تصفية البيانات", "Print values above 70 from scores.", "اطبع القيم الأكبر من 70 من scores.", "scores = [55, 72, 88]\nprint([score for score in scores if score > 70])", "[72, 88]"],
+    ["Simple classifier", "مصنف بسيط", "Print 'High' when probability = 0.9 is above 0.7.", "اطبع High عندما تكون probability = 0.9 أكبر من 0.7.", "probability = 0.9\nif probability > 0.7:\n    print('High')", "High"],
+    ["Mini pipeline", "خط أنابيب مصغر", "Normalize value = 50 by dividing it by 100.", "طبّع value = 50 بقسمته على 100.", "value = 50\nnormalized = value / 100\nprint(normalized)", "0.5"]
+  ].map(([title, titleAr, prompt, promptAr, starter, expected]) => ({ title, titleAr, prompt, promptAr, starter, expected }))
 ];
 
 const runExerciseFallback = (code: string, exerciseIndex: number): string => {
-  if (exerciseIndex === 0) { const match = code.match(/print\(\s*["']([^"']+)["']\s*\)/); if (!match) throw new Error("Use print(\"your text\")"); return match[1]; }
+  if (/print\(\s*["']([^"']+)["']\s*\)/.test(code) && exerciseIndex === 0) { const match = code.match(/print\(\s*["']([^"']+)["']\s*\)/); if (!match) throw new Error("Use print(\"your text\")"); return match[1]; }
   if (exerciseIndex === 1) { const width = code.match(/width\s*=\s*([\d.]+)/)?.[1]; const height = code.match(/height\s*=\s*([\d.]+)/)?.[1]; if (!width || !height) throw new Error("Define width and height first"); return String(Number(width) * Number(height)); }
   if (exerciseIndex === 2) { const match = code.match(/print\(\s*add\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)\s*\)/); if (!match || !/return\s+a\s*\+\s*b/.test(code)) throw new Error("Define add(a, b) and return a + b"); return String(Number(match[1]) + Number(match[2])); }
   if (exerciseIndex === 3) { const match = code.match(/\[\s*([\d.,\s]+)\s*\]/); if (!match || !/sum\s*\(/.test(code)) throw new Error("Create the list and use sum(numbers)"); return String(match[1].split(",").reduce((sum, value) => sum + Number(value), 0)); }
