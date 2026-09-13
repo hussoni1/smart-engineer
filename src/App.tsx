@@ -585,11 +585,11 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
                   {item.options.map((option, optionIndex) => (
                     <label key={option}>
                       <input type="radio" name={`question-${quizIndex}`} checked={answers[quizIndex] === optionIndex} onChange={() => setAnswers((current) => ({ ...current, [quizIndex]: optionIndex }))} disabled={saving} />
-                      <span>{option}</span>
+                      <span><b>{option}</b><small>Option {String.fromCharCode(65 + optionIndex)} · خيار الإجابة {optionIndex + 1}</small></span>
                     </label>
                   ))}
                 </div>
-                {submitted && <small className={answers[quizIndex] === item.answer ? "answer-hint good" : "answer-hint bad"}>{answers[quizIndex] === item.answer ? "إجابة صحيحة · Correct answer" : `الإجابة الصحيحة · Correct answer: ${item.options[item.answer]}`} — {item.explanation}<br /><span>Answer key and explanation are shown in Arabic; review the concept in English: choose the option that best matches the lesson objective.</span></small>}
+                {submitted && <small className={answers[quizIndex] === item.answer ? "answer-hint good" : "answer-hint bad"}>{answers[quizIndex] === item.answer ? "إجابة صحيحة · Correct answer" : `الإجابة الصحيحة · Correct answer: ${item.options[item.answer]}`} — {item.explanation}<br /><span><b>Solution / الحل:</b> The correct choice is Option {String.fromCharCode(65 + item.answer)} because it best matches the lesson objective. · الخيار الصحيح هو {String.fromCharCode(65 + item.answer)} لأنه يطابق هدف الدرس.</span></small>}
               </fieldset>
             ))}
             <div className="quiz-footer">
