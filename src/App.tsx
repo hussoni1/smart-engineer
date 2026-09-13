@@ -188,18 +188,21 @@ function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNaviga
   return <main className="portal-shell"><Topbar user={user} active="admin" onNavigate={onNavigate} onLogout={onLogout} /><section className="admin-page"><div className="section-heading"><div><span className="eyebrow">إدارة المنصة</span><h1>الأعضاء</h1></div><span className="result-count">{members.length} أعضاء</span></div>{error ? <div className="empty-state">{error}</div> : <div className="admin-table">{members.map((member) => <article key={member.id} className="admin-row"><div><strong>{member.name}</strong><small>{member.email}</small></div><span>{Math.round(member.progress)}% تقدم</span><span>{member.quizCount} اختبارات</span><span>{new Date(member.createdAt).toLocaleDateString("ar-IQ")}</span><button className="reset-button" onClick={() => void resetPassword(member)}>تغيير الرمز</button><button className="danger-button" onClick={() => void remove(member.id)}>حذف</button></article>)}</div>}</section></main>;
 }
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
   return (
     <header className="topbar">
-      <button className="brand" onClick={() => onNavigate("/")}>
+      <button className="brand" onClick={() => go("/")}>
         <span className="brand-mark">M</span>
         <strong>EngiMind — إنجي مايند</strong>
       </button>
-      <nav>
-        <button className={active === "learning" ? "active" : ""} onClick={() => onNavigate("/")}>مسارات التعلم</button>
-        <button className={active === "python" ? "active" : ""} onClick={() => onNavigate("/python")}>لغة بايثون</button>
-        <button className={active === "cpp" ? "active" : ""} onClick={() => onNavigate("/courses/cpp/lessons/1")}>لغة C++</button>
+      <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
+      <nav className={menuOpen ? "menu-open" : ""}>
+        <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>مسارات التعلم</button>
+        <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}>لغة بايثون</button>
+        <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>لغة C++</button>
         <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
-        {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => onNavigate("/admin")}>لوحة التحكم</button>}
+        {user?.email.trim().toLowerCase() === "altiahussoni@gmail.com" && <button className={active === "admin" ? "active" : ""} onClick={() => go("/admin")}>لوحة التحكم</button>}
         <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>المجتمع</button>
         <button className={active === "challenges" ? "active" : ""} onClick={() => document.getElementById("challenges")?.scrollIntoView({ behavior: "smooth" })}>التحديات</button>
       </nav>
