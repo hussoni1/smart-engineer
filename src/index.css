@@ -547,3 +547,10 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 
 /* Accessibility polish */
 :focus-visible { outline: 3px solid var(--acid); outline-offset: 3px; }.quiet-button, .text-button, .secondary-button, .primary-button, .course-card, .goal-card, .advanced-track-card { -webkit-tap-highlight-color: transparent; }@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+/* Academic foundation sequence */
+.foundation-sequence { width: calc(100% - 40px); max-width: 1440px; margin: 24px auto; direction: rtl; }.foundation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }.foundation-card { position: relative; display: block; text-align: right; cursor: pointer; }.foundation-card .roadmap-number { display: inline-grid; margin-bottom: 8px; }.foundation-card h3 { margin: 5px 0; }.foundation-card h3 small { display: block; color: var(--electric); font-size: 11px; margin-top: 4px; }.foundation-card p { color: var(--muted-copy); line-height: 1.7; }.foundation-card strong { color: var(--acid); font-size: 11px; }
+.data-controls select { width: 100%; margin-top: 6px; padding: 10px; border: 1px solid var(--edge); border-radius: 8px; background: #101b31; color: var(--copy); }.data-controls label + label { margin-top: 12px; display: block; }
+@media (max-width: 700px) { .foundation-sequence { width: 100%; }.foundation-grid { grid-template-columns: 1fr; } }
+
+.project-rubric { margin-top: 24px; text-align: right; }.project-rubric h2 { margin: 4px 0; }.project-rubric label { display: block; padding: 13px 0; border-bottom: 1px solid var(--edge); color: var(--copy); }.project-rubric input { margin-left: 10px; accent-color: var(--acid); }.rubric-score { color: var(--acid); font-size: 28px; }
