@@ -36,7 +36,7 @@ const OAUTH_COOKIE = "smart_oauth_state";
 const ADMIN_EMAIL = "altiahussoni@gmail.com";
 const COURSE_SLUGS = new Set(["renewable-energy", "python-engineering", "bim", "mechatronics", "ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai", "english-from-zero"]);
 const LESSONS_PER_COURSE = 3;
-const COURSE_LESSON_COUNTS: Record<string, number> = { "ai-engineering": 8, "ai-technology-engineering": 8, "ai-foundations": 8, "machine-learning": 8, "deep-learning": 8, "nlp-generative-ai": 8, "computer-vision": 8, "mlops-ai-security": 8, "engineering-projects": 8, "mit-machine-learning": 8, "stanford-ai-foundations": 8, "cmu-ai-engineering": 8, "berkeley-ai-ml": 8, "toronto-ai": 8, "english-from-zero": 8, "python-from-zero": 11 };
+const COURSE_LESSON_COUNTS: Record<string, number> = { "ai-engineering": 8, "ai-technology-engineering": 8, "ai-foundations": 8, "machine-learning": 8, "deep-learning": 8, "nlp-generative-ai": 8, "computer-vision": 8, "mlops-ai-security": 8, "engineering-projects": 8, "mit-machine-learning": 8, "stanford-ai-foundations": 8, "cmu-ai-engineering": 8, "berkeley-ai-ml": 8, "toronto-ai": 8, "english-from-zero": 52, "python-from-zero": 11 };
 function lessonCount(courseSlug: string) { return COURSE_LESSON_COUNTS[courseSlug] ?? LESSONS_PER_COURSE; }
 
 export function isValidQuizInput(courseSlug: string, lessonIndex: number, score: number, total: number) {
