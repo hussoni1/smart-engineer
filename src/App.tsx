@@ -885,6 +885,15 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
     }
   };
 
+  const speakEnglish = (text: string) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  };
   const next = index < course.lessons.length ? `/courses/${course.slug}/lessons/${index + 1}` : "/profile";
   const isFinalAssessment = index === course.lessons.length;
   const lessonExample = index === 1 ? 'name = "EngiMind"\nprint(f"مرحبًا بك في {name}")' : index === 2 ? 'scores = [80, 92, 75]\naverage = sum(scores) / len(scores)\nprint(average)' : index === 3 ? 'def greet(name):\n    return f"أهلًا {name}"\n\nprint(greet("علي"))' : 'class Project:\n    def __init__(self, title):\n        self.title = title\n\nproject = Project("مساعد ذكي")';
@@ -940,12 +949,12 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
             </div>
             {lesson.quiz.map((item, quizIndex) => (
               <fieldset key={item.question}>
-                <legend><span>{quizIndex + 1}. {showArabic ? item.question : (quizTranslations[item.question] ?? item.question)}</span><button type="button" className="translate-button" onClick={() => setShowArabic((current) => !current)}>{showArabic ? "English · English" : "ترجمة · Arabic"}</button><small className="quiz-en-label">{showArabic ? "السؤال · اختر أفضل إجابة" : "Question · Choose the best answer"}</small></legend>
+                <legend><span>{quizIndex + 1}. {showArabic ? item.question : (quizTranslations[item.question] ?? item.question)}</span><button type="button" className="speak-button" onClick={() => speakEnglish(quizTranslations[item.question] ?? item.question)} aria-label="Listen to question" title="استمع إلى السؤال">🔊 Listen</button><button type="button" className="translate-button" onClick={() => setShowArabic((current) => !current)}>{showArabic ? "English · English" : "ترجمة · Arabic"}</button><small className="quiz-en-label">{showArabic ? "السؤال · اختر أفضل إجابة" : "Question · Choose the best answer"}</small></legend>
                 <div className="quiz-options">
                   {item.options.map((option, optionIndex) => (
                     <label key={option}>
                       <input type="radio" name={`question-${quizIndex}`} checked={answers[quizIndex] === optionIndex} onChange={() => setAnswers((current) => ({ ...current, [quizIndex]: optionIndex }))} disabled={saving} />
-                      <span><b>{showArabic ? option : (quizTranslations[option] ?? option)}</b><small>Option {String.fromCharCode(65 + optionIndex)} · {showArabic ? `خيار الإجابة ${optionIndex + 1}` : `Answer option ${optionIndex + 1}`}</small></span>
+                      <span><b>{showArabic ? option : (quizTranslations[option] ?? option)}</b><button type="button" className="speak-button option-speak" onClick={(event) => { event.preventDefault(); speakEnglish(quizTranslations[option] ?? option); }} aria-label={`Listen to option ${optionIndex + 1}`} title="استمع إلى الاختيار">🔊</button><small>Option {String.fromCharCode(65 + optionIndex)} · {showArabic ? `خيار الإجابة ${optionIndex + 1}` : `Answer option ${optionIndex + 1}`}</small></span>
                     </label>
                   ))}
                 </div>

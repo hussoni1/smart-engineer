@@ -459,6 +459,7 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .quiz-card { padding: 18px; }
 }
 
+.speak-button { border: 1px solid rgba(182,240,0,.45); border-radius: 999px; background: rgba(182,240,0,.1); color: #d9ff72; padding: 5px 9px; font-size: 11px; cursor: pointer; margin-inline-start: 8px; }.speak-button:hover { background: rgba(182,240,0,.22); }.option-speak { border: 0; padding: 1px 5px; background: transparent; font-size: 13px; vertical-align: middle; }.quiz-options label span { position: relative; }.quiz-options label span small { display: block; }
 .translate-button { display: inline-flex; align-items: center; margin-inline-start: 12px; padding: 6px 10px; border: 1px solid rgba(121,232,255,.45); border-radius: 999px; color: var(--electric); background: rgba(121,232,255,.08); font: 700 10px/1 system-ui, sans-serif; vertical-align: middle; }
 .translate-button:hover { background: rgba(121,232,255,.18); box-shadow: 0 0 18px rgba(121,232,255,.15); }
 .quiz-card legend { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
