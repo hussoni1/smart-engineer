@@ -234,7 +234,7 @@ const courseEnglish: Record<string, { title: string; description: string }> = {
   "english-from-zero": { title: "English from Zero", description: "An original A1-A2 foundation path based on CEFR goals." }
 };
 
-const aiLearningSlugs = new Set(["ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai"]);
+const aiLearningSlugs = new Set(["ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai", "english-from-zero"]);
 const courseStudyOrder = ["python-from-zero", "ai-foundations", "ai-engineering", "ai-technology-engineering", "machine-learning", "deep-learning", "computer-vision", "nlp-generative-ai", "mlops-ai-security", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai", "engineering-projects"];
 const advancedTrackOrder = ["ai-math", "algorithms-data-structures", "data-engineering", "end-to-end-projects", "computer-vision-pro", "nlp-generative-pro", "mlops-deployment", "responsible-ai-security", "ai-research-methods"];
 const byStudyOrder = <T extends { slug: string }>(items: T[], order: string[]) => [...items].sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug));
