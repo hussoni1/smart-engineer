@@ -460,6 +460,29 @@ function ProjectsPage({ user, onNavigate, onLogout }: { user: User | null; onNav
   const [checks, setChecks] = useState<Record<string, boolean>>({}); const rubric = ["فهمت المشكلة وحددت المتطلبات", "حضّرت البيانات أو التوصيلات بأمان", "نفذت الحل واختبرت الحالات", "وثقت النتيجة وكتبت ما تعلمته"]; const score = rubric.filter((_, index) => checks[`r${index}`]).length * 25;
   return <main className="portal-shell"><Topbar user={user} active="projects" onNavigate={onNavigate} onLogout={onLogout} /><section className="learning-panel projects-page" style={{ maxWidth: 1224, margin: "38px auto", direction: "rtl" }}><span className="eyebrow">مختبر التنفيذ الهندسي</span><h1>أعلى مشاريع هندسية تطبيقية</h1><p>اختر مشروعًا، تعرّف على فكرته والأجهزة والمواد المطلوبة، شاهد طريقة التنفيذ، ثم اختبر فهمك.</p><div className="course-grid">{course.lessons.map((lesson, index) => <button className="course-card project-card" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><div className="course-card-art"><img src={projectImages[index]} alt={lesson.title} /><span className="course-level">مشروع {index + 1}</span></div><div className="course-card-copy"><h3>{lesson.title}</h3><p>{lesson.summary}</p><span>أجهزة ومواد · فيديو · {lesson.quiz.length} أسئلة</span></div></button>)}</div><section className="workspace-card project-rubric"><div className="section-heading"><div><span className="eyebrow">Project rubric · تقييم المشروع</span><h2>قائمة تسليم عملية</h2></div><strong className="rubric-score">{score}%</strong></div>{rubric.map((item, index) => <label key={item}><input type="checkbox" checked={Boolean(checks[`r${index}`])} onChange={(event) => setChecks((current) => ({ ...current, [`r${index}`]: event.target.checked }))} />{item}</label>)}<p>أكمل القائمة بعد تنفيذ المشروع؛ الدرجة هنا للتقييم الذاتي وليست شهادة رسمية.</p></section><p className="panel-note">{user ? "تقدمك محفوظ في حسابك" : "سجّل الدخول لفتح المشاريع وحفظ تقدمك"}</p></section></main>;
 }
+function CommunityPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const publicProjects = [
+    ["نظام منزل ذكي متكامل", "إنترنت الأشياء والتحكم", "حساسات، أتمتة، وقرارات قابلة للقياس."],
+    ["طائرة مسيرة ذكية", "تصميم وتحليل هندسي", "مبادئ التحكم والرؤية والسلامة في النماذج الأولية."],
+    ["جسر منخفض التكلفة", "نمذجة وتحليل إنشائي", "اختبر الفكرة، وثّق الافتراضات، وشارك النتيجة."]
+  ];
+  return <main className="portal-shell"><Topbar user={user} active="community" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Engineering community · المجتمع الهندسي</span><h1>شارك فكرتك وتعلّم من الآخرين</h1><p>مساحة عامة للمشاريع والتجارب والنتائج. ابدأ بمشروعك من ملفك الشخصي أو استكشف النماذج التعليمية.</p></div><button className="primary-button" onClick={() => onNavigate(user ? "/profile" : "/login")}>{user ? "افتح مساحة مشروعي" : "سجّل للمشاركة"} ←</button></div><div className="community-public-grid">{publicProjects.map(([title, tag, description]) => <article className="workspace-card public-project-card" key={title}><span className="course-chip cyan">{tag}</span><h2>{title}</h2><p>{description}</p><button className="secondary-button" onClick={() => onNavigate("/projects")}>شاهد طريقة التنفيذ ←</button></article>)}</div><section className="workspace-card community-rules"><span className="eyebrow">Community guidelines · إرشادات المجتمع</span><h2>شارك باحترام ووثّق عملك</h2><p>اكتب مصادر المشروع، اذكر القياسات والحدود، ولا تنشر بيانات شخصية أو تعليمات غير آمنة. كل مشروع تعليمي يحتاج وصفاً واضحاً وخطوات قابلة لإعادة التجربة.</p></section></section></main>;
+}
+
+function NotificationsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  return <main className="portal-shell"><Topbar user={user} active="notifications" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Updates · التحديثات</span><h1>إشعاراتك</h1><p>آخر الأخبار والتنبيهات المهمة من منصة EngiMind.</p></div></div><div className="notification-list"><article className="workspace-card notification-item"><strong>مرحباً بك في EngiMind</strong><p>ابدأ بمسار Python أو اختر هدفك لبناء خطة تعلم واضحة.</p><small>تحديث المنصة · الآن</small></article><article className="workspace-card notification-item"><strong>نصيحة تعلم</strong><p>أكمل الاختبار بعد كل درس حتى يُحفظ تقدمك وتفتح المرحلة التالية.</p><small>إرشاد تعليمي · للكل</small></article></div></section></main>;
+}
+
+function LegalPage({ user, onNavigate, onLogout, kind }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void; kind: "privacy" | "terms" | "contact" | "about" }) {
+  const content = {
+    privacy: ["سياسة الخصوصية", "نخزن بيانات الحساب والتقدم والاختبارات لتشغيل المنصة وتحسين تجربة التعلم. لا نبيع بياناتك ولا نعرض كلمة مرورك. يمكنك طلب حذف الحساب عبر صفحة التواصل."],
+    terms: ["شروط الاستخدام", "استخدم المنصة للتعلم والمشاريع التعليمية فقط. احترم حقوق المصادر، لا ترفع محتوى ضاراً أو بيانات شخصية، وتأكد من إجراءات السلامة في أي تجربة هندسية."],
+    contact: ["تواصل معنا", "للإبلاغ عن مشكلة أو اقتراح تحسين، تواصل عبر Instagram @h_sson6 أو افتح issue في مستودع GitHub الرسمي للمشروع. أرفق رابط الصفحة ووصف الخطأ دون مشاركة كلمة المرور."],
+    about: ["عن EngiMind", "EngiMind منصة عربية ثنائية اللغة لتعلم البرمجة والذكاء الاصطناعي والهندسة بالتطبيق والاختبارات والمشاريع العملية."]
+  }[kind];
+  return <main className="portal-shell"><Topbar user={user} active="" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell legal-page"><div className="workspace-heading"><div><span className="eyebrow">EngiMind · معلومات المنصة</span><h1>{content[0]}</h1></div><button className="secondary-button" onClick={() => onNavigate("/")}>العودة للرئيسية ←</button></div><article className="workspace-card legal-card"><p>{content[1]}</p><h2>حقوقك ومسؤولياتك</h2><p>نحاول إبقاء المعلومات دقيقة ومفيدة، لكن المحتوى التعليمي لا يغني عن إشراف مختص عند تنفيذ تجارب كهربائية أو ميكانيكية. يمكنك دائماً تسجيل الخروج وحذف بياناتك عبر التواصل مع إدارة المنصة.</p><small>آخر تحديث: 14 أيلول 2026</small></article></section></main>;
+}
+
 function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [members, setMembers] = useState<Array<{ id: string; name: string; email: string; createdAt: number; progress: number; quizCount: number }>>([]);
   const [error, setError] = useState("");
@@ -493,7 +516,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "review" ? "active" : ""} onClick={() => go("/review")}>{nav.review}</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>{nav.cpp}</button>
         <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
-        <button className={active === "community" ? "active" : ""} onClick={() => document.getElementById("community")?.scrollIntoView({ behavior: "smooth" })}>{nav.community}</button>
+        <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}>{nav.community}</button>
       </nav>
       <div className="topbar-actions">
         <button className="language-toggle" onClick={toggleLanguage} aria-label="تغيير لغة الواجهة">{language === "ar" ? "EN" : "عربي"}</button>
@@ -507,7 +530,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
           </button>
         )}
         <button className="quiet-button" onClick={() => go("/search")} aria-label="البحث">⌕</button>
-        <button className="quiet-button" aria-label="الإشعارات">◌</button>
+        <button className="quiet-button" onClick={() => go("/notifications")} aria-label="الإشعارات" title="الإشعارات">◌</button>
         {user && <button className="quiet-button" onClick={onLogout} aria-label="تسجيل الخروج">↪</button>}
       </div>
     </header>
@@ -603,7 +626,7 @@ function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: Us
       </section>
       <footer>
         <span>© 2026 EngiMind — إنجي مايند</span>
-        <span>صُمّم للمهندسين الذين يبنون المستقبل</span>
+        <span className="footer-links"><button onClick={() => onNavigate("/about")}>عن المنصة</button><button onClick={() => onNavigate("/privacy")}>الخصوصية</button><button onClick={() => onNavigate("/terms")}>الشروط</button><button onClick={() => onNavigate("/contact")}>تواصل</button></span>
       </footer>
     </main>
   );
@@ -944,6 +967,12 @@ export default function App() {
   const advancedTrackMatch = path.match(/^\/tracks\/([^/]+)$/);
   if (advancedTrackMatch) return <AdvancedTracksPage user={user} onNavigate={navigate} onLogout={logout} slug={advancedTrackMatch[1]} />;
   if (path === "/projects") return <ProjectsPage user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/community") return <CommunityPage user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/notifications") return <NotificationsPage user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/privacy") return <LegalPage kind="privacy" user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/terms") return <LegalPage kind="terms" user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/contact") return <LegalPage kind="contact" user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/about") return <LegalPage kind="about" user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/admin") return user ? <AdminPage user={user} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (path === "/profile") return user ? <Profile user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (lessonMatch) {

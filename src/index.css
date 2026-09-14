@@ -554,3 +554,51 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 @media (max-width: 700px) { .foundation-sequence { width: 100%; }.foundation-grid { grid-template-columns: 1fr; } }
 
 .project-rubric { margin-top: 24px; text-align: right; }.project-rubric h2 { margin: 4px 0; }.project-rubric label { display: block; padding: 13px 0; border-bottom: 1px solid var(--edge); color: var(--copy); }.project-rubric input { margin-left: 10px; accent-color: var(--acid); }.rubric-score { color: var(--acid); font-size: 28px; }
+
+/* Navigation, trust pages, and community completion */
+.footer-links { display: inline-flex; gap: 14px; align-items: center; }
+.footer-links button { border: 0; padding: 0; color: var(--muted-copy); background: transparent; font: inherit; cursor: pointer; }
+.footer-links button:hover { color: var(--electric); }
+.community-public-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.public-project-card { min-height: 240px; padding: 24px; }
+.public-project-card h2 { margin: 18px 0 8px; font-size: 21px; }
+.public-project-card p, .community-rules p, .legal-card p { color: var(--muted-copy); line-height: 2; }
+.public-project-card .secondary-button { margin-top: 18px; }
+.community-rules { margin-top: 20px; padding: 26px; }
+.notification-list { display: grid; gap: 14px; max-width: 760px; }
+.notification-item { padding: 22px; }
+.notification-item strong { font-size: 16px; }.notification-item p { color: var(--muted-copy); line-height: 1.9; }.notification-item small, .legal-card small { color: #8795b5; }
+.legal-card { max-width: 860px; padding: 32px; }.legal-card h2 { margin-top: 28px; font-size: 20px; }
+@media (max-width: 760px) { .community-public-grid { grid-template-columns: 1fr; }.footer-links { flex-wrap: wrap; gap: 10px; } }
+
+/* Navigation, trust pages, and community completion */
+.footer-links { display: inline-flex; gap: 14px; align-items: center; }
+.footer-links button { border: 0; padding: 0; color: var(--muted-copy); background: transparent; font: inherit; cursor: pointer; }
+.footer-links button:hover { color: var(--electric); }
+.community-public-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.public-project-card { min-height: 240px; padding: 24px; }
+.public-project-card h2 { margin: 18px 0 8px; font-size: 21px; }
+.public-project-card p, .community-rules p, .legal-card p { color: var(--muted-copy); line-height: 2; }
+.public-project-card .secondary-button { margin-top: 18px; }
+.community-rules { margin-top: 20px; padding: 26px; }
+.notification-list { display: grid; gap: 14px; max-width: 760px; }
+.notification-item { padding: 22px; }
+.notification-item strong { font-size: 16px; }.notification-item p { color: var(--muted-copy); line-height: 1.9; }.notification-item small, .legal-card small { color: #8795b5; }
+.legal-card { max-width: 860px; padding: 32px; }.legal-card h2 { margin-top: 28px; font-size: 20px; }
+@media (max-width: 760px) { .community-public-grid { grid-template-columns: 1fr; }.footer-links { flex-wrap: wrap; gap: 10px; } }
+
+/* Navigation, trust pages, and community completion */
+.footer-links { display: inline-flex; gap: 14px; align-items: center; }
+.footer-links button { border: 0; padding: 0; color: var(--muted-copy); background: transparent; font: inherit; cursor: pointer; }
+.footer-links button:hover { color: var(--electric); }
+.community-public-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.public-project-card { min-height: 240px; padding: 24px; }
+.public-project-card h2 { margin: 18px 0 8px; font-size: 21px; }
+.public-project-card p, .community-rules p, .legal-card p { color: var(--muted-copy); line-height: 2; }
+.public-project-card .secondary-button { margin-top: 18px; }
+.community-rules { margin-top: 20px; padding: 26px; }
+.notification-list { display: grid; gap: 14px; max-width: 760px; }
+.notification-item { padding: 22px; }
+.notification-item strong { font-size: 16px; }.notification-item p { color: var(--muted-copy); line-height: 1.9; }.notification-item small, .legal-card small { color: #8795b5; }
+.legal-card { max-width: 860px; padding: 32px; }.legal-card h2 { margin-top: 28px; font-size: 20px; }
+@media (max-width: 760px) { .community-public-grid { grid-template-columns: 1fr; }.footer-links { flex-wrap: wrap; gap: 10px; } }

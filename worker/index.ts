@@ -1,3 +1,26 @@
+const authRateBuckets = new Map<string, { count: number; resetAt: number }>();
+const SECURITY_HEADERS: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+};
+function withSecurityHeaders(response: Response) {
+  const headers = new Headers(response.headers);
+  Object.entries(SECURITY_HEADERS).forEach(([key, value]) => headers.set(key, value));
+  if (!headers.has("Content-Security-Policy")) headers.set("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self' https://cdn.jsdelivr.net https://accounts.google.com https://oauth2.googleapis.com https://openidconnect.googleapis.com");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+function allowAuthAttempt(request: Request) {
+  const ip = request.headers.get("CF-Connecting-IP") ?? request.headers.get("X-Forwarded-For") ?? "unknown";
+  const now = Date.now();
+  const current = authRateBuckets.get(ip);
+  if (!current || current.resetAt <= now) { authRateBuckets.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 }); return true; }
+  if (current.count >= 12) return false;
+  current.count += 1;
+  return true;
+}
 type AppEnv = Env & {
   DB: D1Database;
   ASSETS: Fetcher;
@@ -157,9 +180,9 @@ async function changePassword(request: Request, env: AppEnv) {
 
 async function api(request: Request, env: AppEnv): Promise<Response | null> {
   const url = new URL(request.url);
-  if (url.pathname === "/api/auth/register" && request.method === "POST") return emailAuth(request, env, true);
-  if (url.pathname === "/api/auth/login" && request.method === "POST") return emailAuth(request, env, false);
-  if (url.pathname === "/api/auth/change-password" && request.method === "POST") return changePassword(request, env);
+  if (url.pathname === "/api/auth/register" && request.method === "POST") return allowAuthAttempt(request) ? emailAuth(request, env, true) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
+  if (url.pathname === "/api/auth/login" && request.method === "POST") return allowAuthAttempt(request) ? emailAuth(request, env, false) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
+  if (url.pathname === "/api/auth/change-password" && request.method === "POST") return allowAuthAttempt(request) ? changePassword(request, env) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
   if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogleLegacy(request, env);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname.startsWith("/api/auth/google/callback") && request.method === "GET") return finishGoogle(request, env);
@@ -265,4 +288,4 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
   return null;
 }
 
-export default { async fetch(request: Request, env: AppEnv) { try { const response = await api(request, env); return response ?? env.ASSETS.fetch(request); } catch (error) { if (error instanceof Response) return error; console.error(error); return json({ error: "Unexpected server error" }, 500); } } } satisfies ExportedHandler<AppEnv>;
+export default { async fetch(request: Request, env: AppEnv) { try { const response = await api(request, env); return withSecurityHeaders(response ?? await env.ASSETS.fetch(request)); } catch (error) { if (error instanceof Response) return error; console.error(error); return json({ error: "Unexpected server error" }, 500); } } } satisfies ExportedHandler<AppEnv>;
