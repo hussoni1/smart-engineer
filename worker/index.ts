@@ -26,6 +26,9 @@ type AppEnv = Env & {
   ASSETS: Fetcher;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
+  RESEND_API_KEY?: string;
+  MAIL_FROM?: string;
+  APP_URL?: string;
 };
 type User = { id: string; name: string; email: string; avatarUrl?: string | null };
 const SESSION_COOKIE = "smart_session";
@@ -45,6 +48,14 @@ export function getNextProgress(completedLessons: number, lessonIndex: number, p
   return { completedLessons: completed, progress: Math.round((completed / totalLessons) * 100) };
 }
 
+async function sendEmail(env: AppEnv, to: string, subject: string, html: string) {
+  if (!env.RESEND_API_KEY) return false;
+  const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: env.MAIL_FROM || "EngiMind <no-reply@mail.h1111.co>", to: [to], subject, html }) });
+  if (!response.ok) { console.error("Resend email failed", response.status, await response.text()); return false; }
+  return true;
+}
+async function hashToken(token: string) { const digest = await crypto.subtle.digest("SHA-256", encoder.encode(token)); return toBase64(digest); }
+function appUrl(env: AppEnv, request: Request) { return env.APP_URL || new URL(request.url).origin; }
 function json(data: unknown, status = 200, extraHeaders: Record<string, string> = {}) { return Response.json(data, { status, headers: { "Cache-Control": "no-store", ...extraHeaders } }); }
 function makeCookie(name: string, value: string, maxAge: number) { return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=None`; }
 function readCookie(request: Request, name: string) { return (request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))?.slice(name.length + 1) ? decodeURIComponent((request.headers.get("Cookie") ?? "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))!.slice(name.length + 1)) : null; }
@@ -153,6 +164,7 @@ async function emailAuthUnsafe(request: Request, env: AppEnv, register: boolean)
       const now = Date.now();
       const userId = randomId();
       await env.DB.prepare("INSERT INTO users (id, google_id, name, email, avatar_url, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(userId, `email:${email}`, name, email, null, await passwordHash(password), now, now).run();
+      await sendEmail(env, email, "مرحباً بك في EngiMind", `<div dir="rtl"><h1>مرحباً ${name}</h1><p>تم إنشاء حسابك في EngiMind بنجاح.</p><p>ابدأ مسارك التعليمي الآن: <a href="${appUrl(env, request)}">فتح المنصة</a></p></div>`);
     } else {
       if (!existing?.passwordHash || !(await passwordMatches(password, existing.passwordHash))) return json({ error: "البريد أو كلمة المرور غير صحيحة" }, 401);
     }
@@ -168,6 +180,34 @@ async function emailAuth(request: Request, env: AppEnv, register: boolean) {
   try { return await emailAuthUnsafe(request, env, register); }
   catch (error) { console.error("email auth failed", error); return json({ error: "تعذر إنشاء الحساب من الخادم", stage: register ? "register" : "login" }, 500); }
 }
+async function requestPasswordReset(request: Request, env: AppEnv) {
+  const body = await request.json() as { email?: string };
+  const email = body.email?.trim().toLowerCase() ?? "";
+  const generic = json({ ok: true, message: "إذا كان البريد مسجلاً، سيصلك رابط إعادة التعيين." });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return generic;
+  const user = await env.DB.prepare("SELECT id, name, email FROM users WHERE email = ?").bind(email).first<{ id: string; name: string; email: string }>();
+  if (!user) return generic;
+  const rawToken = `${randomId()}${randomId()}`;
+  const tokenHash = await hashToken(rawToken);
+  const now = Date.now();
+  await env.DB.prepare("DELETE FROM password_reset_tokens WHERE user_id = ?").bind(user.id).run();
+  await env.DB.prepare("INSERT INTO password_reset_tokens (token_hash, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)").bind(tokenHash, user.id, now + 30 * 60 * 1000, now).run();
+  const link = `${appUrl(env, request)}/reset-password?token=${encodeURIComponent(rawToken)}`;
+  await sendEmail(env, user.email, "إعادة تعيين كلمة مرور EngiMind", `<div dir="rtl"><h1>إعادة تعيين كلمة المرور</h1><p>مرحباً ${user.name}، اضغط الرابط التالي خلال 30 دقيقة:</p><p><a href="${link}">تعيين كلمة مرور جديدة</a></p><p>إذا لم تطلب ذلك، تجاهل هذه الرسالة.</p></div>`);
+  return generic;
+}
+async function resetPassword(request: Request, env: AppEnv) {
+  const body = await request.json() as { token?: string; newPassword?: string };
+  if (!body.token || !body.newPassword || body.newPassword.length < 8) return json({ error: "الرابط أو كلمة المرور غير صالحين" }, 400);
+  const tokenHash = await hashToken(body.token);
+  const row = await env.DB.prepare("SELECT user_id AS userId FROM password_reset_tokens WHERE token_hash = ? AND expires_at > ?").bind(tokenHash, Date.now()).first<{ userId: string }>();
+  if (!row) return json({ error: "الرابط منتهي أو غير صالح" }, 400);
+  await env.DB.prepare("UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?").bind(await passwordHash(body.newPassword), Date.now(), row.userId).run();
+  await env.DB.prepare("DELETE FROM password_reset_tokens WHERE token_hash = ?").bind(tokenHash).run();
+  await env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(row.userId).run();
+  return json({ ok: true });
+}
+
 async function changePassword(request: Request, env: AppEnv) {
   const user = await requireUser(request, env);
   const body = await request.json() as { currentPassword?: string; newPassword?: string };
@@ -183,6 +223,8 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
   if (url.pathname === "/api/auth/register" && request.method === "POST") return allowAuthAttempt(request) ? emailAuth(request, env, true) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
   if (url.pathname === "/api/auth/login" && request.method === "POST") return allowAuthAttempt(request) ? emailAuth(request, env, false) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
   if (url.pathname === "/api/auth/change-password" && request.method === "POST") return allowAuthAttempt(request) ? changePassword(request, env) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
+  if (url.pathname === "/api/auth/request-reset" && request.method === "POST") return allowAuthAttempt(request) ? requestPasswordReset(request, env) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
+  if (url.pathname === "/api/auth/reset-password" && request.method === "POST") return allowAuthAttempt(request) ? resetPassword(request, env) : json({ error: "محاولات كثيرة. حاول بعد 15 دقيقة." }, 429);
   if (url.pathname === "/api/auth/google" && request.method === "GET") return startGoogleLegacy(request, env);
   if (url.pathname === "/api/auth/google/url" && request.method === "GET") return startGoogleUrl(request, env);
   if (url.pathname.startsWith("/api/auth/google/callback") && request.method === "GET") return finishGoogle(request, env);

@@ -665,12 +665,23 @@ function Login({ onBack }: { onBack: () => void }) {
           {error && <p role="alert" style={{ color: "#ff9a9a" }}>{error}</p>}
           <button className="primary-button" type="submit" disabled={busy}>{busy ? "جارٍ التنفيذ..." : register ? "إنشاء الحساب" : "تسجيل الدخول"}</button>
         </form>
-        <button className="text-button" onClick={() => { setRegister(!register); setError(""); }}>{register ? "لديك حساب؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد"}</button>
+        <button className="text-button" onClick={() => { setRegister(!register); setError(""); }}>{register ? "لديك حساب؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد"}</button>{!register && <button className="text-button" onClick={() => { window.location.assign("/forgot-password"); }}>نسيت كلمة المرور؟</button>}
         <div className="auth-divider"><span>دخول آمن ومشفر</span></div>
         <button className="text-button" onClick={onBack}>العودة إلى الصفحة الرئيسية ←</button>
       </section>
     </main>
   );
+}
+
+function ForgotPassword({ onBack }: { onBack: () => void }) {
+  const [email, setEmail] = useState(""); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);
+  const submit = async (event: FormEvent) => { event.preventDefault(); setBusy(true); setMessage(""); try { const response = await fetch("/api/auth/request-reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }); const data = await response.json() as { message?: string }; setMessage(data.message || "تحقق من بريدك الإلكتروني."); } catch { setMessage("تعذر إرسال الطلب حالياً."); } finally { setBusy(false); } };
+  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">أمان الحساب</span><h1>نسيت كلمة المرور؟</h1><p>أدخل بريدك، وسنرسل رابطاً صالحاً لمدة 30 دقيقة إذا كان الحساب موجوداً.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الإرسال..." : "إرسال رابط الاستعادة"}</button></form>{message && <p role="status" className="password-message">{message}</p>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
+}
+function ResetPassword({ onBack, token }: { onBack: () => void; token: string }) {
+  const [password, setPassword] = useState(""); const [message, setMessage] = useState(""); const [done, setDone] = useState(false); const [busy, setBusy] = useState(false);
+  const submit = async (event: FormEvent) => { event.preventDefault(); setBusy(true); setMessage(""); try { const response = await fetch("/api/auth/reset-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, newPassword: password }) }); const data = await response.json() as { error?: string }; if (!response.ok) throw new Error(data.error || "تعذر تغيير كلمة المرور"); setDone(true); setMessage("تم تغيير كلمة المرور. يمكنك تسجيل الدخول الآن."); } catch (error) { setMessage(error instanceof Error ? error.message : "تعذر تغيير كلمة المرور"); } finally { setBusy(false); } };
+  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">تحديث كلمة المرور</span><h1>عيّن كلمة مرور جديدة</h1>{done ? <><p role="status" className="password-message">{message}</p><button className="primary-button" onClick={onBack}>تسجيل الدخول</button></> : <><p>استخدم كلمة مرور جديدة لا تقل عن 8 أحرف.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={8} placeholder="كلمة المرور الجديدة" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الحفظ..." : "حفظ كلمة المرور"}</button></form>{message && <p role="alert" className="password-message">{message}</p>}</>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
 }
 
 function Profile({ user, progress, results, onNavigate, onLogout }: { user: User; progress: Progress[]; results: QuizResult[]; onNavigate: (path: string) => void; onLogout: () => void }) {
@@ -954,6 +965,8 @@ export default function App() {
 
   if (loading) return <div className="loading-screen"><span className="brand-mark">M</span><p>جارٍ تجهيز بوابتك...</p></div>;
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
+  if (path === "/forgot-password") return <ForgotPassword onBack={() => navigate("/login")} />;
+  if (path === "/reset-password") return <ResetPassword token={new URLSearchParams(window.location.search).get("token") || ""} onBack={() => navigate("/login")} />;
   if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
   if (path === "/python-lab") return <PythonLabPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/portfolio") return <PortfolioPage user={user} onNavigate={navigate} onLogout={logout} />;
