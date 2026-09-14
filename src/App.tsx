@@ -898,17 +898,22 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
     );
   }
 
+  const quizItems = lesson.quiz.map((item, quizIndex) => {
+    if (course.slug !== "english-from-zero" || item.options.length < 2) return item;
+    const shift = (quizIndex * 2 + 1) % item.options.length;
+    return { ...item, options: item.options.map((_, optionIndex) => item.options[(optionIndex + shift) % item.options.length]), answer: (item.answer - shift + item.options.length) % item.options.length };
+  });
   const submitQuiz = async () => {
     if (!user) {
       window.location.assign("/login");
       return;
     }
     setSubmitted(true);
-    const score = lesson.quiz.reduce((sum, item, quizIndex) => sum + (answers[quizIndex] === item.answer ? 1 : 0), 0);
-    const passed = score / lesson.quiz.length >= 0.7;
+    const score = quizItems.reduce((sum, item, quizIndex) => sum + (answers[quizIndex] === item.answer ? 1 : 0), 0);
+    const passed = score / quizItems.length >= 0.7;
     setSaving(true);
     try {
-      await api("/api/quiz/complete", { method: "POST", body: JSON.stringify({ courseSlug: course.slug, lessonIndex: index, score, total: lesson.quiz.length }) });
+      await api("/api/quiz/complete", { method: "POST", body: JSON.stringify({ courseSlug: course.slug, lessonIndex: index, score, total: quizItems.length }) });
       setFeedback({ score, passed });
       await onProgressRefresh();
     } catch {
@@ -1046,7 +1051,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
               <h2>{isFinalAssessment ? "مشروع قصير واختبار نهائي" : "اختبار قصير قبل المتابعة"} <small>{isFinalAssessment ? "Capstone + final course exam" : "Progress assessment"}</small></h2>
               <p>{isFinalAssessment ? "نفّذ المشروع القصير ثم أجب عن الأسئلة واحصل على 70% أو أكثر لإكمال المسار." : "أجب عن الأسئلة واحصل على 70% على الأقل لفتح الدرس التالي. Answer at least 70% correctly to continue."}</p>
             </div>
-            {lesson.quiz.map((item, quizIndex) => (
+            {quizItems.map((item, quizIndex) => (
               <fieldset key={item.question}>
                 <legend><span>{quizIndex + 1}. {quizArabic ? displayArabic(item.question) : displayEnglish(item.question, "Choose the best answer for this lesson.")}</span><button type="button" className="speak-button" onClick={() => speakEnglish(displayEnglish(item.question, "Choose the best answer for this lesson."))} aria-label="Listen to question" title="استمع إلى السؤال">🔊 Listen</button><button type="button" className="translate-button" onClick={() => setShowArabic((current) => !current)}>{quizArabic ? "English · English" : "ترجمة · Arabic"}</button><small className="quiz-en-label">{quizArabic ? "السؤال · اختر أفضل إجابة" : "Question · Choose the best answer"}</small></legend>
                 <div className="quiz-options">
@@ -1061,10 +1066,10 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
               </fieldset>
             ))}
             <div className="quiz-footer">
-              <button className="primary-button" onClick={submitQuiz} disabled={saving || Object.keys(answers).length < lesson.quiz.length}>
+              <button className="primary-button" onClick={submitQuiz} disabled={saving || Object.keys(answers).length < quizItems.length}>
                 {saving ? "جارٍ الحفظ..." : feedback?.passed ? "تم الاجتياز ✓" : "تصحيح الاختبار"}
               </button>
-              {feedback && <span className={feedback.passed ? "quiz-result success" : "quiz-result failure"}>{feedback.passed ? `أحسنت! نتيجتك ${feedback.score}/${lesson.quiz.length}` : `نتيجتك ${feedback.score}/${lesson.quiz.length}. أعد المحاولة للوصول إلى 70%.`}</span>}
+              {feedback && <span className={feedback.passed ? "quiz-result success" : "quiz-result failure"}>{feedback.passed ? `أحسنت! نتيجتك ${feedback.score}/${quizItems.length}` : `نتيجتك ${feedback.score}/${quizItems.length}. أعد المحاولة للوصول إلى 70%.`}</span>}
             </div>
           </section>
           {feedback?.passed && <button className="next-lesson-button" onClick={() => onNavigate(next)}>{index < course.lessons.length ? "انتقل إلى الدرس التالي" : "عرض ملفي الشخصي"} <span>←</span></button>}
