@@ -920,7 +920,36 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
   const isArabicText = (text: string) => /[\u0600-\u06FF]/.test(text);
   const displayEnglish = (text: string, fallback: string) => !isEnglishCourse ? (quizTranslations[text] ?? text) : (quizTranslations[text] ?? (isArabicText(text) ? fallback : text));
   const quizArabic = showArabic;
-  const displayArabic = (text: string) => Object.entries(quizTranslations).find(([, english]) => english === text)?.[0] ?? text;
+  const englishQuizArabic: Record<string, string> = {
+    "What is the main goal of this unit?": "ما الهدف الرئيسي من هذه الوحدة؟",
+    "Which study habit is most effective?": "ما عادة الدراسة الأكثر فاعلية؟",
+    "Use the skill in a real communication task": "استخدم المهارة في مهمة تواصل حقيقية",
+    "Memorize without practice": "احفظ دون ممارسة",
+    "Skip listening and speaking": "تجاوز الاستماع والتحدث",
+    "Avoid reviewing mistakes": "تجنب مراجعة الأخطاء",
+    "Practice, receive feedback, and try again": "تدرّب، واحصل على ملاحظات، وحاول مرة أخرى",
+    "Study once and never review": "ادرس مرة واحدة ولا تراجع أبداً",
+    "Translate every word literally": "ترجم كل كلمة حرفياً",
+    "Avoid producing language": "تجنب استخدام اللغة",
+    "Real practice and review turn language knowledge into usable communication.": "الممارسة والمراجعة تحولان معرفة اللغة إلى تواصل قابل للاستخدام.",
+    "Repeated practice with feedback supports accuracy and fluency.": "الممارسة المتكررة مع الملاحظات تدعم الدقة والطلاقة.",
+    "Which phrase is appropriate for introducing yourself?": "ما العبارة المناسبة للتعريف بالنفس؟",
+    "How do you ask someone’s name?": "كيف تسأل عن اسم شخص؟",
+    "Which sentence is correct for telling the time?": "أي جملة صحيحة للتعبير عن الوقت؟",
+    "Which preposition is commonly used with days?": "أي حرف جر يُستخدم عادةً مع الأيام؟",
+    "Choose the correct sentence:": "اختر الجملة الصحيحة:",
+    "When do we use has?": "متى نستخدم has؟",
+    "Which sentence is correct?": "أي جملة صحيحة؟",
+    "What does usually mean?": "ماذا تعني usually؟",
+    "Which is a polite request?": "ما الطلب المهذب؟",
+    "Which word goes with water?": "أي كلمة تناسب water؟",
+    "What does Turn left mean?": "ماذا تعني Turn left؟",
+    "Which phrase is appropriate for asking about a place?": "ما العبارة المناسبة للسؤال عن مكان؟",
+    "What is the past tense of go?": "ما ماضي go؟",
+    "What is the best way to consolidate language learning?": "ما أفضل طريقة لتثبيت تعلم اللغة؟",
+    "What does A2 approximately describe?": "ماذا يصف مستوى A2 تقريباً؟"
+  };
+  const displayArabic = (text: string) => englishQuizArabic[text] ?? Object.entries(quizTranslations).find(([, english]) => english === text)?.[0] ?? text;
   const lessonExample = course.slug === "english-from-zero" ? (index % 4 === 1 ? "A: Hello, my name is Sara.\nB: Nice to meet you, Sara.\nA: Nice to meet you, too." : index % 4 === 2 ? "I usually wake up at seven o'clock.\nI have breakfast, then I go to work." : index % 4 === 3 ? "A: Could I have a cup of tea, please?\nB: Of course. Would you like milk?\nA: Yes, please." : "Yesterday I visited my friend.\nWe talked, cooked dinner, and watched a film.") : index === 1 ? 'name = "EngiMind"\nprint(f"مرحبًا بك في {name}")' : index === 2 ? 'scores = [80, 92, 75]\naverage = sum(scores) / len(scores)\nprint(average)' : index === 3 ? 'def greet(name):\n    return f"أهلًا {name}"\n\nprint(greet("علي"))' : 'class Project:\n    def __init__(self, title):\n        self.title = title\n\nproject = Project("مساعد ذكي")';
 
   return (
