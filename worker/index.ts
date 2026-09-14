@@ -49,9 +49,11 @@ export function getNextProgress(completedLessons: number, lessonIndex: number, p
 }
 
 async function sendEmail(env: AppEnv, to: string, subject: string, html: string) {
-  if (!env.RESEND_API_KEY) return false;
+  if (!env.RESEND_API_KEY) { console.error("Resend email failed: RESEND_API_KEY is not configured"); return false; }
   const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: env.MAIL_FROM || "EngiMind <no-reply@mail.h1111.co>", to: [to], subject, html }) });
-  if (!response.ok) { console.error("Resend email failed", response.status, await response.text()); return false; }
+  const payload = await response.text();
+  if (!response.ok) { console.error("Resend email failed", response.status, payload); return false; }
+  try { console.log("Resend email sent", JSON.parse(payload).id || "accepted"); } catch { console.log("Resend email sent", "accepted"); }
   return true;
 }
 async function hashToken(token: string) { const digest = await crypto.subtle.digest("SHA-256", encoder.encode(token)); return toBase64(digest); }
