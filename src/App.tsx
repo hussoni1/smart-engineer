@@ -518,6 +518,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>{nav.learning}</button>
+        <button className={active === "english-course" ? "active" : ""} onClick={() => go("/english-course")}>English Course</button>
         <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}>{nav.python}</button>
         <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}>Portfolio</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}>{nav.data}</button>
@@ -548,11 +549,16 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   );
 }
 
+function EnglishCoursePage({ user, progress, onNavigate, onLogout }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const course = courses.find((item) => item.slug === "english-from-zero")!;
+  const saved = progress.find((item) => item.courseSlug === course.slug);
+  return <main className="portal-shell"><Topbar user={user} active="english-course" onNavigate={onNavigate} onLogout={onLogout} /><section className="english-course-page"><div className="english-course-hero"><div><span className="eyebrow">Global English Foundation · CEFR A1 → A2</span><h1>اللغة الإنكليزية من الصفر</h1><p>مسار عالمي مستقل للمبتدئين يطوّر المهارات الأربع: الاستماع، التحدث، القراءة والكتابة، مع قواعد ومفردات ومواقف يومية.</p><div className="english-course-actions"><button className="primary-button" onClick={() => onNavigate(`/courses/${course.slug}/lessons/1`)}>ابدأ الوحدة الأولى ←</button>{saved && <span className="course-chip lime">تقدمك {saved.progress}%</span>}</div></div><div className="english-level-card"><strong>A1 → A2</strong><span>CEFR pathway</span><small>8 وحدات · اختبارات قصيرة</small></div></div><div className="english-skills-grid"><article><b>Listening</b><span>فهم العبارات والمحادثات اليومية</span></article><article><b>Speaking</b><span>التعريف بالنفس والطلب والسؤال</span></article><article><b>Reading</b><span>قراءة جمل ونصوص قصيرة مألوفة</span></article><article><b>Writing</b><span>كتابة رسائل وفقرات بسيطة</span></article></div><section className="english-course-info"><div><span className="eyebrow">خطة الكورس</span><h2>من الأساس إلى التواصل اليومي</h2><p>الدروس أصلية ومصممة داخل EngiMind، ومستندة إلى أهداف CEFR العامة للمستويين A1 وA2. الشهادة الرسمية لا تصدر من EngiMind؛ يمكن للطالب استخدام المسار للتحضير ثم التقدم لاختبار جهة معتمدة.</p></div><div className="english-sources"><h3>مراجع عالمية</h3><a href="https://www.coursera.org/specializations/english-for-beginners" target="_blank" rel="noreferrer">University of California, Davis · Coursera</a><a href="https://learnenglish.britishcouncil.org/level/understand-your-english-level" target="_blank" rel="noreferrer">British Council · CEFR levels</a><a href="https://www.cambridgeenglish.org/learning-english/activities-for-learners/" target="_blank" rel="noreferrer">Cambridge English · A1–A2 activities</a></div></section><div className="english-unit-list"><div className="section-heading"><div><span className="eyebrow">الوحدات التعليمية</span><h2>ابدأ من الصفر</h2></div></div>{course.lessons.map((lesson, index) => <button className="english-unit" key={lesson.title} onClick={() => onNavigate(`/courses/${course.slug}/lessons/${index + 1}`)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{lesson.title}</b><small>{lesson.summary}</small></div><em>{lesson.duration} ←</em></button>)}</div></section></main>;
+}
+
 function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void; selectedGoal?: string }) {
   const saved = new Map(progress.map((item) => [item.courseSlug, item]));
   const calcProgress = user ? Math.round(progress.reduce((sum, item) => sum + item.progress, 0) / Math.max(progress.length, 1)) : 0;
   const aiCourses = byStudyOrder(courses.filter((course) => aiLearningSlugs.has(course.slug)), courseStudyOrder);
-  const englishCourse = courses.find((course) => course.slug === "english-from-zero")!;
   const visibleCourses = selectedGoal && goalCourseSlugs[selectedGoal] ? aiCourses.filter((course) => goalCourseSlugs[selectedGoal].includes(course.slug)) : aiCourses;
   const visibleAdvancedTracks = byStudyOrder(selectedGoal ? advancedTracks.filter((track) => track.targets.includes(selectedGoal)) : advancedTracks, advancedTrackOrder);
   const selectedGoalName = selectedGoal === "ml" ? "مهندس تعلم آلي · Machine Learning Engineer" : selectedGoal === "vision" ? "مهندس رؤية حاسوبية · Computer Vision Engineer" : selectedGoal === "nlp" ? "مهندس NLP وذكاء توليدي · NLP Engineer" : selectedGoal === "robotics" ? "مهندس روبوتات AI · Robotics AI Engineer" : selectedGoal === "research" ? "باحث ذكاء اصطناعي · AI Researcher" : "كل مسارات AI";
@@ -576,11 +582,6 @@ function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: Us
         </div>
       </section>
       <section className="featured-projects" aria-label="المشاريع الهندسية"><div><span className="eyebrow">مختبر عملي جديد</span><h2>أعلى مشاريع هندسية تطبيقية</h2><p>أجهزة ومواد، خطوات تنفيذ، وفيديو لكل مشروع.</p></div><button className="primary-button" onClick={() => onNavigate("/projects")}>استكشف المشاريع ←</button></section>
-      <section className="english-course-feature" aria-labelledby="english-course-title">
-        <div className="english-course-badge">A1 → A2</div>
-        <div className="english-course-copy"><span className="eyebrow">كورس مستقل · English foundation</span><h2 id="english-course-title">اللغة الإنكليزية من الصفر</h2><p>تعلم التحية، المحادثة اليومية، القواعد الأساسية، القراءة والكتابة ضمن مسار عملي منظم للمبتدئين.</p><div className="english-course-meta"><span>8 وحدات</span><span>اختبارات قصيرة</span><span>تقدم محفوظ</span></div></div>
-        <button className="primary-button" onClick={() => onNavigate(`/courses/${englishCourse.slug}/lessons/1`)}>ابدأ الكورس ←</button>
-      </section>
       <section className="learning-showcase" aria-labelledby="learning-paths-title">
         <div className="learning-showcase-copy"><span className="eyebrow">مساراتك القادمة · Your next learning paths</span><h2 id="learning-paths-title">هندسة تقنيات الذكاء الاصطناعي<br /><em>AI Technology Engineering</em></h2><p>اختر مسارك، تعلّم بالعربي والإنكليزي، ثم اختبر فهمك بأسئلة مع حلول واضحة. Learn in Arabic and English with written assessments and answer explanations.</p><div className="showcase-stats"><div><strong>{aiCourses.length}</strong><span>مسار تعلّم<br />Learning paths</span></div><div><strong>{aiCourses.reduce((sum, course) => sum + course.lessons.length, 0)}</strong><span>درس واختبار<br />Lessons & quizzes</span></div><div><strong>AR / EN</strong><span>ثنائي اللغة<br />Bilingual</span></div></div></div>
         <div className="learning-orbit" aria-hidden="true"><div className="orbit-core">AI</div><span>ML</span><span>NLP</span><span>VISION</span><span>ROBOTS</span></div>
@@ -984,6 +985,7 @@ export default function App() {
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
   if (path === "/forgot-password") return <ForgotPassword onBack={() => navigate("/login")} />;
   if (path === "/reset-password") return <ResetPassword token={new URLSearchParams(window.location.search).get("token") || ""} onBack={() => navigate("/login")} />;
+  if (path === "/english-course") return <EnglishCoursePage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
   if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
   if (path === "/python-lab") return <PythonLabPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/portfolio") return <PortfolioPage user={user} onNavigate={navigate} onLogout={logout} />;
