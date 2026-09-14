@@ -899,7 +899,7 @@ function LessonPage({ course, index, user, progress, results, onNavigate, onProg
   }
 
   const quizItems = lesson.quiz.map((item, quizIndex) => {
-    if (course.slug !== "english-from-zero" || item.options.length < 2) return item;
+    if (item.options.length < 2) return item;
     const shift = (quizIndex * 2 + 1) % item.options.length;
     return { ...item, options: item.options.map((_, optionIndex) => item.options[(optionIndex + shift) % item.options.length]), answer: (item.answer - shift + item.options.length) % item.options.length };
   });
