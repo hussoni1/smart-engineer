@@ -234,7 +234,7 @@ const courseEnglish: Record<string, { title: string; description: string }> = {
   "english-from-zero": { title: "English from Zero", description: "An original A1-A2 foundation path based on CEFR goals." }
 };
 
-const aiLearningSlugs = new Set(["ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai", "english-from-zero"]);
+const aiLearningSlugs = new Set(["ai-engineering", "ai-technology-engineering", "ai-foundations", "machine-learning", "deep-learning", "nlp-generative-ai", "computer-vision", "mlops-ai-security", "python-from-zero", "engineering-projects", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai"]);
 const courseStudyOrder = ["python-from-zero", "ai-foundations", "ai-engineering", "ai-technology-engineering", "machine-learning", "deep-learning", "computer-vision", "nlp-generative-ai", "mlops-ai-security", "mit-machine-learning", "stanford-ai-foundations", "cmu-ai-engineering", "berkeley-ai-ml", "toronto-ai", "engineering-projects"];
 const advancedTrackOrder = ["ai-math", "algorithms-data-structures", "data-engineering", "end-to-end-projects", "computer-vision-pro", "nlp-generative-pro", "mlops-deployment", "responsible-ai-security", "ai-research-methods"];
 const byStudyOrder = <T extends { slug: string }>(items: T[], order: string[]) => [...items].sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug));
@@ -552,6 +552,7 @@ function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: Us
   const saved = new Map(progress.map((item) => [item.courseSlug, item]));
   const calcProgress = user ? Math.round(progress.reduce((sum, item) => sum + item.progress, 0) / Math.max(progress.length, 1)) : 0;
   const aiCourses = byStudyOrder(courses.filter((course) => aiLearningSlugs.has(course.slug)), courseStudyOrder);
+  const englishCourse = courses.find((course) => course.slug === "english-from-zero")!;
   const visibleCourses = selectedGoal && goalCourseSlugs[selectedGoal] ? aiCourses.filter((course) => goalCourseSlugs[selectedGoal].includes(course.slug)) : aiCourses;
   const visibleAdvancedTracks = byStudyOrder(selectedGoal ? advancedTracks.filter((track) => track.targets.includes(selectedGoal)) : advancedTracks, advancedTrackOrder);
   const selectedGoalName = selectedGoal === "ml" ? "مهندس تعلم آلي · Machine Learning Engineer" : selectedGoal === "vision" ? "مهندس رؤية حاسوبية · Computer Vision Engineer" : selectedGoal === "nlp" ? "مهندس NLP وذكاء توليدي · NLP Engineer" : selectedGoal === "robotics" ? "مهندس روبوتات AI · Robotics AI Engineer" : selectedGoal === "research" ? "باحث ذكاء اصطناعي · AI Researcher" : "كل مسارات AI";
@@ -575,6 +576,11 @@ function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: Us
         </div>
       </section>
       <section className="featured-projects" aria-label="المشاريع الهندسية"><div><span className="eyebrow">مختبر عملي جديد</span><h2>أعلى مشاريع هندسية تطبيقية</h2><p>أجهزة ومواد، خطوات تنفيذ، وفيديو لكل مشروع.</p></div><button className="primary-button" onClick={() => onNavigate("/projects")}>استكشف المشاريع ←</button></section>
+      <section className="english-course-feature" aria-labelledby="english-course-title">
+        <div className="english-course-badge">A1 → A2</div>
+        <div className="english-course-copy"><span className="eyebrow">كورس مستقل · English foundation</span><h2 id="english-course-title">اللغة الإنكليزية من الصفر</h2><p>تعلم التحية، المحادثة اليومية، القواعد الأساسية، القراءة والكتابة ضمن مسار عملي منظم للمبتدئين.</p><div className="english-course-meta"><span>8 وحدات</span><span>اختبارات قصيرة</span><span>تقدم محفوظ</span></div></div>
+        <button className="primary-button" onClick={() => onNavigate(`/courses/${englishCourse.slug}/lessons/1`)}>ابدأ الكورس ←</button>
+      </section>
       <section className="learning-showcase" aria-labelledby="learning-paths-title">
         <div className="learning-showcase-copy"><span className="eyebrow">مساراتك القادمة · Your next learning paths</span><h2 id="learning-paths-title">هندسة تقنيات الذكاء الاصطناعي<br /><em>AI Technology Engineering</em></h2><p>اختر مسارك، تعلّم بالعربي والإنكليزي، ثم اختبر فهمك بأسئلة مع حلول واضحة. Learn in Arabic and English with written assessments and answer explanations.</p><div className="showcase-stats"><div><strong>{aiCourses.length}</strong><span>مسار تعلّم<br />Learning paths</span></div><div><strong>{aiCourses.reduce((sum, course) => sum + course.lessons.length, 0)}</strong><span>درس واختبار<br />Lessons & quizzes</span></div><div><strong>AR / EN</strong><span>ثنائي اللغة<br />Bilingual</span></div></div></div>
         <div className="learning-orbit" aria-hidden="true"><div className="orbit-core">AI</div><span>ML</span><span>NLP</span><span>VISION</span><span>ROBOTS</span></div>
