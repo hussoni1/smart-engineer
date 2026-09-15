@@ -838,6 +838,8 @@ function Login({ onBack }: { onBack: () => void }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [remember, setRemember] = useState(true);
   const submit = async (event: FormEvent) => {
     event.preventDefault(); setBusy(true); setError("");
     try {
@@ -848,25 +850,23 @@ function Login({ onBack }: { onBack: () => void }) {
     } catch (caught) { setError(caught instanceof Error ? caught.message : "تعذر تنفيذ الطلب"); } finally { setBusy(false); }
   };
   return (
-    <main className="auth-shell">
-      <button className="brand auth-brand" onClick={onBack}>
-        <span className="brand-mark">M</span>
-        <strong>EngiMind — إنجي مايند</strong>
+    <main className="auth-shell auth-shell-premium">
+      <button className="brand auth-brand" onClick={onBack} aria-label="Back to EngiMind home">
+        <span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong>
       </button>
       <section className="auth-card">
-        <span className="hero-kicker">✦ ابدأ رحلتك الهندسية</span>
-        <h1>{register ? "أنشئ حسابك" : "مرحبًا بك من جديد"}</h1>
-        <p>{register ? "أدخل معلوماتك للانضمام إلى EngiMind — منصة الذكاء والهندسة." : "سجّل دخولك لمتابعة تقدمك ومساراتك التعليمية."}</p>
-        <form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}>
-          {register && <input value={name} onChange={(event) => setName(event.target.value)} placeholder="الاسم الكامل" required minLength={2} />}
-          <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required />
-          <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="كلمة المرور (8 أحرف على الأقل)" required minLength={8} />
-          {error && <p role="alert" style={{ color: "#ff9a9a" }}>{error}</p>}
-          <button className="primary-button" type="submit" disabled={busy}>{busy ? "جارٍ التنفيذ..." : register ? "إنشاء الحساب" : "تسجيل الدخول"}</button>
+        <div className="auth-card-heading"><span className="auth-eyebrow">✦ AI learning platform</span><h1>{register ? "Create your account" : "Welcome Back"}</h1><p>{register ? "Join EngiMind and build your engineering future." : "Sign in to continue to your account"}</p></div>
+        <form onSubmit={submit} className="auth-form">
+          {register && <label className="auth-field"><span>Full name</span><div className="auth-input-wrap"><span className="field-icon">◎</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" autoComplete="name" required minLength={2} /></div></label>}
+          <label className="auth-field"><span>Email address</span><div className="auth-input-wrap"><span className="field-icon">@</span><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@example.com" autoComplete="email" required /></div></label>
+          <label className="auth-field"><span>Password</span><div className="auth-input-wrap"><span className="field-icon">▣</span><input value={password} onChange={(event) => setPassword(event.target.value)} type={showPassword ? "text" : "password"} placeholder="At least 8 characters" autoComplete={register ? "new-password" : "current-password"} required minLength={8} /><button className="password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "◉" : "◌"}</button></div></label>
+          {!register && <div className="auth-options"><label className="remember-option"><input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} /><span>Remember me</span></label><button className="auth-link" type="button" onClick={() => { window.location.assign("/forgot-password"); }}>Forgot Password?</button></div>}
+          {error && <p role="alert" className="auth-error">{error}</p>}
+          <button className="primary-button auth-submit" type="submit" disabled={busy}>{busy ? "Signing you in…" : register ? "Create Account" : "Sign In"}<span>→</span></button>
         </form>
-        <button className="text-button" onClick={() => { setRegister(!register); setError(""); }}>{register ? "لديك حساب؟ تسجيل الدخول" : "ليس لديك حساب؟ إنشاء حساب جديد"}</button>{!register && <button className="text-button" onClick={() => { window.location.assign("/forgot-password"); }}>نسيت كلمة المرور؟</button>}
-        <div className="auth-divider"><span>دخول آمن ومشفر</span></div>
-        <button className="text-button" onClick={onBack}>العودة إلى الصفحة الرئيسية ←</button>
+        {!register && <><div className="auth-divider"><span>OR</span></div><div className="social-login-row"><button type="button" className="social-login" onClick={() => setError("Google sign-in is not connected yet.")}><b>G</b>Continue with Google</button><button type="button" className="social-login" onClick={() => setError("Apple sign-in is not connected yet.")}><b>●</b>Continue with Apple</button></div></>}
+        <p className="auth-switch">{register ? "Already have an account?" : "Don't have an account?"} <button className="auth-link" type="button" onClick={() => { setRegister(!register); setError(""); setPassword(""); }}>{register ? "Sign In" : "Create Account"}</button></p>
+        <button className="auth-back" onClick={onBack}>← Back to home</button>
       </section>
     </main>
   );
