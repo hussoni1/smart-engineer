@@ -5,6 +5,8 @@ import solarImage from "./assets/projects/solar.jpg";
 import weatherImage from "./assets/projects/weather.jpg";
 import robotImage from "./assets/projects/robot.jpg";
 import homeImage from "./assets/projects/home.jpg";
+import authAiNetwork from "./assets/auth-ai-network.jpg";
+import authAiRobot from "./assets/auth-ai-robot.jpg";
 import { quizTranslations } from "./quizTranslations";
 
 type Course = { slug: string; title: string; level: string; color: string; description: string; lessons: Lesson[] };
@@ -854,6 +856,7 @@ function Login({ onBack }: { onBack: () => void }) {
       <button className="brand auth-brand" onClick={onBack} aria-label="Back to EngiMind home">
         <span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong>
       </button>
+      <div className="auth-ai-visuals" aria-hidden="true"><img className="auth-ai-network" src={authAiNetwork} alt="" /><img className="auth-ai-robot" src={authAiRobot} alt="" /><div className="auth-visual-label"><span>AI ENGINEERING</span><strong>Learn · Build · Innovate</strong></div></div>
       <section className="auth-card">
         <div className="auth-card-heading"><span className="auth-eyebrow">✦ AI learning platform</span><h1>{register ? "Create your account" : "Welcome Back"}</h1><p>{register ? "Join EngiMind and build your engineering future." : "Sign in to continue to your account"}</p></div>
         <form onSubmit={submit} className="auth-form">
@@ -864,7 +867,6 @@ function Login({ onBack }: { onBack: () => void }) {
           {error && <p role="alert" className="auth-error">{error}</p>}
           <button className="primary-button auth-submit" type="submit" disabled={busy}>{busy ? "Signing you in…" : register ? "Create Account" : "Sign In"}<span>→</span></button>
         </form>
-        {!register && <><div className="auth-divider"><span>OR</span></div><div className="social-login-row"><button type="button" className="social-login" onClick={() => setError("Google sign-in is not connected yet.")}><b>G</b>Continue with Google</button><button type="button" className="social-login" onClick={() => setError("Apple sign-in is not connected yet.")}><b>●</b>Continue with Apple</button></div></>}
         <p className="auth-switch">{register ? "Already have an account?" : "Don't have an account?"} <button className="auth-link" type="button" onClick={() => { setRegister(!register); setError(""); setPassword(""); }}>{register ? "Sign In" : "Create Account"}</button></p>
         <button className="auth-back" onClick={onBack}>← Back to home</button>
       </section>

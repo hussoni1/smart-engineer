@@ -731,3 +731,15 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 .auth-back { display: block; margin: 21px auto 0; padding: 0; border: 0; color: #8993ad; background: transparent; font: 700 11px system-ui, sans-serif; cursor: pointer; }
 .auth-back:hover { color: var(--electric); }
 @media (max-width: 560px) { .auth-shell-premium { padding: 24px 15px; place-items: start center; } .auth-shell-premium .auth-brand { position: static; margin: 8px auto 28px; } .auth-shell-premium .auth-card { margin: 0; padding: 31px 22px 25px; border-radius: 19px; } .social-login-row { grid-template-columns: 1fr; } .auth-shell-premium .auth-card h1 { font-size: 31px; } }
+
+/* AI visual layer for premium auth */
+.auth-ai-visuals { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+.auth-ai-visuals img { position: absolute; object-fit: cover; border: 1px solid rgba(121,232,255,.24); border-radius: 22px; opacity: .62; box-shadow: 0 24px 70px rgba(0,0,0,.35), 0 0 55px rgba(42,128,255,.12); filter: saturate(.9); }
+.auth-ai-network { width: clamp(220px, 22vw, 360px); height: clamp(220px, 22vw, 360px); top: 18%; left: 7%; transform: rotate(-8deg); }
+.auth-ai-robot { width: clamp(190px, 20vw, 320px); height: clamp(190px, 20vw, 320px); right: 7%; bottom: 13%; transform: rotate(7deg); }
+.auth-visual-label { position: absolute; right: clamp(8%, 12vw, 17%); top: 19%; display: grid; gap: 4px; color: rgba(220,228,250,.78); text-align: right; text-shadow: 0 2px 18px rgba(0,0,0,.4); }
+.auth-visual-label span { color: var(--electric); font: 800 10px system-ui, sans-serif; letter-spacing: .16em; }
+.auth-visual-label strong { font: 700 13px system-ui, sans-serif; }
+.auth-shell-premium .auth-card { backdrop-filter: blur(18px); }
+@media (max-width: 1050px) { .auth-ai-network { left: -55px; opacity: .35; } .auth-ai-robot { right: -55px; opacity: .35; } .auth-visual-label { right: 7%; top: 14%; } }
+@media (max-width: 560px) { .auth-ai-visuals { opacity: .38; } .auth-ai-network { width: 180px; height: 180px; top: 10%; left: -70px; } .auth-ai-robot { width: 170px; height: 170px; right: -70px; bottom: 7%; } .auth-visual-label { display: none; } .auth-shell-premium .auth-card { backdrop-filter: blur(22px); } }
