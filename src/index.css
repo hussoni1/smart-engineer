@@ -687,6 +687,21 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 @media (max-width: 980px) { .topbar { flex-wrap: wrap; } .topbar nav { order: 4; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; } .topbar nav > button { flex: 0 0 auto; min-width: 88px; } }
 @media (max-width: 680px) { .topbar { width: calc(100% - 20px); } .topbar nav { display: none; position: absolute; top: calc(100% + 8px); right: 0; left: 0; max-height: calc(100vh - 90px); overflow-y: auto; padding: 10px; flex-direction: column; align-items: stretch; } .topbar nav.menu-open { display: flex; } .topbar nav > button, .topbar nav > .instagram-link { width: 100%; min-height: 44px; justify-content: flex-start; padding: 11px 14px; font-size: 12px; } .topbar nav > .instagram-link { flex: 0 0 auto; } .topbar .nav-icon { margin-inline-end: 6px; } }
 
+/* Final desktop header alignment: brand | navigation | utilities */
+.topbar { direction: ltr; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 76px; padding: 9px 12px; }
+.topbar .brand { direction: ltr; justify-self: start; min-width: 188px; }
+.topbar .brand strong { direction: rtl; }
+.topbar nav { direction: rtl; width: 100%; justify-self: stretch; overflow: hidden; }
+.topbar nav > button, .topbar nav > .instagram-link { flex: 1 1 auto; min-width: 0; }
+.topbar-actions { direction: rtl; justify-self: end; margin-inline-start: 0; }
+.topbar-actions .language-toggle { order: 1; min-width: 42px; }
+.topbar-actions .login-button, .topbar-actions .user-pill { order: 2; white-space: nowrap; }
+.topbar-actions .quiet-button { order: 3; }
+.mobile-menu-button { display: none; }
+@media (max-width: 1180px) { .topbar { gap: 8px; }.topbar .brand { min-width: 150px; }.topbar nav > button, .topbar nav > .instagram-link { padding-inline: 6px; }.topbar .nav-icon { min-width: 16px; } }
+@media (max-width: 900px) { .topbar { grid-template-columns: auto auto; justify-content: space-between; }.topbar nav { grid-column: 1 / -1; order: 4; overflow-x: auto; }.topbar .brand { min-width: 0; }.topbar-actions { justify-self: end; } }
+@media (max-width: 680px) { .topbar { display: flex; flex-wrap: nowrap; direction: ltr; }.topbar .brand { flex: 1 1 auto; }.topbar .brand strong { max-width: 130px; }.topbar .mobile-menu-button { display: inline-flex; order: 2; flex: 0 0 auto; }.topbar-actions { order: 3; }.topbar nav { grid-column: auto; order: 4; direction: rtl; }.topbar-actions .quiet-button { display: grid; } }
+
 /* Premium SaaS authentication experience */
 .auth-shell-premium { position: relative; display: grid; min-height: 100vh; place-items: center; overflow: hidden; padding: 32px 20px; background: radial-gradient(700px 420px at 50% 0%, rgba(74,65,170,.28), transparent 70%), linear-gradient(135deg, #070a16 0%, #0c1024 52%, #101532 100%); }
 .auth-shell-premium::before, .auth-shell-premium::after { position: absolute; content: ""; pointer-events: none; border-radius: 50%; filter: blur(2px); }
