@@ -613,3 +613,35 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 .notification-item strong { font-size: 16px; }.notification-item p { color: var(--muted-copy); line-height: 1.9; }.notification-item small, .legal-card small { color: #8795b5; }
 .legal-card { max-width: 860px; padding: 32px; }.legal-card h2 { margin-top: 28px; font-size: 20px; }
 @media (max-width: 760px) { .community-public-grid { grid-template-columns: 1fr; }.footer-links { flex-wrap: wrap; gap: 10px; } }
+
+/* AI department center layout */
+.workspace-shell .hero-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr); gap: 20px; margin: 22px 0; direction: rtl; }
+.workspace-shell .feature-card { min-width: 0; padding: 24px; border: 1px solid var(--edge); border-radius: 18px; background: linear-gradient(145deg, rgba(29,43,83,.92), rgba(12,18,38,.96)); }
+.workspace-shell .feature-card h2 { margin: 10px 0; line-height: 1.55; }
+.workspace-shell .feature-card p { color: var(--muted-copy); line-height: 1.9; }
+.workspace-shell .progress-track { height: 10px; margin: 28px 0 12px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.1); }
+.workspace-shell .progress-track span { display: block; height: 100%; border-radius: inherit; background: var(--electric); }
+.workspace-shell .section-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 26px 0 16px; border-bottom: 1px solid var(--edge); padding-bottom: 12px; }
+.workspace-shell .section-tabs button, .workspace-shell .filter-row button { padding: 10px 15px; border: 1px solid var(--edge); border-radius: 10px; color: var(--muted-copy); background: rgba(255,255,255,.04); font: inherit; cursor: pointer; }
+.workspace-shell .section-tabs button.active, .workspace-shell .filter-row button.active { color: #07101e; border-color: var(--electric); background: var(--electric); }
+.workspace-shell .filter-row { display: flex; gap: 9px; flex-wrap: wrap; margin: 14px 0 18px; }
+.workspace-shell .course-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; direction: rtl; align-items: stretch; }
+.workspace-shell .course-grid .course-card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; min-height: 255px; padding: 20px; border: 1px solid var(--edge); border-radius: 16px; background: linear-gradient(145deg, rgba(29,43,83,.86), rgba(12,18,38,.96)); }
+.workspace-shell .course-grid .course-card h3 { width: 100%; margin: 9px 0 4px; font-size: 20px; line-height: 1.45; overflow-wrap: anywhere; }
+.workspace-shell .course-grid .course-card p { width: 100%; margin: 9px 0 0; color: var(--muted-copy); line-height: 1.75; overflow-wrap: anywhere; }
+.workspace-shell .course-grid .course-card .secondary-button { margin-top: auto; align-self: stretch; }
+.workspace-shell .lab-list { display: grid; gap: 13px; }
+.workspace-shell .lab-card { min-width: 0; overflow: hidden; border: 1px solid var(--edge); border-radius: 15px; background: rgba(20,29,56,.82); }
+.workspace-shell .lab-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 18px; padding: 19px 21px; border: 0; color: var(--copy); background: transparent; text-align: right; font: inherit; cursor: pointer; }
+.workspace-shell .lab-toggle > span { display: grid; min-width: 0; gap: 5px; }
+.workspace-shell .lab-toggle strong, .workspace-shell .lab-toggle small { overflow-wrap: anywhere; }
+.workspace-shell .lab-toggle small { color: var(--muted-copy); line-height: 1.7; }
+.workspace-shell .lab-toggle b { flex: 0 0 auto; color: var(--electric); font-size: 24px; }
+.workspace-shell .lab-content { padding: 0 21px 22px; border-top: 1px solid var(--edge); }
+.workspace-shell .lab-content h4 { margin: 18px 0 8px; color: var(--electric); }
+.workspace-shell .lab-content ol { margin: 0; padding-inline-start: 22px; color: var(--muted-copy); line-height: 2; }
+.workspace-shell .lab-content pre { max-width: 100%; overflow-x: auto; padding: 16px; border: 1px solid var(--edge); border-radius: 10px; direction: ltr; text-align: left; color: #d8f7ff; background: #080d1c; white-space: pre-wrap; overflow-wrap: anywhere; }
+.workspace-shell .lab-check { margin: 14px 0; padding: 13px; border-radius: 10px; color: var(--muted-copy); background: rgba(121,232,255,.07); line-height: 1.8; }
+@media (max-width: 1000px) { .workspace-shell .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .workspace-shell .hero-grid, .workspace-shell .course-grid { grid-template-columns: 1fr; } .workspace-shell .workspace-heading { text-align: right; } .workspace-shell .feature-card { padding: 18px; } .workspace-shell .course-grid .course-card { min-height: 0; } }
+@media (max-width: 420px) { .workspace-shell .section-tabs button, .workspace-shell .filter-row button { width: 100%; } .workspace-shell .lab-toggle { padding: 16px; } .workspace-shell .lab-content { padding: 0 16px 18px; } }
