@@ -972,3 +972,24 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .topbar nav.menu-open > button,
   .topbar nav.menu-open > .instagram-link { color: var(--electric) !important; background: rgba(121,232,255,.07) !important; }
 }
+
+/* Header labels: white text on the unified color system */
+.topbar nav > button,
+.topbar nav > .instagram-link,
+.topbar nav > .nav-featured,
+.topbar-actions .language-toggle,
+.topbar-actions .login-button,
+.topbar-actions .user-pill {
+  color: #ffffff !important;
+}
+.topbar nav > button:hover,
+.topbar nav > button.active,
+.topbar nav > .instagram-link:hover,
+.topbar nav > .nav-featured:hover,
+.topbar nav > .nav-featured.active,
+.topbar-actions .language-toggle:hover,
+.topbar-actions .login-button:hover,
+.topbar-actions .user-pill:hover {
+  color: #ffffff !important;
+}
+.topbar nav > .nav-featured .nav-icon { color: #ffffff !important; }
