@@ -468,12 +468,22 @@ function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNaviga
   const remove = async (id: string) => { if (!window.confirm("هل تريد حذف هذا العضو؟")) return; await api(`/api/admin/users/${id}/delete`, { method: "POST" }); setMembers((current) => current.filter((member) => member.id !== id)); };
   return <main className="portal-shell"><Topbar user={user} active="admin" onNavigate={onNavigate} onLogout={onLogout} /><section className="admin-page"><div className="section-heading"><div><span className="eyebrow">إدارة المنصة</span><h1>الأعضاء</h1></div><span className="result-count">{members.length} أعضاء</span></div>{error ? <div className="empty-state">{error}</div> : <div className="admin-table">{members.map((member) => <article key={member.id} className="admin-row"><div><strong>{member.name}</strong><small>{member.email}</small></div><span>{Math.round(member.progress)}% تقدم</span><span>{member.quizCount} اختبارات</span><span>{new Date(member.createdAt).toLocaleDateString("ar-IQ")}</span><button className="reset-button" onClick={() => void resetPassword(member)}>تغيير الرمز</button><button className="danger-button" onClick={() => void remove(member.id)}>حذف</button></article>)}</div>}</section></main>;
 }
+function EnglishCoursesPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const englishCourses = byStudyOrder(courses.filter((course) => aiLearningSlugs.has(course.slug)), courseStudyOrder);
+  return <main className="portal-shell english-courses-page">
+    <Topbar user={user} active="english-course" onNavigate={onNavigate} onLogout={onLogout} />
+    <section className="learning-panel" style={{ maxWidth: 1280, margin: "34px auto", direction: "ltr" }}>
+      <div className="section-heading"><div><span className="eyebrow">AI TECHNOLOGY ENGINEERING</span><h1>English Courses</h1><p className="course-description-en">Study AI technology engineering through structured English learning paths, projects, and assessments.</p></div><button className="secondary-button" onClick={() => onNavigate("/")}>Back to Arabic portal</button></div>
+      <div className="course-grid">{englishCourses.map((course) => { const english = courseEnglish[course.slug]; return <button className="course-card" key={course.slug} onClick={() => onNavigate(`/courses/${course.slug}/lessons/1`)}><div className={`course-card-art course-card--${course.color}`}><span className="course-art-glyph">{course.slug === "computer-vision" ? "◉" : course.slug === "deep-learning" ? "∿" : "✦"}</span><span className="course-level">{course.level}</span></div><div className="course-card-copy"><h3>{english?.title ?? course.title}</h3><p>{english?.description ?? course.description}</p><span>{course.lessons.length} lessons · quizzes · capstone</span></div></button>; })}</div>
+    </section>
+  </main>;
+}
+
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [language, setLanguage] = useState<"ar" | "en">(() => (localStorage.getItem("engimind-language") as "ar" | "en") || "ar");
   const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
   useEffect(() => { const sync = () => { const next = (localStorage.getItem("engimind-language") as "ar" | "en") || "ar"; setLanguage(next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; }; sync(); window.addEventListener("engimind-language-change", sync); return () => window.removeEventListener("engimind-language-change", sync); }, []);
-  const toggleLanguage = () => { const next = language === "ar" ? "en" : "ar"; localStorage.setItem("engimind-language", next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; setLanguage(next); window.dispatchEvent(new Event("engimind-language-change")); };
   const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", community: "المجتمع" } : { learning: "Learning paths", python: "Python", portfolio: "Portfolio", data: "Data lab", glossary: "AI glossary", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", community: "Community" };
   return (
     <header className="topbar">
@@ -484,7 +494,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>{nav.learning}</button>
-        <button className="language-nav-button" onClick={toggleLanguage} aria-label="تغيير لغة الواجهة">{language === "ar" ? "English Courses" : "الدورات العربية"}</button>
+        <button className="language-nav-button" onClick={() => go(language === "ar" ? "/english-course" : "/")} aria-label="فتح الدورات الإنكليزية">{language === "ar" ? "English Courses" : "الدورات العربية"}</button>
         <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}>{nav.python}</button>
         <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}>Portfolio</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}>{nav.data}</button>
@@ -931,6 +941,7 @@ export default function App() {
 
   if (loading) return <div className="loading-screen"><span className="brand-mark">M</span><p>جارٍ تجهيز بوابتك...</p></div>;
   if (path === "/login") return <Login onBack={() => navigate("/")} />;
+  if (path === "/english-course") return <EnglishCoursesPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/python") return <PythonPage user={user} progress={progress} onNavigate={navigate} onLogout={logout} />;
   if (path === "/python-lab") return <PythonLabPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/portfolio") return <PortfolioPage user={user} onNavigate={navigate} onLogout={logout} />;
