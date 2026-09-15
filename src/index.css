@@ -888,4 +888,54 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .topbar { width: calc(100% - 20px); height: 68px; padding: 0 8px 0 12px; border-radius: 18px; }
   .brand-mark { width: 36px; height: 36px; border-radius: 10px; }
   .brand strong { font-size: 12px; }
+/* Stable header layout: one source of truth after legacy overrides */
+.topbar {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(165px, 220px) minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: min(1540px, calc(100% - 28px)) !important;
+  min-height: 76px !important;
+  height: 76px !important;
+  padding: 9px 12px !important;
+  overflow: visible !important;
+}
+.topbar .brand { min-width: 0 !important; max-width: 220px !important; overflow: hidden !important; }
+.topbar .brand strong { display: block !important; max-width: 100% !important; overflow: hidden !important; font-size: 15px !important; line-height: 1.25 !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.topbar nav { display: flex !important; min-width: 0 !important; width: 100% !important; height: auto !important; max-height: none !important; flex: 1 1 auto !important; flex-wrap: nowrap !important; align-items: center !important; justify-content: space-between !important; gap: 3px !important; overflow: hidden !important; }
+.topbar nav > button, .topbar nav > .instagram-link { min-width: 0 !important; min-height: 42px !important; flex: 1 1 auto !important; padding: 7px 6px !important; overflow: hidden !important; font-size: 11px !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.topbar nav > .instagram-link { flex: 0 0 34px !important; }
+.topbar-actions { min-width: max-content !important; gap: 5px !important; }
+.topbar-actions .language-toggle, .topbar-actions .login-button, .topbar-actions .user-pill { min-height: 40px !important; padding: 8px 10px !important; font-size: 11px !important; white-space: nowrap !important; }
+.topbar-actions .quiet-button { width: 36px !important; height: 36px !important; }
+.mobile-menu-button { display: none !important; }
+
+@media (max-width: 1120px) {
+  .topbar { display: flex !important; height: 68px !important; min-height: 68px !important; padding: 8px 10px !important; gap: 7px !important; }
+  .topbar .brand { flex: 1 1 auto !important; max-width: none !important; }
+  .topbar .brand strong { font-size: 14px !important; }
+  .topbar nav { display: none !important; }
+  .topbar .mobile-menu-button { display: inline-flex !important; order: 2; flex: 0 0 40px; width: 40px; height: 40px; }
+  .topbar-actions { order: 3; margin-inline-start: 0 !important; }
+  .topbar nav.menu-open { position: absolute !important; z-index: 100 !important; top: calc(100% + 8px) !important; right: 0 !important; left: 0 !important; display: flex !important; width: 100% !important; height: auto !important; max-height: min(70vh, 520px) !important; padding: 10px !important; flex-direction: column !important; align-items: stretch !important; gap: 5px !important; overflow-y: auto !important; border: 1px solid var(--edge-bright) !important; border-radius: 16px !important; background: rgba(8,13,29,.98) !important; box-shadow: 0 20px 50px rgba(0,0,0,.5) !important; }
+  .topbar nav.menu-open > button, .topbar nav.menu-open > .instagram-link { width: 100% !important; min-height: 44px !important; flex: 0 0 auto !important; justify-content: flex-start !important; padding: 10px 14px !important; font-size: 13px !important; text-align: right !important; }
+  .topbar nav.menu-open > .instagram-link { height: 44px !important; }
+}
+@media (max-width: 520px) {
+  .topbar { width: calc(100% - 16px) !important; padding-inline: 7px !important; }
+  .topbar .brand { max-width: 42% !important; }
+  .topbar .brand strong { display: grid !important; gap: 1px !important; font-size: 12px !important; line-height: 1.05 !important; white-space: normal !important; }
+  .topbar .brand-english { display: block !important; direction: ltr; color: var(--muted-copy); font-size: 8px; }
+  .topbar .brand-divider { display: none !important; }
+  .topbar-actions { gap: 3px !important; }
+  .topbar-actions .language-toggle { min-width: 50px !important; padding-inline: 5px !important; font-size: 9px !important; }
+  .topbar-actions .login-button, .topbar-actions .user-pill { max-width: 84px !important; padding-inline: 6px !important; font-size: 9px !important; overflow: hidden; text-overflow: ellipsis; }
+}
+@media (max-width: 370px) {
+  .topbar .brand { max-width: 36% !important; }
+  .topbar .brand strong { font-size: 11px !important; }
+  .topbar .brand-english { font-size: 7px !important; }
+  .topbar-actions .language-toggle { min-width: 45px !important; }
+  .topbar-actions .login-button, .topbar-actions .user-pill { max-width: 74px !important; }
 }
