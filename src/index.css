@@ -670,3 +670,19 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 @media (max-width: 900px) { .topbar { flex-wrap: wrap; } .topbar nav { order: 4; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; } .topbar-actions { margin-inline-start: auto; } }
 @media (max-width: 680px) { .topbar { position: sticky; width: calc(100% - 20px); min-height: 64px; padding: 8px 10px; border-radius: 16px; } .topbar .brand { min-width: 0; } .topbar .brand strong { max-width: 120px; overflow: hidden; font-size: 11px; text-overflow: ellipsis; } .topbar nav { position: absolute; top: calc(100% + 8px); right: 0; left: 0; display: none; max-height: calc(100vh - 90px); overflow-y: auto; padding: 10px; border-radius: 15px; flex-direction: column; align-items: stretch; background: rgba(10,15,31,.98); box-shadow: 0 20px 45px rgba(0,0,0,.45); } .topbar nav.menu-open { display: flex; } .topbar nav > button, .nav-more-trigger { width: 100%; padding: 12px 14px; text-align: right; } .nav-more { width: 100%; } .nav-more-menu { position: static; min-width: 0; margin: 4px 0 0; border-color: rgba(151,169,225,.12); box-shadow: none; } .nav-more-menu button, .nav-more-menu a { padding: 11px 18px; } .topbar-actions { gap: 4px; } .topbar-actions .quiet-button { display: grid; } .topbar-actions .user-pill { max-width: 105px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .topbar-actions .login-button { padding-inline: 10px; font-size: 11px; } }
 @media (max-width: 420px) { .topbar-actions .quiet-button { display: none; } .topbar-actions .language-toggle { min-width: 38px; padding-inline: 7px; } .topbar .mobile-menu-button { order: 3; } }
+
+/* All navigation items with compact visual icons */
+.topbar { width: min(1540px, calc(100% - 28px)); gap: 10px; }
+.topbar .brand { min-width: 160px; }
+.topbar nav { flex: 1; justify-content: center; gap: 2px; overflow: hidden; }
+.topbar nav > button, .topbar nav > .instagram-link { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 5px; padding: 7px 8px; border-radius: 10px; font-size: 10px; }
+.topbar nav > button { flex: 1 1 auto; }
+.topbar .nav-icon { display: inline-grid; flex: 0 0 auto; place-items: center; min-width: 20px; height: 20px; color: var(--electric); font-size: 13px; font-weight: 900; line-height: 1; }
+.topbar nav > button.active .nav-icon, .topbar nav > button:hover .nav-icon { color: var(--acid); }
+.topbar nav > .nav-featured .nav-icon { color: #07111a; }
+.topbar nav > .instagram-link { flex: 0 0 34px; width: 34px; border: 1px solid rgba(255,155,207,.35); color: #ff9bcf; background: rgba(255,155,207,.08); }
+.topbar nav > .instagram-link svg { width: 17px; height: 17px; }
+.nav-more { display: none; }
+@media (max-width: 1260px) { .topbar { width: calc(100% - 20px); } .topbar .brand { min-width: 132px; } .topbar .brand strong { font-size: 11px; } .topbar nav > button, .topbar nav > .instagram-link { padding-inline: 5px; font-size: 9px; } .topbar .nav-icon { min-width: 17px; font-size: 12px; } }
+@media (max-width: 980px) { .topbar { flex-wrap: wrap; } .topbar nav { order: 4; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; } .topbar nav > button { flex: 0 0 auto; min-width: 88px; } }
+@media (max-width: 680px) { .topbar { width: calc(100% - 20px); } .topbar nav { display: none; position: absolute; top: calc(100% + 8px); right: 0; left: 0; max-height: calc(100vh - 90px); overflow-y: auto; padding: 10px; flex-direction: column; align-items: stretch; } .topbar nav.menu-open { display: flex; } .topbar nav > button, .topbar nav > .instagram-link { width: 100%; min-height: 44px; justify-content: flex-start; padding: 11px 14px; font-size: 12px; } .topbar nav > .instagram-link { flex: 0 0 auto; } .topbar .nav-icon { margin-inline-end: 6px; } }

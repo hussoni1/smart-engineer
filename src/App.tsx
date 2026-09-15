@@ -635,9 +635,8 @@ function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNaviga
 }
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
   const [language, setLanguage] = useState<"ar" | "en">(() => (localStorage.getItem("engimind-language") as "ar" | "en") || "ar");
-  const go = (path: string) => { setMenuOpen(false); setMoreOpen(false); onNavigate(path); };
+  const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
   useEffect(() => { const sync = () => { const next = (localStorage.getItem("engimind-language") as "ar" | "en") || "ar"; setLanguage(next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; }; sync(); window.addEventListener("engimind-language-change", sync); return () => window.removeEventListener("engimind-language-change", sync); }, []);
   const toggleLanguage = () => { const next = language === "ar" ? "en" : "ar"; localStorage.setItem("engimind-language", next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; setLanguage(next); window.dispatchEvent(new Event("engimind-language-change")); };
   const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", aiDepartment: "مركز قسم AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", community: "المجتمع" } : { learning: "Learning paths", python: "Python", portfolio: "Portfolio", data: "Data lab", glossary: "AI Department", aiDepartment: "AI Department", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", community: "Community" };
@@ -649,25 +648,20 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       </button>
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
-        <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>{nav.learning}</button>
-        <button className={active === "ai-department" ? "active nav-featured" : "nav-featured"} onClick={() => go("/ai-department")}>{nav.aiDepartment}</button>
-        <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}>{nav.exams}</button>
-        <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}>المشاريع</button>
-        <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}>{nav.community}</button>
-        <div className="nav-more">
-          <button className={moreOpen ? "active nav-more-trigger" : "nav-more-trigger"} onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen}>المزيد <span aria-hidden="true">⌄</span></button>
-          {moreOpen && <div className="nav-more-menu">
-            <button onClick={() => go("/english-course")}>English Course</button>
-            <button onClick={() => go("/python")}>{nav.python}</button>
-            <button onClick={() => go("/data-lab")}>{nav.data}</button>
-            <button onClick={() => go("/glossary")}>{nav.glossary}</button>
-            <button onClick={() => go("/goals")}>{nav.goals}</button>
-            <button onClick={() => go("/review")}>{nav.review}</button>
-            <button onClick={() => go("/portfolio")}>Portfolio</button>
-            <button onClick={() => go("/courses/cpp/lessons/1")}>{nav.cpp}</button>
-            <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg><span>Instagram</span></a>
-          </div>}
-        </div>
+        <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}><span className="nav-icon">⌂</span>{nav.learning}</button>
+        <button className={active === "english-course" ? "active" : ""} onClick={() => go("/english-course")}><span className="nav-icon">文</span>English</button>
+        <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}><span className="nav-icon">⌘</span>Python</button>
+        <button className={active === "ai-department" ? "active nav-featured" : "nav-featured"} onClick={() => go("/ai-department")}><span className="nav-icon">✦</span>مركز AI</button>
+        <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>البيانات</button>
+        <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}><span className="nav-icon">✓</span>الامتحانات</button>
+        <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}><span className="nav-icon">⚙</span>المشاريع</button>
+        <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}><span className="nav-icon">▣</span>Portfolio</button>
+        <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}><span className="nav-icon">Aa</span>قاموس AI</button>
+        <button className={active === "goals" ? "active" : ""} onClick={() => go("/goals")}><span className="nav-icon">◎</span>الهدف</button>
+        <button className={active === "review" ? "active" : ""} onClick={() => go("/review")}><span className="nav-icon">↻</span>المراجعة</button>
+        <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}><span className="nav-icon">C+</span>C++</button>
+        <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
+        <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}><span className="nav-icon">♧</span>المجتمع</button>
       </nav>
       <div className="topbar-actions">
         <button className="language-toggle" onClick={toggleLanguage} aria-label="تغيير لغة الواجهة">{language === "ar" ? "EN" : "عربي"}</button>
