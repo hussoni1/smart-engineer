@@ -648,6 +648,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   return (
     <header className={`topbar ${headerVisible ? "" : "topbar-hidden"}`}>
       <button className="brand" onClick={() => go("/")}>
+        <span className="brand-mark">M</span>
         <strong><span className="brand-arabic">إنجي مايند</span><span className="brand-divider"> — </span><span className="brand-english">EngiMind</span></strong>
       </button>
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
