@@ -494,7 +494,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}>{nav.learning}</button>
-        <button className="language-nav-button" onClick={() => go("/english-course")} aria-label="فتح الدورات الإنكليزية">English Courses</button>
+        <button className="language-nav-button" onClick={() => window.location.assign("/english-course")} aria-label="فتح الدورات الإنكليزية">English Courses</button>
         <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}>{nav.python}</button>
         <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}>Portfolio</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}>{nav.data}</button>
