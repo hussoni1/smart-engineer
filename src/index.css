@@ -853,3 +853,8 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .topbar-actions .login-button, .topbar-actions .user-pill { max-width: 78px; padding-inline: 6px; }
   .topbar-actions .language-toggle { min-width: 50px; }
 }
+
+
+/* Keep the existing header design; reveal it on upward scroll and hide it on downward scroll. */
+.topbar { position: sticky; top: 12px; z-index: 50; transform: translateY(0); transition: transform .28s cubic-bezier(.23,1,.32,1), opacity .2s ease; }
+.topbar.topbar-hidden { transform: translateY(calc(-100% - 24px)); opacity: .02; pointer-events: none; }

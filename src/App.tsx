@@ -637,13 +637,16 @@ function AdminPage({ user, onNavigate, onLogout }: { user: User | null; onNaviga
 }
 function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; active: string; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const [language, setLanguage] = useState<"ar" | "en">(() => (localStorage.getItem("engimind-language") as "ar" | "en") || "ar");
   const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
+  useEffect(() => { const onScroll = () => { const current = window.scrollY; if (current < 20) setHeaderVisible(true); else if (current > lastScrollY.current + 6) { setHeaderVisible(false); setMenuOpen(false); } else if (current < lastScrollY.current - 6) setHeaderVisible(true); lastScrollY.current = current; }; lastScrollY.current = window.scrollY; window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
   useEffect(() => { const sync = () => { const next = (localStorage.getItem("engimind-language") as "ar" | "en") || "ar"; setLanguage(next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; }; sync(); window.addEventListener("engimind-language-change", sync); return () => window.removeEventListener("engimind-language-change", sync); }, []);
   const toggleLanguage = () => { const next = language === "ar" ? "en" : "ar"; localStorage.setItem("engimind-language", next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; setLanguage(next); window.dispatchEvent(new Event("engimind-language-change")); };
   const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", aiDepartment: "مركز قسم AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", community: "المجتمع" } : { learning: "Learning paths", python: "Python", portfolio: "Portfolio", data: "Data lab", glossary: "AI Department", aiDepartment: "AI Department", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", community: "Community" };
   return (
-    <header className="topbar">
+    <header className={`topbar ${headerVisible ? "" : "topbar-hidden"}`}>
       <button className="brand" onClick={() => go("/")}>
         <strong><span className="brand-arabic">إنجي مايند</span><span className="brand-divider"> — </span><span className="brand-english">EngiMind</span></strong>
       </button>
