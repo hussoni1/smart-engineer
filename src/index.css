@@ -833,3 +833,21 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 .topbar-actions .login-button, .topbar-actions .user-pill, .topbar-actions .language-toggle { font-size: 13px; }
 @media (max-width: 1260px) { .topbar .brand strong { font-size: 14px; } .topbar nav > button, .topbar nav > .instagram-link { padding-inline: 8px; font-size: 12px; } }
 @media (max-width: 760px) { .topbar .brand strong { font-size: 11px; } .topbar nav > button, .topbar nav > .instagram-link { min-height: 46px; padding: 11px 14px; font-size: 13px; } .topbar-actions .login-button, .topbar-actions .user-pill, .topbar-actions .language-toggle { font-size: 11px; } }
+
+/* Mobile header fit: keep the Arabic brand and auth controls fully visible */
+@media (max-width: 760px) {
+  .topbar { width: calc(100% - 16px); padding-inline: 7px; gap: 5px; overflow: visible; }
+  .topbar .brand { flex: 1 1 auto; width: auto; max-width: 42%; min-width: 0; }
+  .topbar .brand strong { max-width: 100%; font-size: 13px; letter-spacing: -.03em; }
+  .topbar .brand-english, .topbar .brand-divider { display: none; }
+  .topbar .mobile-menu-button { flex-basis: 38px; width: 38px; height: 38px; }
+  .topbar-actions { gap: 3px; }
+  .topbar-actions .login-button, .topbar-actions .user-pill { max-width: 88px; min-height: 38px; padding: 7px 8px; font-size: 10px; }
+  .topbar-actions .language-toggle { min-width: 58px; min-height: 38px; padding: 7px 6px; font-size: 10px; }
+}
+@media (max-width: 390px) {
+  .topbar .brand { max-width: 36%; }
+  .topbar .brand strong { font-size: 12px; }
+  .topbar-actions .login-button, .topbar-actions .user-pill { max-width: 78px; padding-inline: 6px; }
+  .topbar-actions .language-toggle { min-width: 50px; }
+}
