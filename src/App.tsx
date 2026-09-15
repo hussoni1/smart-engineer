@@ -610,7 +610,7 @@ function CommunityPage({ user, onNavigate, onLogout }: { user: User | null; onNa
     ["طائرة مسيرة ذكية", "تصميم وتحليل هندسي", "مبادئ التحكم والرؤية والسلامة في النماذج الأولية."],
     ["جسر منخفض التكلفة", "نمذجة وتحليل إنشائي", "اختبر الفكرة، وثّق الافتراضات، وشارك النتيجة."]
   ];
-  return <main className="portal-shell"><Topbar user={user} active="community" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Engineering community · المجتمع الهندسي</span><h1>شارك فكرتك وتعلّم من الآخرين</h1><p>مساحة عامة للمشاريع والتجارب والنتائج. ابدأ بمشروعك من ملفك الشخصي أو استكشف النماذج التعليمية.</p></div><button className="primary-button" onClick={() => onNavigate(user ? "/profile" : "/login")}>{user ? "افتح مساحة مشروعي" : "سجّل للمشاركة"} ←</button></div><div className="community-public-grid">{publicProjects.map(([title, tag, description]) => <article className="workspace-card public-project-card" key={title}><span className="course-chip cyan">{tag}</span><h2>{title}</h2><p>{description}</p><button className="secondary-button" onClick={() => onNavigate("/projects")}>شاهد طريقة التنفيذ ←</button></article>)}</div><section className="workspace-card community-rules"><span className="eyebrow">Community guidelines · إرشادات المجتمع</span><h2>شارك باحترام ووثّق عملك</h2><p>اكتب مصادر المشروع، اذكر القياسات والحدود، ولا تنشر بيانات شخصية أو تعليمات غير آمنة. كل مشروع تعليمي يحتاج وصفاً واضحاً وخطوات قابلة لإعادة التجربة.</p></section></section></main>;
+  return <main className="portal-shell"><Topbar user={user} active="community" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">Engineering community · المجتمع الهندسي</span><h1>شارك فكرتك وتعلّم من الآخرين</h1><p>مساحة عامة للمشاريع والتجارب والنتائج. ابدأ بمشروعك من ملفك الشخصي أو استكشف النماذج التعليمية.</p></div><button className="primary-button" onClick={() => onNavigate(user ? "/profile" : "/login")}>{user ? "افتح مساحة مشروعي" : "سجّل للمشاركة"} ←</button></div><section className="portfolio-project-banner"><div><span className="eyebrow">Portfolio · ملف الأعمال</span><h2>حوّل مشاريعك إلى ملف مهني</h2><p>اجمع أعمالك، وثّق نتائجك، وشارك مهاراتك الهندسية مع المجتمع.</p></div><button className="secondary-button" onClick={() => onNavigate("/portfolio")}>افتح Portfolio ←</button></section><div className="community-public-grid">{publicProjects.map(([title, tag, description]) => <article className="workspace-card public-project-card" key={title}><span className="course-chip cyan">{tag}</span><h2>{title}</h2><p>{description}</p><button className="secondary-button" onClick={() => onNavigate("/projects")}>شاهد طريقة التنفيذ ←</button></article>)}</div><section className="workspace-card community-rules"><span className="eyebrow">Community guidelines · إرشادات المجتمع</span><h2>شارك باحترام ووثّق عملك</h2><p>اكتب مصادر المشروع، اذكر القياسات والحدود، ولا تنشر بيانات شخصية أو تعليمات غير آمنة. كل مشروع تعليمي يحتاج وصفاً واضحاً وخطوات قابلة لإعادة التجربة.</p></section></section></main>;
 }
 
 function NotificationsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
@@ -657,10 +657,8 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>البيانات</button>
         <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}><span className="nav-icon">✓</span>الامتحانات</button>
         <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}><span className="nav-icon">⚙</span>المشاريع</button>
-        <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}><span className="nav-icon">▣</span>Portfolio</button>
         <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}><span className="nav-icon">Aa</span>قاموس AI</button>
         <button className={active === "goals" ? "active" : ""} onClick={() => go("/goals")}><span className="nav-icon">◎</span>الهدف</button>
-        <button className={active === "review" ? "active" : ""} onClick={() => go("/review")}><span className="nav-icon">↻</span>المراجعة</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}><span className="nav-icon">C+</span>C++</button>
         <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
         <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}><span className="nav-icon">♧</span>المجتمع</button>
@@ -912,6 +910,10 @@ function Profile({ user, progress, results, onNavigate, onLogout }: { user: User
         <div><span>دروس مكتملة</span><strong>{done}</strong></div>
         <div><span>اختبارات منجزة</span><strong>{results.filter((item) => item.quizPassed).length}</strong></div>
         <div><span>مسارات متقدمة</span><strong>{progress.filter((item) => item.progress >= 100).length}</strong></div>
+      </section>
+      <section className="profile-tools-grid">
+        <button className="profile-tool-card" onClick={() => onNavigate("/review")}><span className="tool-icon">↻</span><span><strong>مراجعة ذكية</strong><small>راجع نقاط ضعفك واختباراتك السابقة</small></span><b>←</b></button>
+        <button className="profile-tool-card" onClick={() => onNavigate("/projects")}><span className="tool-icon">▣</span><span><strong>ملف أعمالي</strong><small>اعرض مشاريعك وأفكارك الهندسية</small></span><b>←</b></button>
       </section>
       <section className="profile-content">
         <div className="profile-panel">
