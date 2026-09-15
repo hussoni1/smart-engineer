@@ -993,3 +993,33 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   color: #ffffff !important;
 }
 .topbar nav > .nav-featured .nav-icon { color: #ffffff !important; }
+
+/* Match desktop header colors to the mobile header */
+.topbar {
+  background: rgba(8,13,29,.96) !important;
+  border-color: rgba(121,232,255,.22) !important;
+  box-shadow: 0 16px 42px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.topbar nav {
+  background: rgba(121,232,255,.055) !important;
+  border-color: rgba(121,232,255,.22) !important;
+}
+.topbar nav > button,
+.topbar nav > .instagram-link,
+.topbar-actions .language-toggle,
+.topbar-actions .login-button,
+.topbar-actions .user-pill {
+  color: #fff !important;
+  background: rgba(121,232,255,.07) !important;
+  border-color: rgba(121,232,255,.32) !important;
+}
+.topbar nav > button:hover,
+.topbar nav > button.active,
+.topbar nav > .instagram-link:hover,
+.topbar-actions .language-toggle:hover,
+.topbar-actions .login-button:hover,
+.topbar-actions .user-pill:hover {
+  color: #fff !important;
+  background: rgba(121,232,255,.16) !important;
+  border-color: rgba(121,232,255,.75) !important;
+}
