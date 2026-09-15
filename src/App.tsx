@@ -653,18 +653,16 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       </button>
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
-        <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}><span className="nav-icon">⌂</span>{nav.learning}</button>
-        <button className={active === "english-course" ? "active" : ""} onClick={() => window.location.assign("/english-course")}>English Courses</button>
-        <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}><span className="nav-icon">⌘</span>{language === "ar" ? "بايثون" : "Python"}</button>
-        <button className={active === "ai-department" ? "active nav-featured" : "nav-featured"} onClick={() => go("/ai-department")}><span className="nav-icon">✦</span>مركز AI</button>
-        <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>البيانات</button>
-        <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}><span className="nav-icon">✓</span>الامتحانات</button>
-        <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}><span className="nav-icon">⚙</span>المشاريع</button>
-        <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}><span className="nav-icon">Aa</span>قاموس AI</button>
-        <button className={active === "goals" ? "active" : ""} onClick={() => go("/goals")}><span className="nav-icon">◎</span>الهدف</button>
-        <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>C++</button>
-        <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
         <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}><span className="nav-icon">♧</span>المجتمع</button>
+        <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><span className="nav-icon">◎</span><span>+4C</span></a>
+        <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}><span className="nav-icon">⌂</span>{nav.learning}</button>
+        <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}><span className="nav-icon">Aa</span>قاموس AI</button>
+        <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}><span className="nav-icon">⚙</span>المشاريع</button>
+        <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}><span className="nav-icon">▦</span>المنتجات</button>
+        <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>البيانات</button>
+        <button className={active === "ai-department" ? "active nav-featured" : "nav-featured"} onClick={() => go("/ai-department")}><span className="nav-icon">✦</span>مركز AI</button>
+        <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}><span className="nav-icon">⌘</span>{language === "ar" ? "بوتيتي" : "Bot"}</button>
+        <button className={active === "english-course" ? "active" : ""} onClick={() => window.location.assign("/english-course")}>English Courses</button>
       </nav>
       <div className="topbar-actions">
         <button className="language-toggle" onClick={toggleLanguage} aria-label={language === "ar" ? "تحويل الواجهة إلى الإنجليزية" : "Switch interface to Arabic"}>{language === "ar" ? "English" : "العربية"}</button>
