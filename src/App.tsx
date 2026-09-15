@@ -13,6 +13,47 @@ type Progress = { userId: string; courseSlug: string; completedLessons: number; 
 type QuizResult = { courseSlug: string; lessonIndex: number; quizScore: number; quizTotal: number; quizPassed: number; attempts: number; updatedAt: number };
 type User = { id: string; name: string; email: string; avatarUrl?: string };
 
+
+type AiSubject = { stage: string; title: string; english: string; prerequisite: string; outcome: string };
+type AiLab = { title: string; level: string; tools: string; goal: string; steps: string[]; starter: string; check: string };
+
+const aiSubjects: AiSubject[] = [
+  { stage: "الأولى", title: "البرمجة والمنطق", english: "Programming & Logic", prerequisite: "لا توجد متطلبات", outcome: "كتابة برامج Python وC++ وفهم التفكير الخوارزمي." },
+  { stage: "الأولى", title: "الرياضيات للذكاء الاصطناعي", english: "Mathematics for AI", prerequisite: "أساسيات الجبر", outcome: "فهم المتجهات والمصفوفات والاحتمالات والتفاضل." },
+  { stage: "الثانية", title: "هياكل البيانات والخوارزميات", english: "Data Structures & Algorithms", prerequisite: "Python أو C++", outcome: "تصميم حلول فعالة وتحليل التعقيد الزمني." },
+  { stage: "الثانية", title: "قواعد البيانات وتحليل البيانات", english: "Databases & Data Analysis", prerequisite: "البرمجة الأساسية", outcome: "تنظيف البيانات والاستعلام عنها واستخراج مؤشرات مفيدة." },
+  { stage: "الثالثة", title: "أساسيات الذكاء الاصطناعي", english: "Artificial Intelligence Fundamentals", prerequisite: "رياضيات + خوارزميات", outcome: "اختيار طريقة البحث والتمثيل والاستدلال المناسبة." },
+  { stage: "الثالثة", title: "التعلم الآلي", english: "Machine Learning", prerequisite: "إحصاء وتحليل بيانات", outcome: "تدريب نماذج التصنيف والانحدار وقياس أدائها." },
+  { stage: "الثالثة", title: "الرؤية الحاسوبية ومعالجة اللغة", english: "Computer Vision & NLP", prerequisite: "Machine Learning", outcome: "بناء نماذج أولية للصور والنصوص مع تقييم واضح." },
+  { stage: "الرابعة", title: "التعلم العميق والأنظمة الذكية", english: "Deep Learning & Intelligent Systems", prerequisite: "Machine Learning", outcome: "فهم الشبكات العصبية وربط النموذج بتطبيق هندسي." },
+  { stage: "الرابعة", title: "MLOps والبحث العلمي", english: "MLOps & Research Methods", prerequisite: "مشروع AI", outcome: "تجربة النموذج وتوثيقه ونشره ومراقبة نتائجه." },
+];
+
+const aiLabs: AiLab[] = [
+  { title: "مختبر Python للمهندس", level: "المرحلة الأولى", tools: "Python · Jupyter", goal: "اكتب برنامجاً يحسب متوسط درجات مجموعة طلاب ويحدد من يحتاج إلى دعم.", steps: ["أنشئ قائمة درجات وأسماء.", "استخدم حلقة لحساب المجموع والمتوسط.", "اطبع الطلاب الأقل من حد النجاح.", "اختبر البرنامج بقيم عادية وحدّية."], starter: `students = {"Ali": 72, "Sara": 91, "Omar": 48}
+average = sum(students.values()) / len(students)
+print("Average:", average)`, check: "لماذا نستخدم len(students) بدلاً من رقم ثابت؟" },
+  { title: "مختبر تنظيف البيانات", level: "المرحلة الثانية", tools: "Python · CSV · pandas", goal: "حوّل جدول قياسات خام إلى بيانات صالحة للتحليل.", steps: ["اقرأ ملف CSV.", "افحص القيم المفقودة والتكرار.", "وحّد الوحدات وأسماء الأعمدة.", "احفظ نسخة نظيفة وسجّل ما تغير."], starter: `import pandas as pd
+df = pd.read_csv("measurements.csv")
+print(df.info())
+clean = df.drop_duplicates().dropna()`, check: "متى يكون حذف الصفوف المفقودة قراراً خاطئاً؟" },
+  { title: "مختبر نموذج تصنيف", level: "المرحلة الثالثة", tools: "Python · scikit-learn", goal: "درّب نموذجاً بسيطاً، ثم افصل التدريب عن الاختبار واحسب المقاييس.", steps: ["حدد features وlabel.", "قسّم البيانات إلى تدريب واختبار.", "درّب نموذجاً بخط أساس واضح.", "قارن accuracy وprecision وrecall."], starter: `from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = DecisionTreeClassifier(max_depth=3).fit(X_train, y_train)`, check: "لماذا لا تكفي accuracy وحدها عندما تكون الفئات غير متوازنة؟" },
+  { title: "مختبر الرؤية الحاسوبية", level: "المرحلة الثالثة", tools: "Python · OpenCV", goal: "اقرأ صورة، حوّلها إلى رمادية، واستخرج حوافها لفهم خطوات المعالجة.", steps: ["اقرأ الصورة وتحقق من وجودها.", "حوّلها إلى grayscale.", "طبّق Gaussian blur لتقليل الضوضاء.", "استخرج الحواف وقارن النتيجة بالصورة الأصلية."], starter: `import cv2
+image = cv2.imread("sample.jpg")
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+blur = cv2.GaussianBlur(gray, (5, 5), 0)
+edges = cv2.Canny(blur, 50, 150)`, check: "ما أثر تغيير عتبات Canny على الحواف المكتشفة؟" },
+  { title: "مختبر نشر نموذج AI", level: "المرحلة الرابعة", tools: "Python · FastAPI · JSON", goal: "حوّل نموذجاً مدرباً إلى واجهة API مع تحقق من المدخلات وتسجيل الأخطاء.", steps: ["حدد schema للمدخلات.", "أضف endpoint للتنبؤ.", "تحقق من القيم غير المنطقية.", "سجّل زمن الاستجابة والنتيجة واحمِ بيانات المستخدم."], starter: `from fastapi import FastAPI
+app = FastAPI()
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}`, check: "لماذا نحتاج health check منفصلاً عن endpoint التنبؤ؟" },
+];
+
 const cppQuiz = (topic: string, correct: string, explanation: string) => [
   { question: `أي عبارة تصف ${topic} بشكل صحيح؟`, options: [correct, "جزء شكلي لا يؤثر في البرنامج", "طريقة لحذف الذاكرة دائمًا", "مفهوم خاص بالمتصفح فقط"], answer: 0, explanation },
   { question: `ما أفضل ممارسة عند استخدام ${topic}؟`, options: ["فهم المدخلات والنتيجة واختبار الحالات", "نسخ الكود دون فهم", "تجاهل رسائل المترجم", "حذف الاختبارات"], answer: 0, explanation: "الفهم والاختبار يقللان الأخطاء ويجعلان الكود أسهل للصيانة." },
@@ -598,7 +639,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   const go = (path: string) => { setMenuOpen(false); onNavigate(path); };
   useEffect(() => { const sync = () => { const next = (localStorage.getItem("engimind-language") as "ar" | "en") || "ar"; setLanguage(next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; }; sync(); window.addEventListener("engimind-language-change", sync); return () => window.removeEventListener("engimind-language-change", sync); }, []);
   const toggleLanguage = () => { const next = language === "ar" ? "en" : "ar"; localStorage.setItem("engimind-language", next); document.documentElement.lang = next; document.documentElement.dir = next === "ar" ? "rtl" : "ltr"; setLanguage(next); window.dispatchEvent(new Event("engimind-language-change")); };
-  const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", community: "المجتمع" } : { learning: "Learning paths", python: "Python", portfolio: "Portfolio", data: "Data lab", glossary: "AI glossary", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", community: "Community" };
+  const nav = language === "ar" ? { learning: "مسارات التعلم", python: "لغة بايثون", portfolio: "Portfolio", data: "مختبر البيانات", glossary: "قاموس AI", aiDepartment: "مركز قسم AI", exams: "الامتحانات", goals: "اختر هدفك", review: "مراجعة ذكية", cpp: "لغة C++", community: "المجتمع" } : { learning: "Learning paths", python: "Python", portfolio: "Portfolio", data: "Data lab", glossary: "AI Department", aiDepartment: "AI Department", exams: "Exams", goals: "Choose goal", review: "Smart review", cpp: "C++", community: "Community" };
   return (
     <header className="topbar">
       <button className="brand" onClick={() => go("/")}>
@@ -613,6 +654,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "portfolio" ? "active" : ""} onClick={() => go("/portfolio")}>Portfolio</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}>{nav.data}</button>
         <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}>{nav.glossary}</button>
+        <button className={active === "ai-department" ? "active" : ""} onClick={() => go("/ai-department")}>{nav.aiDepartment}</button>
         <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}>{nav.exams}</button>
         <button className={active === "goals" ? "active" : ""} onClick={() => go("/goals")}>{nav.goals}</button>
         <button className={active === "review" ? "active" : ""} onClick={() => go("/review")}>{nav.review}</button>
@@ -637,6 +679,21 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
       </div>
     </header>
   );
+}
+
+
+function AiDepartmentPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
+  const [tab, setTab] = useState<"subjects" | "labs">("subjects");
+  const [stage, setStage] = useState("الكل");
+  const [openLab, setOpenLab] = useState(0);
+  const stages = ["الكل", "الأولى", "الثانية", "الثالثة", "الرابعة"];
+  const visibleSubjects = stage === "الكل" ? aiSubjects : aiSubjects.filter((item) => item.stage === stage);
+  return <main className="portal-shell"><Topbar user={user} active="ai-department" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell">
+    <div className="workspace-heading"><div><span className="eyebrow">AI Technology Engineering · مركز القسم</span><h1>مركز طالب هندسة تقنيات الذكاء الاصطناعي</h1><p>خارطة مواد واضحة ومختبرات عملية تساعدك على تحويل المحاضرة إلى مهارة ومشروع قابل للتنفيذ.</p></div><span className="result-count">9 مواد · 5 مختبرات</span></div>
+    <div className="hero-grid"><article className="feature-card"><span className="eyebrow">ابدأ من مرحلتك</span><h2>تعلم بالترتيب، طبّق في المختبر، ثم اختبر فهمك.</h2><p>المحتوى مصمم لطلاب القسم من الأساسيات إلى بناء ونشر أنظمة الذكاء الاصطناعي.</p></article><article className="feature-card"><strong>مسار المهارات</strong><div className="progress-track"><span style={{ width: "28%" }} /></div><small>الأساسيات ← البيانات ← النماذج ← النشر</small></article></div>
+    <div className="section-tabs"><button className={tab === "subjects" ? "active" : ""} onClick={() => setTab("subjects")}>خارطة المواد الدراسية</button><button className={tab === "labs" ? "active" : ""} onClick={() => setTab("labs")}>المختبرات العملية</button></div>
+    {tab === "subjects" ? <><div className="filter-row">{stages.map((item) => <button key={item} className={stage === item ? "active" : ""} onClick={() => setStage(item)}>{item === "الكل" ? "كل المراحل" : `المرحلة ${item}`}</button>)}</div><div className="course-grid">{visibleSubjects.map((item) => <article className="course-card" key={item.title}><span className="eyebrow">المرحلة {item.stage}</span><h3>{item.title}</h3><small>{item.english}</small><p><strong>المتطلب:</strong> {item.prerequisite}</p><p><strong>الناتج:</strong> {item.outcome}</p><button className="secondary-button" onClick={() => setTab("labs")}>اذهب إلى المختبرات ←</button></article>)}</div></> : <div className="lab-list">{aiLabs.map((lab, index) => <article className="lab-card" key={lab.title}><button className="lab-toggle" onClick={() => setOpenLab(openLab === index ? -1 : index)}><span><span className="eyebrow">{lab.level}</span><strong>{lab.title}</strong><small>{lab.tools} · {lab.goal}</small></span><b>{openLab === index ? "−" : "+"}</b></button>{openLab === index && <div className="lab-content"><h4>خطة التنفيذ</h4><ol>{lab.steps.map((step) => <li key={step}>{step}</li>)}</ol><h4>كود ابتدائي</h4><pre><code>{lab.starter}</code></pre><div className="lab-check"><strong>سؤال تحقق:</strong> {lab.check}</div><button className="primary-button" onClick={() => window.alert("سجّل إجابتك في دفتر المختبر ثم طبّق الكود بنفسك.")}>ابدأ التجربة</button></div>}</article>)}</div>}
+  </section></main>;
 }
 
 function EnglishCoursePage({ user, progress, onNavigate, onLogout }: { user: User | null; progress: Progress[]; onNavigate: (path: string) => void; onLogout: () => void }) {
@@ -1194,6 +1251,7 @@ export default function App() {
   if (path === "/portfolio") return <PortfolioPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/data-lab") return <DataLabPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/glossary") return <GlossaryPage user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/ai-department") return <AiDepartmentPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/exams") return <ExamsPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/goals") return <GoalsPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/review") return user ? <ReviewPage user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
