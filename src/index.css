@@ -940,3 +940,35 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .topbar-actions .language-toggle { min-width: 45px !important; }
   .topbar-actions .login-button, .topbar-actions .user-pill { max-width: 74px !important; }
 }
+
+/* One unified color system for every header control */
+.topbar nav > button,
+.topbar nav > .instagram-link,
+.topbar nav > .nav-featured,
+.topbar-actions .language-toggle,
+.topbar-actions .login-button,
+.topbar-actions .user-pill {
+  color: var(--electric) !important;
+  border: 1px solid rgba(121,232,255,.32) !important;
+  background: rgba(121,232,255,.07) !important;
+  box-shadow: none !important;
+}
+.topbar nav > button:hover,
+.topbar nav > button.active,
+.topbar nav > .instagram-link:hover,
+.topbar nav > .nav-featured:hover,
+.topbar nav > .nav-featured.active,
+.topbar-actions .language-toggle:hover,
+.topbar-actions .login-button:hover,
+.topbar-actions .user-pill:hover {
+  color: var(--copy) !important;
+  border-color: var(--electric) !important;
+  background: rgba(121,232,255,.16) !important;
+  box-shadow: 0 0 18px rgba(121,232,255,.12) !important;
+}
+.topbar nav > .nav-featured .nav-icon { color: var(--electric) !important; }
+.topbar-actions .user-pill span { color: #07111a; background: var(--electric); }
+@media (max-width: 1120px) {
+  .topbar nav.menu-open > button,
+  .topbar nav.menu-open > .instagram-link { color: var(--electric) !important; background: rgba(121,232,255,.07) !important; }
+}
