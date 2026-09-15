@@ -645,13 +645,12 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   return (
     <header className="topbar">
       <button className="brand" onClick={() => go("/")}>
-        <span className="brand-mark">M</span>
         <strong>EngiMind — إنجي مايند</strong>
       </button>
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}><span className="nav-icon">⌂</span>{nav.learning}</button>
-        <button className={active === "english-course" ? "active" : ""} onClick={() => go("/english-course")}><span className="nav-icon">文</span>English</button>
+        <button className={active === "english-course" ? "active" : ""} onClick={() => go("/english-course")}>English</button>
         <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}><span className="nav-icon">⌘</span>Python</button>
         <button className={active === "ai-department" ? "active nav-featured" : "nav-featured"} onClick={() => go("/ai-department")}><span className="nav-icon">✦</span>مركز AI</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>البيانات</button>
@@ -659,7 +658,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}><span className="nav-icon">⚙</span>المشاريع</button>
         <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}><span className="nav-icon">Aa</span>قاموس AI</button>
         <button className={active === "goals" ? "active" : ""} onClick={() => go("/goals")}><span className="nav-icon">◎</span>الهدف</button>
-        <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}><span className="nav-icon">C+</span>C++</button>
+        <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>C++</button>
         <a className="instagram-link" href="https://www.instagram.com/h_sson6/" target="_blank" rel="noreferrer" aria-label="Instagram @h_sson6" title="@h_sson6"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" className="instagram-dot" /></svg></a>
         <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}><span className="nav-icon">♧</span>المجتمع</button>
       </nav>
@@ -856,7 +855,7 @@ function Login({ onBack }: { onBack: () => void }) {
   return (
     <main className="auth-shell auth-shell-premium">
       <button className="brand auth-brand" onClick={onBack} aria-label="Back to EngiMind home">
-        <span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong>
+        <strong>EngiMind — إنجي مايند</strong>
       </button>
       <div className="auth-ai-visuals" aria-hidden="true"><img className="auth-ai-network" src={authAiNetwork} alt="" /><img className="auth-ai-robot" src={authAiRobot} alt="" /><div className="auth-visual-label"><span>AI ENGINEERING</span><strong>Learn · Build · Innovate</strong></div></div>
       <section className="auth-card">
@@ -879,12 +878,12 @@ function Login({ onBack }: { onBack: () => void }) {
 function ForgotPassword({ onBack }: { onBack: () => void }) {
   const [email, setEmail] = useState(""); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);
   const submit = async (event: FormEvent) => { event.preventDefault(); setBusy(true); setMessage(""); try { const response = await fetch("/api/auth/request-reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }); const data = await response.json() as { message?: string }; setMessage(data.message || "تحقق من بريدك الإلكتروني."); } catch { setMessage("تعذر إرسال الطلب حالياً."); } finally { setBusy(false); } };
-  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">أمان الحساب</span><h1>نسيت كلمة المرور؟</h1><p>أدخل بريدك، وسنرسل رابطاً صالحاً لمدة 30 دقيقة إذا كان الحساب موجوداً.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الإرسال..." : "إرسال رابط الاستعادة"}</button></form>{message && <p role="status" className="password-message">{message}</p>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
+  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">أمان الحساب</span><h1>نسيت كلمة المرور؟</h1><p>أدخل بريدك، وسنرسل رابطاً صالحاً لمدة 30 دقيقة إذا كان الحساب موجوداً.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الإرسال..." : "إرسال رابط الاستعادة"}</button></form>{message && <p role="status" className="password-message">{message}</p>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
 }
 function ResetPassword({ onBack, token }: { onBack: () => void; token: string }) {
   const [password, setPassword] = useState(""); const [message, setMessage] = useState(""); const [done, setDone] = useState(false); const [busy, setBusy] = useState(false);
   const submit = async (event: FormEvent) => { event.preventDefault(); setBusy(true); setMessage(""); try { const response = await fetch("/api/auth/reset-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, newPassword: password }) }); const data = await response.json() as { error?: string }; if (!response.ok) throw new Error(data.error || "تعذر تغيير كلمة المرور"); setDone(true); setMessage("تم تغيير كلمة المرور. يمكنك تسجيل الدخول الآن."); } catch (error) { setMessage(error instanceof Error ? error.message : "تعذر تغيير كلمة المرور"); } finally { setBusy(false); } };
-  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><span className="brand-mark">M</span><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">تحديث كلمة المرور</span><h1>عيّن كلمة مرور جديدة</h1>{done ? <><p role="status" className="password-message">{message}</p><button className="primary-button" onClick={onBack}>تسجيل الدخول</button></> : <><p>استخدم كلمة مرور جديدة لا تقل عن 8 أحرف.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={8} placeholder="كلمة المرور الجديدة" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الحفظ..." : "حفظ كلمة المرور"}</button></form>{message && <p role="alert" className="password-message">{message}</p>}</>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
+  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">تحديث كلمة المرور</span><h1>عيّن كلمة مرور جديدة</h1>{done ? <><p role="status" className="password-message">{message}</p><button className="primary-button" onClick={onBack}>تسجيل الدخول</button></> : <><p>استخدم كلمة مرور جديدة لا تقل عن 8 أحرف.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={8} placeholder="كلمة المرور الجديدة" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الحفظ..." : "حفظ كلمة المرور"}</button></form>{message && <p role="alert" className="password-message">{message}</p>}</>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
 }
 
 function Profile({ user, progress, results, onNavigate, onLogout }: { user: User; progress: Progress[]; results: QuizResult[]; onNavigate: (path: string) => void; onLogout: () => void }) {
