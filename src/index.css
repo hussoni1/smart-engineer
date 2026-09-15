@@ -619,3 +619,73 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
   .topbar nav button, .instagram-link { min-height: 42px; }
   .topbar-actions { margin-inline-start: auto; }
 }
+
+
+/* Original English course workspace */
+.english-course-page { width: min(1280px, calc(100% - 56px)); margin: 30px auto; direction: rtl; }
+.english-course-hero { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 38px; border: 1px solid var(--edge, rgba(121,232,255,.25)); border-radius: 22px; background: linear-gradient(120deg, rgba(24,35,72,.95), rgba(15,20,42,.92)); }
+.english-course-hero h1 { margin: 10px 0; font-size: clamp(30px, 5vw, 58px); }
+.english-course-hero p { max-width: 700px; color: var(--muted-copy, #a6b0cb); line-height: 2; }
+.english-course-actions { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
+.english-level-card { min-width: 180px; padding: 25px; text-align: center; border: 1px solid rgba(121,232,255,.28); border-radius: 18px; background: rgba(121,232,255,.07); }
+.english-level-card strong, .english-level-card span, .english-level-card small { display: block; }
+.english-level-card strong { color: var(--electric, #79e8ff); font-size: 30px; }
+.english-level-card span, .english-level-card small { color: var(--muted-copy, #a6b0cb); margin-top: 8px; }
+.english-tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+.english-tool-card, .english-stage-tests, .english-unit-list { padding: 24px; border: 1px solid var(--edge, rgba(121,232,255,.2)); border-radius: 18px; background: linear-gradient(145deg, rgba(25,34,68,.86), rgba(10,15,31,.94)); }
+.english-tool-card h2, .english-stage-tests h2, .english-unit-list h2 { margin: 7px 0 10px; }
+.english-tool-card p { color: var(--muted-copy, #a6b0cb); line-height: 1.8; }
+.placement-item, .vocabulary-question { display: grid; gap: 7px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,.08); }
+.placement-item label, .vocabulary-question label { color: #cbd4e8; font-size: 12px; }
+.speech-practice, .vocabulary-grid { display: grid; gap: 12px; }
+.speech-practice b { color: var(--electric, #79e8ff); line-height: 1.8; }
+.vocabulary-tool, .english-stage-tests, .english-unit-list { margin-top: 18px; }
+.vocabulary-grid { grid-template-columns: repeat(3, 1fr); }
+.vocabulary-word { display: grid; gap: 5px; padding: 12px; text-align: left; border: 1px solid rgba(121,232,255,.18); border-radius: 10px; background: rgba(255,255,255,.035); }
+.vocabulary-word b { color: var(--electric, #79e8ff); }
+.vocabulary-word span, .vocabulary-word small { color: var(--muted-copy, #a6b0cb); }
+.english-stage-tests { direction: rtl; }
+.stage-test-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.stage-test-grid article { display: grid; gap: 8px; padding: 16px; border: 1px solid rgba(121,232,255,.18); border-radius: 12px; }
+.stage-test-grid strong { color: var(--electric, #79e8ff); font-size: 24px; }
+.english-unit-list { direction: rtl; }
+.english-unit { display: grid; grid-template-columns: 45px 1fr auto; align-items: center; gap: 12px; width: 100%; padding: 15px 0; text-align: right; border: 0; border-top: 1px solid rgba(255,255,255,.08); background: transparent; }
+.english-unit > span { color: var(--electric, #79e8ff); font-weight: 800; }
+.english-unit b, .english-unit small { display: block; }
+.english-unit small, .english-unit em { color: var(--muted-copy, #a6b0cb); font-size: 11px; }
+@media (max-width: 760px) { .english-course-page { width: calc(100% - 28px); } .english-course-hero, .english-tool-grid { display: block; } .english-level-card { margin-top: 22px; } .english-tool-card { margin-top: 18px; } .vocabulary-grid, .stage-test-grid { grid-template-columns: repeat(2, 1fr); } }
+
+
+/* Original English course workspace */
+.english-course-page { width: min(1280px, calc(100% - 56px)); margin: 30px auto; direction: rtl; }
+.english-course-hero { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 38px; border: 1px solid var(--edge, rgba(121,232,255,.25)); border-radius: 22px; background: linear-gradient(120deg, rgba(24,35,72,.95), rgba(15,20,42,.92)); }
+.english-course-hero h1 { margin: 10px 0; font-size: clamp(30px, 5vw, 58px); }
+.english-course-hero p { max-width: 700px; color: var(--muted-copy, #a6b0cb); line-height: 2; }
+.english-course-actions { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
+.english-level-card { min-width: 180px; padding: 25px; text-align: center; border: 1px solid rgba(121,232,255,.28); border-radius: 18px; background: rgba(121,232,255,.07); }
+.english-level-card strong, .english-level-card span, .english-level-card small { display: block; }
+.english-level-card strong { color: var(--electric, #79e8ff); font-size: 30px; }
+.english-level-card span, .english-level-card small { color: var(--muted-copy, #a6b0cb); margin-top: 8px; }
+.english-tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+.english-tool-card, .english-stage-tests, .english-unit-list { padding: 24px; border: 1px solid var(--edge, rgba(121,232,255,.2)); border-radius: 18px; background: linear-gradient(145deg, rgba(25,34,68,.86), rgba(10,15,31,.94)); }
+.english-tool-card h2, .english-stage-tests h2, .english-unit-list h2 { margin: 7px 0 10px; }
+.english-tool-card p { color: var(--muted-copy, #a6b0cb); line-height: 1.8; }
+.placement-item, .vocabulary-question { display: grid; gap: 7px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,.08); }
+.placement-item label, .vocabulary-question label { color: #cbd4e8; font-size: 12px; }
+.speech-practice, .vocabulary-grid { display: grid; gap: 12px; }
+.speech-practice b { color: var(--electric, #79e8ff); line-height: 1.8; }
+.vocabulary-tool, .english-stage-tests, .english-unit-list { margin-top: 18px; }
+.vocabulary-grid { grid-template-columns: repeat(3, 1fr); }
+.vocabulary-word { display: grid; gap: 5px; padding: 12px; text-align: left; border: 1px solid rgba(121,232,255,.18); border-radius: 10px; background: rgba(255,255,255,.035); }
+.vocabulary-word b { color: var(--electric, #79e8ff); }
+.vocabulary-word span, .vocabulary-word small { color: var(--muted-copy, #a6b0cb); }
+.english-stage-tests { direction: rtl; }
+.stage-test-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.stage-test-grid article { display: grid; gap: 8px; padding: 16px; border: 1px solid rgba(121,232,255,.18); border-radius: 12px; }
+.stage-test-grid strong { color: var(--electric, #79e8ff); font-size: 24px; }
+.english-unit-list { direction: rtl; }
+.english-unit { display: grid; grid-template-columns: 45px 1fr auto; align-items: center; gap: 12px; width: 100%; padding: 15px 0; text-align: right; border: 0; border-top: 1px solid rgba(255,255,255,.08); background: transparent; }
+.english-unit > span { color: var(--electric, #79e8ff); font-weight: 800; }
+.english-unit b, .english-unit small { display: block; }
+.english-unit small, .english-unit em { color: var(--muted-copy, #a6b0cb); font-size: 11px; }
+@media (max-width: 760px) { .english-course-page { width: calc(100% - 28px); } .english-course-hero, .english-tool-grid { display: block; } .english-level-card { margin-top: 22px; } .english-tool-card { margin-top: 18px; } .vocabulary-grid, .stage-test-grid { grid-template-columns: repeat(2, 1fr); } }
