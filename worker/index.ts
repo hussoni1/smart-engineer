@@ -321,7 +321,7 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
     }
     return json({ passed, score, total, ...getNextProgress(currentCompleted, lessonIndex, passed, lessonCount(courseSlug)) });
   }
-  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/login" || url.pathname.endsWith(".html"))) {
+  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/login" || url.pathname === "/english-course" || url.pathname.endsWith(".html"))) {
     const freshUrl = new URL(request.url);
     freshUrl.searchParams.set("_v", "20260903");
     const response = await env.ASSETS.fetch(new Request(freshUrl, request));
