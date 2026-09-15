@@ -498,13 +498,17 @@ function GlossaryPage({ user, onNavigate, onLogout }: { user: User | null; onNav
   return <main className="portal-shell"><Topbar user={user} active="glossary" onNavigate={onNavigate} onLogout={onLogout} /><section className="workspace-shell"><div className="workspace-heading"><div><span className="eyebrow">AI Glossary · قاموس الذكاء الاصطناعي</span><h1>المصطلح، الترجمة، والمثال</h1><p>تعلم المصطلحات التي ستتكرر في المحاضرات والأبحاث ومقابلات العمل.</p></div><input className="glossary-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search · ابحث" /></div><div className="glossary-grid">{visible.map(([en, ar, definition, definitionAr]) => <article className="workspace-card glossary-card" key={en}><span className="glossary-en">{en}</span><h2>{ar}</h2><p>{definition}</p><p dir="rtl">{definitionAr}</p></article>)}</div></section></main>;
 }
 
+const shuffleExamQuestions = (items: ExamQuestion[]) => items.map((item, index) => {
+  const shift = (index % item.options.length);
+  return { ...item, options: item.options.map((_, optionIndex) => item.options[(optionIndex + shift) % item.options.length]), answer: (item.answer - shift + item.options.length) % item.options.length };
+});
 function ExamsPage({ user, onNavigate, onLogout }: { user: User | null; onNavigate: (path: string) => void; onLogout: () => void }) {
   const [level, setLevel] = useState<keyof typeof examQuestions>("beginner");
-  const [questions, setQuestions] = useState<ExamQuestion[]>(() => examQuestions.beginner);
+  const [questions, setQuestions] = useState<ExamQuestion[]>(() => shuffleExamQuestions(examQuestions.beginner));
   const [answers, setAnswers] = useState<number[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(30 * 60);
-  const shuffleQuestions = (items: ExamQuestion[]) => [...items].sort(() => Math.random() - 0.5);
+  const shuffleQuestions = (items: ExamQuestion[]) => shuffleExamQuestions([...items].sort(() => Math.random() - 0.5));
   useEffect(() => { if (submitted) return; const timer = window.setInterval(() => setSecondsLeft((value) => Math.max(0, value - 1)), 1000); return () => window.clearInterval(timer); }, [submitted]);
   useEffect(() => { if (secondsLeft === 0 && !submitted) setSubmitted(true); }, [secondsLeft, submitted]);
   const chooseLevel = (next: keyof typeof examQuestions) => { setLevel(next); setQuestions(shuffleQuestions(examQuestions[next])); setAnswers([]); setSubmitted(false); setSecondsLeft(30 * 60); };
