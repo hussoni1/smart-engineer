@@ -819,3 +819,11 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 .topbar .nav-icon { min-width: 23px; height: 23px; font-size: 14px; }
 @media (max-width: 1260px) { .topbar { min-height: 84px; padding-inline: 12px; } .topbar .brand { min-width: 150px; } .topbar .brand strong { font-size: 12px; } .topbar nav > button, .topbar nav > .instagram-link { min-height: 46px; padding-inline: 7px; font-size: 10px; } }
 @media (max-width: 680px) { .profile-tools-grid { width: calc(100% - 28px); grid-template-columns: 1fr; } .portfolio-project-banner { align-items: flex-start; flex-direction: column; } .portfolio-project-banner .secondary-button { width: 100%; } .topbar { min-height: 70px; padding: 8px 10px; } .topbar .brand-mark { width: 38px; height: 38px; } .topbar .brand strong { font-size: 11px; } }
+
+/* Larger, more readable navigation labels */
+.topbar .brand strong { font-size: 17px; }
+.topbar nav > button, .topbar nav > .instagram-link { min-height: 50px; padding-inline: 12px; font-size: 13px; }
+.topbar .nav-icon { font-size: 15px; }
+.topbar-actions .login-button, .topbar-actions .user-pill, .topbar-actions .language-toggle { font-size: 13px; }
+@media (max-width: 1260px) { .topbar .brand strong { font-size: 14px; } .topbar nav > button, .topbar nav > .instagram-link { padding-inline: 8px; font-size: 12px; } }
+@media (max-width: 760px) { .topbar .brand strong { font-size: 11px; } .topbar nav > button, .topbar nav > .instagram-link { min-height: 46px; padding: 11px 14px; font-size: 13px; } .topbar-actions .login-button, .topbar-actions .user-pill, .topbar-actions .language-toggle { font-size: 11px; } }
