@@ -597,10 +597,10 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 .topbar nav .language-nav-button {
   min-width: 86px;
   color: #f5f7ff;
-  background: linear-gradient(135deg, rgba(121,232,255,.15), rgba(168,139,255,.15));
-  box-shadow: inset 0 0 18px rgba(121,232,255,.08);
+  background: transparent;
+  box-shadow: none;
 }
-.topbar nav .language-nav-button:hover { background: linear-gradient(135deg, rgba(121,232,255,.25), rgba(168,139,255,.24)); }
+.topbar nav .language-nav-button:hover { background: linear-gradient(135deg, rgba(121,232,255,.25), rgba(168,139,255,.24)); box-shadow: 0 0 20px rgba(121,232,255,.22), inset 0 0 18px rgba(121,232,255,.08); }
 .instagram-link { display: inline-grid; place-items: center; flex: 0 0 30px; color: #b3bdd5; text-decoration: none; }
 .instagram-link svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .instagram-link .instagram-dot { fill: currentColor; stroke: none; }
