@@ -820,6 +820,12 @@ footer { width: min(1280px, calc(100% - 56px)); border-color: var(--edge); }
 @media (max-width: 1260px) { .topbar { min-height: 84px; padding-inline: 12px; } .topbar .brand { min-width: 150px; } .topbar .brand strong { font-size: 12px; } .topbar nav > button, .topbar nav > .instagram-link { min-height: 46px; padding-inline: 7px; font-size: 10px; } }
 @media (max-width: 680px) { .profile-tools-grid { width: calc(100% - 28px); grid-template-columns: 1fr; } .portfolio-project-banner { align-items: flex-start; flex-direction: column; } .portfolio-project-banner .secondary-button { width: 100%; } .topbar { min-height: 70px; padding: 8px 10px; } .topbar .brand-mark { width: 38px; height: 38px; } .topbar .brand strong { font-size: 11px; } }
 
+.auth-shell-premium .auth-card { direction: rtl; text-align: right; }
+.auth-shell-premium .auth-card-heading, .auth-shell-premium .auth-field, .auth-shell-premium .auth-options { text-align: right; }
+.auth-shell-premium .auth-input-wrap input { padding-right: 40px; padding-left: 44px; text-align: right; }
+.auth-shell-premium .auth-input-wrap .field-icon { right: 14px; left: auto; }
+.auth-shell-premium .password-toggle { left: 9px; right: auto; }
+
 /* Larger, more readable navigation labels */
 .topbar .brand strong { font-size: 17px; }
 .topbar nav > button, .topbar nav > .instagram-link { min-height: 50px; padding-inline: 12px; font-size: 13px; }

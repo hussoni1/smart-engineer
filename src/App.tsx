@@ -645,13 +645,13 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
   return (
     <header className="topbar">
       <button className="brand" onClick={() => go("/")}>
-        <strong>EngiMind — إنجي مايند</strong>
+        <strong>إنجي مايند — EngiMind</strong>
       </button>
       <button className="mobile-menu-button" aria-label="فتح القائمة" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}><span /><span /><span /></button>
       <nav className={menuOpen ? "menu-open" : ""}>
         <button className={active === "learning" ? "active" : ""} onClick={() => go("/")}><span className="nav-icon">⌂</span>{nav.learning}</button>
-        <button className={active === "english-course" ? "active" : ""} onClick={() => go("/english-course")}>English</button>
-        <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}><span className="nav-icon">⌘</span>Python</button>
+        <button className={active === "english-course" ? "active" : ""} onClick={() => go("/english-course")}>{language === "ar" ? "الإنكليزية" : "English"}</button>
+        <button className={active === "python" ? "active" : ""} onClick={() => go("/python")}><span className="nav-icon">⌘</span>{language === "ar" ? "بايثون" : "Python"}</button>
         <button className={active === "ai-department" ? "active nav-featured" : "nav-featured"} onClick={() => go("/ai-department")}><span className="nav-icon">✦</span>مركز AI</button>
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>البيانات</button>
         <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}><span className="nav-icon">✓</span>الامتحانات</button>
@@ -663,7 +663,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "community" ? "active" : ""} onClick={() => go("/community")}><span className="nav-icon">♧</span>المجتمع</button>
       </nav>
       <div className="topbar-actions">
-        <button className="language-toggle" onClick={toggleLanguage} aria-label="تغيير لغة الواجهة">{language === "ar" ? "EN" : "عربي"}</button>
+        <button className="language-toggle" onClick={toggleLanguage} aria-label={language === "ar" ? "تحويل الواجهة إلى الإنجليزية" : "Switch interface to Arabic"}>{language === "ar" ? "English" : "العربية"}</button>
         {user ? (
           <button className="user-pill" onClick={() => onNavigate("/profile")}>
             <span>{user.name.slice(0, 1)}</span>{user.name}
@@ -854,22 +854,19 @@ function Login({ onBack }: { onBack: () => void }) {
   };
   return (
     <main className="auth-shell auth-shell-premium">
-      <button className="brand auth-brand" onClick={onBack} aria-label="Back to EngiMind home">
-        <strong>EngiMind — إنجي مايند</strong>
-      </button>
-      <div className="auth-ai-visuals" aria-hidden="true"><img className="auth-ai-network" src={authAiNetwork} alt="" /><img className="auth-ai-robot" src={authAiRobot} alt="" /><div className="auth-visual-label"><span>AI ENGINEERING</span><strong>Learn · Build · Innovate</strong></div></div>
+      <div className="auth-ai-visuals" aria-hidden="true"><img className="auth-ai-network" src={authAiNetwork} alt="" /><img className="auth-ai-robot" src={authAiRobot} alt="" /><div className="auth-visual-label"><span>هندسة الذكاء الاصطناعي</span><strong>تعلّم · ابنِ · ابتكر</strong></div></div>
       <section className="auth-card">
-        <div className="auth-card-heading"><span className="auth-eyebrow">✦ AI learning platform</span><h1>{register ? "Create your account" : "Welcome Back"}</h1><p>{register ? "Join EngiMind and build your engineering future." : "Sign in to continue to your account"}</p></div>
+        <div className="auth-card-heading"><span className="auth-eyebrow">✦ منصة التعلم بالذكاء الاصطناعي</span><h1>{register ? "إنشاء حساب" : "مرحباً بعودتك"}</h1><p>{register ? "انضم إلى منصّة إنجي مايند وابنِ مستقبلك الهندسي." : "سجّل الدخول للمتابعة إلى حسابك"}</p></div>
         <form onSubmit={submit} className="auth-form">
-          {register && <label className="auth-field"><span>Full name</span><div className="auth-input-wrap"><span className="field-icon">◎</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" autoComplete="name" required minLength={2} /></div></label>}
-          <label className="auth-field"><span>Email address</span><div className="auth-input-wrap"><span className="field-icon">@</span><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@example.com" autoComplete="email" required /></div></label>
-          <label className="auth-field"><span>Password</span><div className="auth-input-wrap"><span className="field-icon">▣</span><input value={password} onChange={(event) => setPassword(event.target.value)} type={showPassword ? "text" : "password"} placeholder="At least 8 characters" autoComplete={register ? "new-password" : "current-password"} required minLength={8} /><button className="password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "◉" : "◌"}</button></div></label>
-          {!register && <div className="auth-options"><label className="remember-option"><input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} /><span>Remember me</span></label><button className="auth-link" type="button" onClick={() => { window.location.assign("/forgot-password"); }}>Forgot Password?</button></div>}
+          {register && <label className="auth-field"><span>الاسم الكامل</span><div className="auth-input-wrap"><span className="field-icon">◎</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="اكتب اسمك" autoComplete="name" required minLength={2} /></div></label>}
+          <label className="auth-field"><span>البريد الإلكتروني</span><div className="auth-input-wrap"><span className="field-icon">@</span><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="name@example.com" autoComplete="email" required /></div></label>
+          <label className="auth-field"><span>كلمة المرور</span><div className="auth-input-wrap"><span className="field-icon">▣</span><input value={password} onChange={(event) => setPassword(event.target.value)} type={showPassword ? "text" : "password"} placeholder="8 أحرف على الأقل" autoComplete={register ? "new-password" : "current-password"} required minLength={8} /><button className="password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}>{showPassword ? "◉" : "◌"}</button></div></label>
+          {!register && <div className="auth-options"><label className="remember-option"><input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} /><span>تذكرني</span></label><button className="auth-link" type="button" onClick={() => { window.location.assign("/forgot-password"); }}>نسيت كلمة المرور؟</button></div>}
           {error && <p role="alert" className="auth-error">{error}</p>}
-          <button className="primary-button auth-submit" type="submit" disabled={busy}>{busy ? "Signing you in…" : register ? "Create Account" : "Sign In"}<span>→</span></button>
+          <button className="primary-button auth-submit" type="submit" disabled={busy}>{busy ? "جارٍ التنفيذ…" : register ? "إنشاء الحساب" : "تسجيل الدخول"}<span>←</span></button>
         </form>
-        <p className="auth-switch">{register ? "Already have an account?" : "Don't have an account?"} <button className="auth-link" type="button" onClick={() => { setRegister(!register); setError(""); setPassword(""); }}>{register ? "Sign In" : "Create Account"}</button></p>
-        <button className="auth-back" onClick={onBack}>← Back to home</button>
+        <p className="auth-switch">{register ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟"} <button className="auth-link" type="button" onClick={() => { setRegister(!register); setError(""); setPassword(""); }}>{register ? "تسجيل الدخول" : "إنشاء حساب"}</button></p>
+        <button className="auth-back" onClick={onBack}>الرجوع إلى الصفحة الرئيسية ←</button>
       </section>
     </main>
   );
@@ -878,12 +875,12 @@ function Login({ onBack }: { onBack: () => void }) {
 function ForgotPassword({ onBack }: { onBack: () => void }) {
   const [email, setEmail] = useState(""); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);
   const submit = async (event: FormEvent) => { event.preventDefault(); setBusy(true); setMessage(""); try { const response = await fetch("/api/auth/request-reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }); const data = await response.json() as { message?: string }; setMessage(data.message || "تحقق من بريدك الإلكتروني."); } catch { setMessage("تعذر إرسال الطلب حالياً."); } finally { setBusy(false); } };
-  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">أمان الحساب</span><h1>نسيت كلمة المرور؟</h1><p>أدخل بريدك، وسنرسل رابطاً صالحاً لمدة 30 دقيقة إذا كان الحساب موجوداً.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الإرسال..." : "إرسال رابط الاستعادة"}</button></form>{message && <p role="status" className="password-message">{message}</p>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
+  return <main className="auth-shell"><section className="auth-card"><span className="hero-kicker">أمان الحساب</span><h1>نسيت كلمة المرور؟</h1><p>أدخل بريدك، وسنرسل رابطاً صالحاً لمدة 30 دقيقة إذا كان الحساب موجوداً.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="البريد الإلكتروني" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الإرسال..." : "إرسال رابط الاستعادة"}</button></form>{message && <p role="status" className="password-message">{message}</p>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
 }
 function ResetPassword({ onBack, token }: { onBack: () => void; token: string }) {
   const [password, setPassword] = useState(""); const [message, setMessage] = useState(""); const [done, setDone] = useState(false); const [busy, setBusy] = useState(false);
   const submit = async (event: FormEvent) => { event.preventDefault(); setBusy(true); setMessage(""); try { const response = await fetch("/api/auth/reset-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, newPassword: password }) }); const data = await response.json() as { error?: string }; if (!response.ok) throw new Error(data.error || "تعذر تغيير كلمة المرور"); setDone(true); setMessage("تم تغيير كلمة المرور. يمكنك تسجيل الدخول الآن."); } catch (error) { setMessage(error instanceof Error ? error.message : "تعذر تغيير كلمة المرور"); } finally { setBusy(false); } };
-  return <main className="auth-shell"><button className="brand auth-brand" onClick={onBack}><strong>EngiMind — إنجي مايند</strong></button><section className="auth-card"><span className="hero-kicker">تحديث كلمة المرور</span><h1>عيّن كلمة مرور جديدة</h1>{done ? <><p role="status" className="password-message">{message}</p><button className="primary-button" onClick={onBack}>تسجيل الدخول</button></> : <><p>استخدم كلمة مرور جديدة لا تقل عن 8 أحرف.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={8} placeholder="كلمة المرور الجديدة" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الحفظ..." : "حفظ كلمة المرور"}</button></form>{message && <p role="alert" className="password-message">{message}</p>}</>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
+  return <main className="auth-shell"><section className="auth-card"><span className="hero-kicker">تحديث كلمة المرور</span><h1>عيّن كلمة مرور جديدة</h1>{done ? <><p role="status" className="password-message">{message}</p><button className="primary-button" onClick={onBack}>تسجيل الدخول</button></> : <><p>استخدم كلمة مرور جديدة لا تقل عن 8 أحرف.</p><form onSubmit={submit} style={{ display: "grid", gap: 12, marginTop: 20 }}><input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={8} placeholder="كلمة المرور الجديدة" required /><button className="primary-button" disabled={busy}>{busy ? "جارٍ الحفظ..." : "حفظ كلمة المرور"}</button></form>{message && <p role="alert" className="password-message">{message}</p>}</>}<button className="text-button" onClick={onBack}>العودة لتسجيل الدخول ←</button></section></main>;
 }
 
 function Profile({ user, progress, results, onNavigate, onLogout }: { user: User; progress: Progress[]; results: QuizResult[]; onNavigate: (path: string) => void; onLogout: () => void }) {
