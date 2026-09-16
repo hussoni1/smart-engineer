@@ -270,15 +270,7 @@ const englishExpansionUnits = [
 ];
 const englishCourseForExpansion = courses.find((course) => course.slug === "english-from-zero")!;
 englishCourseForExpansion.lessons.push(...englishExpansionUnits);
-// نضيف أسئلة تطبيقية قصيرة لكل درس حتى يصبح التدريب متوازنًا ولا يقتصر على سؤالين.
 for (const course of courses) {
-  for (const lesson of course.lessons) {
-    lesson.quiz.push(
-      { question: `ما الهدف العملي من درس «${lesson.title}»؟`, options: [lesson.summary, "إلغاء القياس والتحقق", "تغيير تصميم الواجهة", "حذف البيانات"], answer: 0, explanation: "يلخص وصف الدرس الهدف العملي الذي ينبغي أن يحققه الطالب." },
-      { question: "ما الممارسة الأفضل لتطبيق هذا المفهوم؟", options: ["تجربة مثال وقياس النتيجة", "حفظ المصطلح دون تطبيق", "تجاهل الحالات المختلفة", "نشر النتيجة دون مراجعة"], answer: 0, explanation: "التطبيق مع القياس والمراجعة يحول المعرفة إلى مهارة." },
-      { question: "كيف يتحقق الطالب من فهمه؟", options: ["يشرح الفكرة ويحل حالة جديدة", "ينسخ الإجابة فقط", "يتجاوز الاختبار", "يحذف الملاحظات"], answer: 0, explanation: "الشرح وحل حالة جديدة من أفضل طرق التحقق من الفهم والتعميم." }
-    );
-  }
   if (course.lessons.length < 3) {
     course.lessons.push({
       title: "مشروع تطبيقي وتقييم نهائي",
