@@ -800,8 +800,8 @@ function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: Us
           <strong className="streak-number">{user ? "1" : "—"}</strong>
           <span>أيام متتالية</span>
           <svg viewBox="0 0 300 90" className="streak-line">
-            <path d="M4 65 C32 72, 46 40, 72 53 S112 66, 134 36 S167 52, 198 43 S227 47, 260 28 S278 25, 296 8" fill="none" stroke="#b6f000" strokeWidth="3" />
-            <path d="M4 65 C32 72, 46 40, 72 53 S112 66, 134 36 S167 52, 198 43 S227 47, 260 28 S278 25, 296 8 L296 90 L4 90Z" fill="rgba(182,240,0,.1)" />
+            <path d="M4 65 C32 72, 46 40, 72 53 S112 66, 134 36 S167 52, 198 43 S227 47, 260 28 S278 25, 296 8" fill="none" stroke="#f0a35e" strokeWidth="3" />
+            <path d="M4 65 C32 72, 46 40, 72 53 S112 66, 134 36 S167 52, 198 43 S227 47, 260 28 S278 25, 296 8 L296 90 L4 90Z" fill="rgba(240,163,94,.1)" />
           </svg>
         </aside>
       </section>

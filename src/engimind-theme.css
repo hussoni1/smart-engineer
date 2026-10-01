@@ -1,0 +1,170 @@
+/* ==========================================================================
+   EngiMind visual theme — design only.
+   Loaded LAST (see main.tsx) so it overrides index.css / navbar-reference.css.
+   No class names, markup, or logic were changed. To revert the whole redesign:
+   remove the import line in main.tsx.
+
+   Palette:  ink #070611 · panel #100e22 · copper #f0a35e · signal #5fd6d9 · violet #a98cff
+   Type:     Reem Kufi (headings) · IBM Plex Sans Arabic (body) · IBM Plex Mono (code)
+   ========================================================================== */
+
+:root {
+  --font-body: "IBM Plex Sans Arabic", "Cairo", system-ui, sans-serif;
+  --font-display: "Reem Kufi", "IBM Plex Sans Arabic", "Cairo", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ink: #070611;
+  --panel: #100e22;
+  --panel-2: #15122b;
+  --copper: #f0a35e;
+  --signal: #5fd6d9;
+  --line: rgba(255, 255, 255, 0.1);
+  --muted: #a29fbd;
+  --r-lg: 14px;
+  --r-md: 10px;
+  --r-sm: 6px;
+}
+
+/* ---------- Base ---------- */
+:root, body { font-family: var(--font-body); }
+body {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 56px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 56px,
+    radial-gradient(900px 560px at 82% -10%, rgba(109, 75, 220, 0.2), transparent 62%),
+    var(--ink);
+}
+/* Arabic letters must stay connected: no tracking anywhere */
+body * { letter-spacing: 0 !important; }
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 3px;
+}
+
+/* ---------- Headings ---------- */
+h1, h2,
+.hero h1, .section-heading h2, .lesson-heading h1, .auth-card h1,
+.profile-header h1, .brand strong, .locked-card h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.hero h1 { line-height: 1.2; }
+.hero h1 em { text-shadow: none; }
+
+/* ---------- Calmer surfaces: solid panels, smaller radii, no neon glow ---------- */
+.side-panel, .learning-panel, .community-panel, .profile-panel,
+.lesson-sidebar, .quiz-card, .auth-card, .profile-header, .profile-metrics > div,
+.admin-page, .password-panel, .locked-card {
+  background: var(--panel);
+  border-color: var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: none;
+}
+.course-card {
+  background: var(--panel-2);
+  border-color: var(--line);
+  border-radius: var(--r-md);
+}
+.course-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(240, 163, 94, 0.7);
+  box-shadow: none;
+}
+.hero {
+  border-radius: var(--r-lg);
+  border-color: var(--line);
+  box-shadow: none;
+  background:
+    linear-gradient(90deg, rgba(7, 6, 17, 0.3), rgba(7, 6, 17, 0.9) 72%),
+    url('/smart-engineer-hero.webp') center / cover no-repeat;
+}
+.project-grid article { border-radius: var(--r-md); background: var(--panel-2); border-color: var(--line); }
+.lesson-example, .lesson-practice, .video-lesson { border-radius: var(--r-md); }
+.quiz-options label { border-radius: var(--r-sm); }
+.auth-card input, .password-form input { border-radius: var(--r-sm); }
+
+/* ---------- Buttons ---------- */
+.primary-button {
+  border-radius: var(--r-sm);
+  background: var(--copper);
+  color: #1a1005;
+  box-shadow: none;
+  font-weight: 700;
+}
+.primary-button:hover { transform: none; filter: brightness(1.08); box-shadow: none; }
+.secondary-button, .next-lesson-button, .login-button, .user-pill { border-radius: var(--r-sm); box-shadow: none; }
+.topbar .login-button, .topbar .user-pill { border-radius: var(--r-sm) !important; }
+.google-button { border-radius: var(--r-sm); }
+
+/* ---------- Top bar: flat, with a signal-trace underline ---------- */
+.topbar .brand-mark {
+  border-radius: 10px 10px 10px 3px !important;
+  border: 2px solid var(--copper) !important;
+  color: var(--copper) !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.topbar nav, .topbar nav > button { box-shadow: none !important; text-shadow: none !important; }
+.topbar::after {
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--copper) 0 12px, transparent 12px 24px);
+  opacity: 0.45;
+  animation: engi-trace 1.8s linear infinite;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+@keyframes engi-trace { to { background-position: 24px 0; } }
+
+/* ---------- Progress & success use the signal colour; copper stays for actions ---------- */
+.answer-hint.good, .quiz-result.success { color: var(--signal); }
+.progress-track i, .profile-course-main b { background: linear-gradient(90deg, var(--signal), var(--copper)); }
+.progress-ring { background: conic-gradient(var(--copper) var(--progress), #2c2748 0); }
+.progress-ring::before { background: var(--panel); }
+
+/* ---------- Code ---------- */
+pre, code, kbd, .lesson-example pre { font-family: var(--font-mono) !important; }
+.lesson-example pre { color: var(--signal); background: #0a0918; border-radius: var(--r-sm); }
+
+/* ---------- Legibility: the original used 8–11px text a lot ---------- */
+.topbar nav > button { font-size: 12.5px !important; }
+.eyebrow, .hero-kicker { font-size: 12px; font-weight: 600; }
+.hero p { font-size: 16px; color: #b9b6cf; }
+.panel-label { font-size: 13px; }
+.metric-list div { font-size: 12.5px; }
+.panel-note { font-size: 11.5px; }
+.course-card-copy h3 { font-size: 15px; }
+.course-card-copy p { font-size: 12.5px; line-height: 1.9; }
+.course-card-copy > span, .progress-caption { font-size: 11.5px; }
+.course-level { font-size: 10.5px; }
+.project-grid strong { font-size: 14px; }
+.project-grid small { font-size: 11.5px; }
+.community-stats > div span { font-size: 12px; }
+.lesson-nav i { font-size: 12.5px; }
+.lesson-nav small { font-size: 10.5px; }
+.lesson-heading p, .lesson-body p { font-size: 16px; line-height: 2.05; }
+.lesson-meta, .previous-attempt { font-size: 11.5px; }
+.course-chip { font-size: 10.5px; }
+.quiz-heading p { font-size: 13px; }
+.quiz-card legend { font-size: 14.5px; }
+.quiz-options label { font-size: 13px; }
+.answer-hint { font-size: 12px; }
+.quiz-result { font-size: 13px; }
+.next-lesson-button { font-size: 14px; }
+.result-row strong { font-size: 13px; }
+.result-row small { font-size: 10.5px; }
+.profile-header p, .profile-metrics span { font-size: 12px; }
+.profile-course-main strong { font-size: 13.5px; }
+.profile-course-main small { font-size: 11px; }
+.auth-card p { font-size: 14px; }
+.empty-state { font-size: 13px; }
+footer { font-size: 12px; }
+
+/* Phones */
+@media (max-width: 680px) {
+  .topbar nav > button { font-size: 11.5px !important; }
+  .course-card-copy p { font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar::after { animation: none; }
+}
