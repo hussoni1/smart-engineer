@@ -1,43 +1,45 @@
 /* ==========================================================================
-   EngiMind visual theme — design only.
+   EngiMind visual theme (LIGHT) — design only.
    Loaded LAST (see main.tsx) so it overrides index.css / navbar-reference.css.
-   No class names, markup, or logic were changed. To revert the whole redesign:
-   remove the import line in main.tsx.
+   No class names, markup, or logic were changed.
 
-   Palette:  ink #070611 · panel #100e22 · copper #f0a35e · signal #5fd6d9 · violet #a98cff
+   Palette:  paper #ffffff · tint #f6f4fb · ink #17142b · copper #f0a35e · signal #0b7f86
    Type:     Reem Kufi (headings) · IBM Plex Sans Arabic (body) · IBM Plex Mono (code)
    ========================================================================== */
 
 :root {
+  color-scheme: light;
   --font-body: "IBM Plex Sans Arabic", "Cairo", system-ui, sans-serif;
   --font-display: "Reem Kufi", "IBM Plex Sans Arabic", "Cairo", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --ink: #070611;
-  --panel: #100e22;
-  --panel-2: #15122b;
+  --paper: #ffffff;
+  --tint: #f6f4fb;
+  --tint-2: #efecf8;
+  --ink: #17142b;
+  --muted: #5d5878;
+  --line: rgba(23, 20, 43, 0.12);
   --copper: #f0a35e;
-  --signal: #5fd6d9;
-  --line: rgba(255, 255, 255, 0.1);
-  --muted: #a29fbd;
+  --copper-deep: #a8520c;
+  --signal: #0b7f86;
   --r-lg: 14px;
   --r-md: 10px;
   --r-sm: 6px;
 }
 
-/* ---------- Base ---------- */
-:root, body { font-family: var(--font-body); }
+/* ---------- Base: white page with a faint drafting grid ---------- */
+:root, body { font-family: var(--font-body); color: var(--ink); }
+:root { background: var(--paper); }
 body {
   background:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 56px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 56px,
-    radial-gradient(900px 560px at 82% -10%, rgba(109, 75, 220, 0.2), transparent 62%),
-    var(--ink);
+    linear-gradient(rgba(23, 20, 43, 0.04) 1px, transparent 1px) 0 0 / 56px 56px,
+    linear-gradient(90deg, rgba(23, 20, 43, 0.04) 1px, transparent 1px) 0 0 / 56px 56px,
+    var(--paper);
 }
 /* Arabic letters must stay connected: no tracking anywhere */
 body * { letter-spacing: 0 !important; }
 
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 2px solid var(--copper);
+  outline: 2px solid var(--copper-deep);
   outline-offset: 3px;
 }
 
@@ -49,39 +51,48 @@ h1, h2,
   font-weight: 700;
 }
 .hero h1 { line-height: 1.2; }
-.hero h1 em { text-shadow: none; }
 
-/* ---------- Calmer surfaces: solid panels, smaller radii, no neon glow ---------- */
+/* ---------- Surfaces: tinted panels on white, thin borders, no glow ---------- */
 .side-panel, .learning-panel, .community-panel, .profile-panel,
 .lesson-sidebar, .quiz-card, .auth-card, .profile-header, .profile-metrics > div,
 .admin-page, .password-panel, .locked-card {
-  background: var(--panel);
+  background: var(--tint);
   border-color: var(--line);
   border-radius: var(--r-lg);
   box-shadow: none;
 }
 .course-card {
-  background: var(--panel-2);
+  background: var(--paper);
   border-color: var(--line);
   border-radius: var(--r-md);
 }
 .course-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(240, 163, 94, 0.7);
-  box-shadow: none;
+  border-color: var(--copper-deep);
+  box-shadow: 0 10px 24px rgba(23, 20, 43, 0.08);
 }
+.project-grid article { border-radius: var(--r-md); background: var(--paper); border-color: var(--line); }
+.lesson-example, .lesson-practice, .video-lesson { border-radius: var(--r-md); }
+.quiz-options label { border-radius: var(--r-sm); background: var(--paper); }
+.auth-card input, .password-form input { border-radius: var(--r-sm); background: var(--paper); color: var(--ink); border-color: var(--line); }
+.profile-metrics > div, .admin-row { background: var(--paper); }
+.auth-shell { background: var(--paper); }
+.auth-divider span { background: var(--tint); }
+
+/* ---------- Hero stays a dark feature banner: the artwork is a dark neon image ---------- */
 .hero {
   border-radius: var(--r-lg);
-  border-color: var(--line);
-  box-shadow: none;
+  border: 0;
+  box-shadow: 0 18px 50px rgba(23, 20, 43, 0.18);
+  color: #f6f4ff;
   background:
-    linear-gradient(90deg, rgba(7, 6, 17, 0.3), rgba(7, 6, 17, 0.9) 72%),
+    linear-gradient(90deg, rgba(7, 6, 17, 0.25), rgba(7, 6, 17, 0.9) 72%),
     url('/smart-engineer-hero.webp') center / cover no-repeat;
 }
-.project-grid article { border-radius: var(--r-md); background: var(--panel-2); border-color: var(--line); }
-.lesson-example, .lesson-practice, .video-lesson { border-radius: var(--r-md); }
-.quiz-options label { border-radius: var(--r-sm); }
-.auth-card input, .password-form input { border-radius: var(--r-sm); }
+.hero h1, .hero h1 em, .hero-kicker, .hero .eyebrow { color: #f6f4ff; }
+.hero h1 em, .hero-kicker { color: var(--copper); }
+.hero p { color: #d3d0e6; font-size: 16px; }
+.hero::before { opacity: 0.35; }
 
 /* ---------- Buttons ---------- */
 .primary-button {
@@ -91,44 +102,69 @@ h1, h2,
   box-shadow: none;
   font-weight: 700;
 }
-.primary-button:hover { transform: none; filter: brightness(1.08); box-shadow: none; }
+.primary-button:hover { transform: none; filter: brightness(1.06); box-shadow: none; }
 .secondary-button, .next-lesson-button, .login-button, .user-pill { border-radius: var(--r-sm); box-shadow: none; }
-.topbar .login-button, .topbar .user-pill { border-radius: var(--r-sm) !important; }
-.google-button { border-radius: var(--r-sm); }
+.login-button, .user-pill, .secondary-button, .next-lesson-button {
+  border-color: var(--copper-deep);
+  color: var(--copper-deep);
+  background: rgba(240, 163, 94, 0.12);
+}
+.topbar .login-button, .topbar .user-pill {
+  border-radius: var(--r-sm) !important;
+  border-color: var(--copper-deep) !important;
+  color: var(--copper-deep) !important;
+  background: rgba(240, 163, 94, 0.12) !important;
+}
+.user-pill span { background: var(--copper); color: #1a1005; }
+.google-button { border-radius: var(--r-sm); border-color: var(--line); background: var(--paper); color: var(--ink); }
 
-/* ---------- Top bar: flat, with a signal-trace underline ---------- */
+/* ---------- Top bar ---------- */
 .topbar .brand-mark {
   border-radius: 10px 10px 10px 3px !important;
-  border: 2px solid var(--copper) !important;
-  color: var(--copper) !important;
+  border: 2px solid var(--copper-deep) !important;
+  color: var(--copper-deep) !important;
   box-shadow: none !important;
   background: transparent !important;
 }
-.topbar nav, .topbar nav > button { box-shadow: none !important; text-shadow: none !important; }
+.topbar .brand strong { color: var(--ink) !important; }
+.topbar nav { background: var(--tint) !important; border: 1px solid var(--line) !important; box-shadow: none !important; }
+.topbar nav > button { color: var(--muted) !important; box-shadow: none !important; }
+.topbar nav > button:hover, .topbar nav > button.active { color: var(--ink) !important; background: rgba(240, 163, 94, 0.28) !important; }
+.topbar .language-toggle {
+  border: 1px solid var(--line) !important;
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+}
 .topbar::after {
   height: 2px;
   background: repeating-linear-gradient(90deg, var(--copper) 0 12px, transparent 12px 24px);
-  opacity: 0.45;
+  opacity: 0.7;
   animation: engi-trace 1.8s linear infinite;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
 }
 @keyframes engi-trace { to { background-position: 24px 0; } }
 
-/* ---------- Progress & success use the signal colour; copper stays for actions ---------- */
-.answer-hint.good, .quiz-result.success { color: var(--signal); }
+/* ---------- Progress & success use the teal; copper stays for actions ---------- */
+.answer-hint.good, .quiz-result.success, .password-message { color: var(--signal); }
+.progress-track { background: var(--tint-2); }
 .progress-track i, .profile-course-main b { background: linear-gradient(90deg, var(--signal), var(--copper)); }
-.progress-ring { background: conic-gradient(var(--copper) var(--progress), #2c2748 0); }
-.progress-ring::before { background: var(--panel); }
+.progress-ring { background: conic-gradient(var(--copper) var(--progress), var(--tint-2) 0); }
+.progress-ring::before { background: var(--tint); }
 
-/* ---------- Code ---------- */
+/* ---------- Code stays dark for contrast ---------- */
 pre, code, kbd, .lesson-example pre { font-family: var(--font-mono) !important; }
-.lesson-example pre { color: var(--signal); background: #0a0918; border-radius: var(--r-sm); }
+.lesson-example pre {
+  color: #8fe3e5;
+  background: #17142b;
+  border-color: #17142b;
+  border-radius: var(--r-sm);
+}
 
 /* ---------- Legibility: the original used 8–11px text a lot ---------- */
 .topbar nav > button { font-size: 12.5px !important; }
 .eyebrow, .hero-kicker { font-size: 12px; font-weight: 600; }
-.hero p { font-size: 16px; color: #b9b6cf; }
 .panel-label { font-size: 13px; }
 .metric-list div { font-size: 12.5px; }
 .panel-note { font-size: 11.5px; }
