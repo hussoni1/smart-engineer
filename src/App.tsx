@@ -9,6 +9,7 @@ import authAiNetwork from "./assets/auth-ai-network.jpg";
 import authAiRobot from "./assets/auth-ai-robot.jpg";
 import { quizTranslations } from "./quizTranslations";
 import { englishQuizArabic } from "./englishQuizArabic";
+import { ProjectDesignerPage } from "./ProjectDesignerPage";
 
 type Course = { slug: string; title: string; level: string; color: string; description: string; lessons: Lesson[] };
 type Lesson = { title: string; duration: string; summary: string; body: string[]; quiz: { question: string; options: string[]; answer: number; explanation: string }[] };
@@ -653,6 +654,7 @@ function Topbar({ user, active, onNavigate, onLogout }: { user: User | null; act
         <button className={active === "data-lab" ? "active" : ""} onClick={() => go("/data-lab")}><span className="nav-icon">▥</span>{nav.data}</button>
         <button className={active === "exams" ? "active" : ""} onClick={() => go("/exams")}><span className="nav-icon">✓</span>{nav.exams}</button>
         <button className={active === "projects" ? "active" : ""} onClick={() => go("/projects")}><span className="nav-icon">⚙</span>المشاريع</button>
+        <button className={active === "project-designer" ? "active nav-featured" : "nav-featured"} onClick={() => go("/project-designer")}><span className="nav-icon">✦</span>مصمّم المشاريع</button>
         <button className={active === "glossary" ? "active" : ""} onClick={() => go("/glossary")}><span className="nav-icon">Aa</span>{nav.glossary}</button>
         <button className={active === "goals" ? "active" : ""} onClick={() => go("/goals")}><span className="nav-icon">◎</span>{nav.goals}</button>
         <button className={active === "cpp" ? "active" : ""} onClick={() => go("/courses/cpp/lessons/1")}>{nav.cpp}</button>
@@ -759,6 +761,7 @@ function Home({ user, progress, onNavigate, onLogout, selectedGoal }: { user: Us
         </div>
       </section>
       <section className="featured-projects" aria-label="المشاريع الهندسية"><div><span className="eyebrow">مختبر عملي جديد</span><h2>أعلى مشاريع هندسية تطبيقية</h2><p>أجهزة ومواد، خطوات تنفيذ، وفيديو لكل مشروع.</p></div><button className="primary-button" onClick={() => onNavigate("/projects")}>استكشف المشاريع ←</button></section>
+      <section className="featured-projects designer-home-promo" aria-label="مصمم المشروع الهندسي"><div><span className="eyebrow">من فكرتك إلى نموذج أولي</span><h2>ما عندك فكرة مشروع؟ خلّينا نرتبها سوه.</h2><p>حدد مجالك ووقتك والمواد المتاحة، وخذ خطة عمل هندسية قابلة للتعديل.</p></div><button className="primary-button" onClick={() => onNavigate("/project-designer")}>صمّم مشروعك الآن ✦</button></section>
       <section className="ai-visual-showcase" aria-label="صور الذكاء الاصطناعي">
         <div className="ai-visual-copy"><span className="eyebrow">ذكاء اصطناعي · AI VISUALS</span><h2>حوّل الفكرة إلى نظام ذكي</h2><p>استكشف عالم الشبكات العصبية والروبوتات من خلال صور تلهمك لبناء مشاريعك الهندسية القادمة.</p><div className="ai-visual-tags"><span>Machine Learning</span><span>Computer Vision</span><span>Robotics</span></div></div>
         <div className="ai-visual-gallery"><figure><img src={authAiNetwork} alt="شبكة عصبية تمثل الذكاء الاصطناعي" /><figcaption>الشبكات العصبية</figcaption></figure><figure><img src={authAiRobot} alt="روبوت ذكي يمثل هندسة الذكاء الاصطناعي" /><figcaption>الروبوتات الذكية</figcaption></figure></div>
@@ -1202,6 +1205,7 @@ export default function App() {
   if (path === "/ai-department") return <AiDepartmentPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/exams") return <ExamsPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/goals") return <GoalsPage user={user} onNavigate={navigate} onLogout={logout} />;
+  if (path === "/project-designer") return <main className="portal-shell"><Topbar user={user} active="project-designer" onNavigate={navigate} onLogout={logout} /><ProjectDesignerPage onNavigate={navigate} /></main>;
   if (path === "/review") return user ? <ReviewPage user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (path === "/search") return <SearchPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/tracks") return <AdvancedTracksPage user={user} onNavigate={navigate} onLogout={logout} />;
