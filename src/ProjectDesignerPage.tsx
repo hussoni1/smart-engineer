@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { buildProjectPlan, type EngineeringProjectPlan, type ProjectInputs } from "./projectDesigner";
 import "./ProjectDesignerPage.css";
 
-type SavedPlan = { id: string; savedAt: string; plan: EngineeringProjectPlan };
+type SavedPlan = { id: string; savedAt: string; plan: EngineeringProjectPlan; storage: "device" | "account" };
+type ProjectRecord = { id: string; updatedAt: number; projectPlan?: EngineeringProjectPlan | null };
 
 const STORAGE_KEY = "smart-engineer-project-plans";
 const initialInputs: ProjectInputs = {
@@ -17,10 +18,27 @@ const initialInputs: ProjectInputs = {
 function readSavedPlans(): SavedPlan[] {
   try {
     const parsed: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed as SavedPlan[] : [];
+    if (!Array.isArray(parsed)) return [];
+    return (parsed as Array<Omit<SavedPlan, "storage">>).filter((item) => item && typeof item.id === "string" && item.plan && typeof item.plan.title === "string").map((item) => ({ ...item, storage: "device" as const }));
   } catch {
     return [];
   }
+}
+
+function saveDevicePlans(plans: SavedPlan[]) {
+  const devicePlans = plans.filter((item) => item.storage === "device").map(({ storage: _storage, ...item }) => item);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(devicePlans));
+}
+
+async function projectApi<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(path, {
+    credentials: "include",
+    ...init,
+    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+  });
+  const payload = await response.json().catch(() => ({})) as { error?: string };
+  if (!response.ok) throw new Error(payload.error || "تعذر إكمال طلب المشروع.");
+  return payload as T;
 }
 
 function planAsMarkdown(plan: EngineeringProjectPlan) {
@@ -41,11 +59,40 @@ function planAsMarkdown(plan: EngineeringProjectPlan) {
   ].join("\n");
 }
 
-export function ProjectDesignerPage({ onNavigate }: { onNavigate: (path: string) => void }) {
+export function ProjectDesignerPage({ isAuthenticated, onNavigate }: { isAuthenticated: boolean; onNavigate: (path: string) => void }) {
   const [inputs, setInputs] = useState<ProjectInputs>(initialInputs);
   const [plan, setPlan] = useState<EngineeringProjectPlan | null>(null);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(readSavedPlans);
   const [notice, setNotice] = useState("");
+  const [savingPlan, setSavingPlan] = useState(false);
+  const [loadingCloudPlans, setLoadingCloudPlans] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    setLoadingCloudPlans(true);
+    projectApi<ProjectRecord[]>("/api/projects")
+      .then((projects) => {
+        if (cancelled) return;
+        const cloudPlans: SavedPlan[] = projects
+          .filter((project) => project.projectPlan)
+          .map((project) => ({
+            id: project.id,
+            savedAt: new Date(project.updatedAt).toLocaleDateString("ar-IQ"),
+            plan: project.projectPlan!,
+            storage: "account",
+          }));
+        setSavedPlans([...cloudPlans, ...readSavedPlans()]);
+        setLoadingCloudPlans(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setNotice("تعذر تحميل خطط حسابك الآن. جرّب تحديث الصفحة.");
+          setLoadingCloudPlans(false);
+        }
+      });
+    return () => { cancelled = true; };
+  }, [isAuthenticated]);
 
   const updateInput = <K extends keyof ProjectInputs>(key: K, value: ProjectInputs[K]) => {
     setInputs((current) => ({ ...current, [key]: value }));
@@ -58,22 +105,66 @@ export function ProjectDesignerPage({ onNavigate }: { onNavigate: (path: string)
     window.setTimeout(() => document.getElementById("generated-project-plan")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
   };
 
-  const savePlan = () => {
-    if (!plan) return;
-    const next = [{ id: crypto.randomUUID(), savedAt: new Date().toLocaleDateString("ar-IQ"), plan }, ...savedPlans].slice(0, 8);
+  const savePlan = async () => {
+    if (!plan || savingPlan) return;
+    setSavingPlan(true);
+    if (isAuthenticated) {
+      try {
+        const saved = await projectApi<ProjectRecord>("/api/projects", {
+          method: "POST",
+          body: JSON.stringify({
+            title: plan.title,
+            description: plan.problem,
+            tools: plan.materials.map((item) => item.name).join("، "),
+            url: "",
+            projectPlan: plan,
+          }),
+        });
+        const cloudPlan: SavedPlan = {
+          id: saved.id,
+          savedAt: new Date(saved.updatedAt).toLocaleDateString("ar-IQ"),
+          plan: saved.projectPlan ?? plan,
+          storage: "account",
+        };
+        setSavedPlans((current) => [cloudPlan, ...current.filter((item) => item.id !== cloudPlan.id)]);
+        setNotice("انحفظ مشروعك بحسابك؛ تگدر ترجع له من أي جهاز بعد تسجيل الدخول.");
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "تعذر حفظ المشروع بحسابك.");
+      } finally {
+        setSavingPlan(false);
+      }
+      return;
+    }
+
+    const localPlan: SavedPlan = { id: crypto.randomUUID(), savedAt: new Date().toLocaleDateString("ar-IQ"), plan, storage: "device" };
+    const next = [localPlan, ...savedPlans.filter((item) => item.storage === "device")].slice(0, 8);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      saveDevicePlans(next);
       setSavedPlans(next);
-      setNotice("انحفظت الخطة على هذا الجهاز.");
+      setNotice("انحفظت الخطة على هذا الجهاز فقط. سجّل الدخول حتى تحفظها بحسابك وتفتحها من أجهزة ثانية.");
     } catch {
       setNotice("تعذر الحفظ في المتصفح. جرّب تصدير الخطة بدلًا من ذلك.");
+    } finally {
+      setSavingPlan(false);
     }
   };
 
-  const deletePlan = (id: string) => {
-    const next = savedPlans.filter((item) => item.id !== id);
-    setSavedPlans(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* The current session list remains updated. */ }
+  const deletePlan = async (id: string) => {
+    const selected = savedPlans.find((item) => item.id === id);
+    if (!selected) return;
+    if (selected.storage === "account") {
+      try {
+        await projectApi(`/api/projects/${encodeURIComponent(id)}`, { method: "DELETE" });
+        setSavedPlans((current) => current.filter((item) => item.id !== id));
+        setNotice("انحذف المشروع من حسابك.");
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "تعذر حذف المشروع.");
+      }
+      return;
+    }
+    const next = readSavedPlans().filter((item) => item.id !== id);
+    try { saveDevicePlans(next); } catch { /* Keep the current view responsive if device storage is unavailable. */ }
+    setSavedPlans((current) => current.filter((item) => item.id !== id));
   };
 
   const exportPlan = () => {
@@ -117,12 +208,12 @@ export function ProjectDesignerPage({ onNavigate }: { onNavigate: (path: string)
       <div className="designer-value-strip" aria-label="مميزات المصمم">
         <div><span>01</span><strong>ابدأ بمشكلتك</strong><small>اكتب الفكرة اللي تهمّك</small></div>
         <div><span>02</span><strong>خطوات واقعية</strong><small>مهام ومخرجات لكل مرحلة</small></div>
-        <div><span>03</span><strong>ملكية بياناتك</strong><small>الحفظ محلي على جهازك</small></div>
+        <div><span>03</span><strong>ملكية بياناتك</strong><small>{isAuthenticated ? "حفظ بحسابك على قاعدة بيانات الموقع" : "حفظ محلي أو بحسابك بعد تسجيل الدخول"}</small></div>
       </div>
 
       <div className="designer-layout">
         <form className="workspace-card designer-form" onSubmit={generate}>
-          <div className="designer-form-heading"><span className="eyebrow">Project brief · ملخص المشروع</span><h2>خلّينا نرسم البداية</h2><p>ما تحتاج حساب. لا نرسل إجاباتك إلى خادم؛ الخطة تتكوّن داخل المتصفح.</p></div>
+          <div className="designer-form-heading"><span className="eyebrow">Project brief · ملخص المشروع</span><h2>خلّينا نرسم البداية</h2><p>الخطة تتكوّن داخل المتصفح. {isAuthenticated ? "ما تنحفظ بحسابك إلا إذا ضغطت زر الحفظ." : "تقدر تجربها بدون حساب، وسجّل الدخول إذا تريد حفظها بحسابك."}</p></div>
 
           <label className="designer-field">المجال الهندسي
             <select value={inputs.domain} onChange={(event) => updateInput("domain", event.target.value as ProjectInputs["domain"])}>
@@ -190,7 +281,7 @@ export function ProjectDesignerPage({ onNavigate }: { onNavigate: (path: string)
       {plan && <section className="workspace-card generated-plan" id="generated-project-plan" aria-live="polite">
         <div className="generated-plan-header">
           <div><span className="eyebrow">Your project blueprint · مخطط مشروعك</span><h2>{plan.title}</h2><span className="course-chip cyan">{plan.domainLabel}</span></div>
-          <div className="generated-plan-actions"><button className="secondary-button" onClick={savePlan}>احفظ على جهازي</button><button className="secondary-button" onClick={exportPlan}>نزّل كملف Markdown</button><button className="text-button" onClick={() => window.print()}>طباعة</button></div>
+          <div className="generated-plan-actions"><button className="secondary-button" onClick={() => void savePlan()} disabled={savingPlan}>{savingPlan ? "جارٍ الحفظ…" : isAuthenticated ? "احفظ في حسابي" : "احفظ على هذا الجهاز"}</button>{!isAuthenticated && <button className="text-button" onClick={() => onNavigate("/login")}>سجّل الدخول للحفظ السحابي</button>}<button className="secondary-button" onClick={exportPlan}>نزّل كملف Markdown</button><button className="text-button" onClick={() => window.print()}>طباعة</button></div>
         </div>
         {notice && <p className="designer-notice" role="status">{notice}</p>}
         <div className="plan-meta-grid"><div><small>المستوى</small><strong>{plan.levelLabel}</strong></div><div><small>المدة</small><strong>{plan.timelineLabel}</strong></div><div><small>الميزانية</small><strong>{plan.budgetLabel}</strong></div></div>
@@ -204,7 +295,7 @@ export function ProjectDesignerPage({ onNavigate }: { onNavigate: (path: string)
         <div className="generated-plan-footer"><span>الخطة أولية وتتطلب مراجعة مناسبة قبل شراء المواد أو بدء التجربة.</span><button className="text-button" onClick={copyPlan}>نسخ الخطة</button></div>
       </section>}
 
-      {savedPlans.length > 0 && <section className="workspace-card saved-plans"><div className="section-heading"><div><span className="eyebrow">Saved on this device · محفوظ محليًا</span><h2>خططي السابقة</h2></div><span>{savedPlans.length}/8</span></div><div className="saved-plan-list">{savedPlans.map((saved) => <article className="saved-plan-item" key={saved.id}><button className="saved-plan-open" onClick={() => openSavedPlan(saved)}><span className="course-chip cyan">{saved.plan.domainLabel}</span><strong>{saved.plan.title}</strong><small>{saved.savedAt} · {saved.plan.timelineLabel}</small></button><button className="saved-plan-delete" aria-label={`حذف ${saved.plan.title}`} onClick={() => deletePlan(saved.id)}>حذف</button></article>)}</div></section>}
+      {(savedPlans.length > 0 || loadingCloudPlans) && <section className="workspace-card saved-plans"><div className="section-heading"><div><span className="eyebrow">{isAuthenticated ? "Saved projects · مشاريع محفوظة بحسابك" : "Saved on this device · محفوظ محليًا"}</span><h2>خططي السابقة</h2></div><span>{loadingCloudPlans ? "جارٍ التحميل…" : savedPlans.length}</span></div>{savedPlans.length === 0 && loadingCloudPlans ? <div className="empty-state">جارٍ جلب المشاريع المرتبطة بحسابك…</div> : <div className="saved-plan-list">{savedPlans.map((saved) => <article className="saved-plan-item" key={`${saved.storage}-${saved.id}`}><button className="saved-plan-open" onClick={() => openSavedPlan(saved)}><span className="course-chip cyan">{saved.storage === "account" ? "حسابي · " : "هذا الجهاز · "}{saved.plan.domainLabel}</span><strong>{saved.plan.title}</strong><small>{saved.savedAt} · {saved.plan.timelineLabel}</small></button><button className="saved-plan-delete" aria-label={`حذف ${saved.plan.title}`} onClick={() => void deletePlan(saved.id)}>حذف</button></article>)}</div>}</section>}
     </section>
   );
 }

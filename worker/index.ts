@@ -67,6 +67,15 @@ function randomId() { return crypto.randomUUID(); }
 const encoder = new TextEncoder();
 function toBase64(bytes: ArrayBuffer) { return btoa(String.fromCharCode(...new Uint8Array(bytes))); }
 function fromBase64(value: string) { return Uint8Array.from(atob(value), (char) => char.charCodeAt(0)); }
+export function isValidProjectPlanPayload(value: unknown) {
+  if (value === undefined || value === null) return true;
+  if (typeof value !== "object" || Array.isArray(value)) return false;
+  try { return encoder.encode(JSON.stringify(value)).byteLength <= 64 * 1024; } catch { return false; }
+}
+function parseProjectPlan(value: string | null) {
+  if (!value) return null;
+  try { return JSON.parse(value) as unknown; } catch { return null; }
+}
 async function passwordHash(password: string, salt = crypto.getRandomValues(new Uint8Array(16))) {
   const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, key, 256);
@@ -270,17 +279,23 @@ async function api(request: Request, env: AppEnv): Promise<Response | null> {
   }
   if (url.pathname === "/api/projects" && request.method === "GET") {
     const user = await requireUser(request, env);
-    const rows = await env.DB.prepare("SELECT id, title, description, tools, url, status, updated_at AS updatedAt FROM student_projects WHERE user_id = ? ORDER BY updated_at DESC").bind(user.id).all();
-    return json(rows.results ?? []);
+    const rows = await env.DB.prepare("SELECT id, title, description, tools, url, status, updated_at AS updatedAt, project_plan_json AS projectPlanJson FROM student_projects WHERE user_id = ? ORDER BY updated_at DESC").bind(user.id).all<{ id: string; title: string; description: string; tools: string; url: string; status: string; updatedAt: number; projectPlanJson: string | null }>();
+    return json((rows.results ?? []).map(({ projectPlanJson, ...project }) => ({ ...project, projectPlan: parseProjectPlan(projectPlanJson) })));
   }
   if (url.pathname === "/api/projects" && request.method === "POST") {
     const user = await requireUser(request, env);
-    const body = await request.json() as { title?: string; description?: string; tools?: string; url?: string };
-    const title = body.title?.trim() ?? "";
+    const body = await request.json() as { title?: string; description?: string; tools?: string; url?: string; projectPlan?: unknown };
+    const title = typeof body.title === "string" ? body.title.trim() : "";
     if (title.length < 2 || title.length > 160) return json({ error: "Project title is required" }, 400);
+    if (!isValidProjectPlanPayload(body.projectPlan)) return json({ error: "Project plan must be a JSON object under 64 KB" }, 400);
+    const description = typeof body.description === "string" ? body.description.trim().slice(0, 2000) : "";
+    const tools = typeof body.tools === "string" ? body.tools.trim().slice(0, 1000) : "";
+    const projectUrl = typeof body.url === "string" ? body.url.trim().slice(0, 2048) : "";
+    const projectPlanJson = body.projectPlan == null ? null : JSON.stringify(body.projectPlan);
     const id = randomId();
-    await env.DB.prepare("INSERT INTO student_projects (id, user_id, title, description, tools, url, status, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, user.id, title, body.description?.trim() ?? "", body.tools?.trim() ?? "", body.url?.trim() ?? "", "In progress", Date.now()).run();
-    return json({ id, title, description: body.description?.trim() ?? "", tools: body.tools?.trim() ?? "", url: body.url?.trim() ?? "", status: "In progress", updatedAt: Date.now() }, 201);
+    const updatedAt = Date.now();
+    await env.DB.prepare("INSERT INTO student_projects (id, user_id, title, description, tools, url, status, updated_at, project_plan_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(id, user.id, title, description, tools, projectUrl, "In progress", updatedAt, projectPlanJson).run();
+    return json({ id, title, description, tools, url: projectUrl, status: "In progress", updatedAt, projectPlan: body.projectPlan ?? null }, 201);
   }
   if (url.pathname.startsWith("/api/projects/") && request.method === "DELETE") {
     const user = await requireUser(request, env);

@@ -1205,7 +1205,7 @@ export default function App() {
   if (path === "/ai-department") return <AiDepartmentPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/exams") return <ExamsPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/goals") return <GoalsPage user={user} onNavigate={navigate} onLogout={logout} />;
-  if (path === "/project-designer") return <main className="portal-shell"><Topbar user={user} active="project-designer" onNavigate={navigate} onLogout={logout} /><ProjectDesignerPage onNavigate={navigate} /></main>;
+  if (path === "/project-designer") return <main className="portal-shell"><Topbar user={user} active="project-designer" onNavigate={navigate} onLogout={logout} /><ProjectDesignerPage isAuthenticated={Boolean(user)} onNavigate={navigate} /></main>;
   if (path === "/review") return user ? <ReviewPage user={user} progress={progress} results={results} onNavigate={navigate} onLogout={logout} /> : <Login onBack={() => navigate("/")} />;
   if (path === "/search") return <SearchPage user={user} onNavigate={navigate} onLogout={logout} />;
   if (path === "/tracks") return <AdvancedTracksPage user={user} onNavigate={navigate} onLogout={logout} />;
